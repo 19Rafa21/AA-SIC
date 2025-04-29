@@ -17169,7 +17169,7 @@ textarea.form-control-lg {
 }
 
 .alert-success {
-  background-image: linear-gradient(195deg, #66BB6A 0%, #43A047 100%);
+  background-image: linear-gradient(195deg, #0E6251 0%, #095243 100%);
 }
 
 .alert-info {
@@ -17948,7 +17948,7 @@ textarea.form-control-lg {
   background: rgba(0, 0, 0, 0.2);
 }
 .card.card-background.card-background-mask-success:after {
-  background-image: linear-gradient(195deg, #66BB6A 0%, #43A047 100%);
+  background-image: linear-gradient(195deg, #0E6251 0%, #095243 100%);
   opacity: 0.85;
 }
 .card.card-background.card-background-mask-info:before {
@@ -19069,7 +19069,7 @@ label,
 }
 
 .bg-gradient-success {
-  background-image: linear-gradient(195deg, #66BB6A 0%, #43A047 100%);
+  background-image: linear-gradient(195deg, #0E6251 0%, #095243 100%);
 }
 
 .bg-gradient-info {
@@ -19332,10 +19332,11 @@ svg.text-danger .color-background {
 }
 
 svg.text-success .color-foreground {
-  fill: #66BB6A;
+  fill: #0E6251; /* cor mais clarinha ou personalizada para a parte da frente */
 }
+
 svg.text-success .color-background {
-  fill: #43A047;
+  fill: #095243; /* o teu verde principal */
 }
 
 svg.text-dark .color-foreground {
@@ -20894,8 +20895,8 @@ body:not(.dark-version) .sidenav.bg-transparent .collapse .nav-item .nav-link.ac
   color: #fff;
 }
 .nav.nav-pills.nav-pills-success .moving-tab .nav-link.active {
-  background: #66BB6A;
-  color: #66BB6A;
+  background: #0E6251;
+  color: #0E6251;
 }
 .nav.nav-pills.nav-pills-warning {
   background: #fff;
@@ -20983,7 +20984,7 @@ body:not(.dark-version) .sidenav.bg-transparent .collapse .nav-item .nav-link.ac
   border: none;
 }
 .pagination.pagination-success .page-item.active > .page-link, .pagination.pagination-success .page-item.active > .page-link:focus, .pagination.pagination-success .page-item.active > .page-link:hover {
-  background-image: linear-gradient(195deg, #66BB6A 0%, #43A047 100%);
+  background-image: linear-gradient(195deg, #0E6251 0%, #095243 100%);
   border: none;
 }
 .pagination.pagination-info .page-item.active > .page-link, .pagination.pagination-info .page-item.active > .page-link:focus, .pagination.pagination-info .page-item.active > .page-link:hover {
@@ -21865,7 +21866,7 @@ p {
   background-image: linear-gradient(195deg, #49a3f1, #1A73E8);
 }
 .text-gradient.text-success {
-  background-image: linear-gradient(195deg, #66BB6A, #43A047);
+  background-image: linear-gradient(195deg, #0E6251, #095243);
 }
 .text-gradient.text-warning {
   background-image: linear-gradient(195deg, #FFA726, #FB8C00);

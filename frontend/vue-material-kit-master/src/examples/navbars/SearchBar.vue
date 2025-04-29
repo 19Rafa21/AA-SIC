@@ -21,7 +21,7 @@
         </div>
   
         <!-- Botão: Procurar -->
-        <button type="submit" class="btn btn-success search-button">
+        <button type="submit" class="btn search-button">
           PROCURAR
         </button>
       </form>
@@ -33,9 +33,10 @@
   </script>
   
   <style scoped>
+  
   .input-with-icon {
   height: 100%;
-  background: white;
+  background: transparent; /* 🔥 */
 }
 
 .input-with-icon i {
@@ -49,7 +50,9 @@
   width: 100%;
   height: 100%;
   padding: 0.75rem 1rem;
+  background: transparent; /* já tinhas e está certo */
 }
+
 
   .search-bar-container {
     width: 100%;
@@ -58,21 +61,19 @@
   }
   
   .search-bar {
-    width: 100%;
-    background: white;
-    border: 1px solid #ced4da;
-    border-radius: 0.75rem;
-    overflow: hidden;
-    padding: 0;
-    height: 55px; /* ⚡ altura fixa para toda a barra */
-    display: flex;
-    align-items: center;
-    }
-
-
+  width: 100%;
+  background: #e9ecef; /* 🔥 em vez de white, metemos um cinzento claro */
+  border: 1px solid #ced4da;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  padding: 0;
+  height: 55px;
+  display: flex;
+  align-items: center;
+}
   
   .filter-field {
-    background-color: #f8f9fa;
+    background: transparent;
     border-right: 1px solid #dee2e6;
     font-weight: 600;
     font-size: 0.9rem;
@@ -91,24 +92,35 @@
     width: 100%;
     height: 100%;
     outline: none;
+    background: transparent; /* 🔥 fundo transparente para o input */
   }
   
   .search-input::placeholder {
+    background: transparent;
     color: #adb5bd;
   }
   
   .search-button {
-  height: 80%; /* ⚡️ botão com a mesma altura da search bar */
-  padding: 0.5rem 1.5rem; /* ⚡️ padding cima/baixo para dar espaço interno ao texto */
+  background-color: #095243;
+  border: none;
+  height: 80%;
+  padding: 0.5rem 1.5rem;
   font-weight: bold;
   font-size: 0.9rem;
   display: flex;
   align-items: center;
   justify-content: center;
   margin-top: 1rem;
-  margin-right: 0.5rem; /* espaço à direita */
+  margin-right: 0.5rem;
   border-radius: 0.5rem;
+  color: white;
+  transition: background-color 0.3s ease;
 }
+
+.search-button:hover {
+  background-color: #073b31; /* um verde escuro ao passar o rato */
+}
+
 
 
 

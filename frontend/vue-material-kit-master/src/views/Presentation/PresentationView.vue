@@ -52,12 +52,19 @@ onUnmounted(() => {
     loading="lazy"
   >
     <div class="container h-100 d-flex flex-column justify-content-center align-items-center">
-      <h1 class="text-white pt-3 mt-n5 me-2 text-center">
-        TastyCheck
-      </h1>
-      <p class="lead text-white px-5 mt-3 text-center" style="font-weight: 500;">
+      <div class="hero-brand d-flex align-items-center justify-content-center">
+        <h1 class="hero-title">
+          <span class="text-white">Tasty</span>
+          <span class="check-group">
+            <span class="text-2">Check</span>
+            <img src="@/assets/img/logo.png" alt="Logo" class="hero-logo ms-2" />
+          </span>
+        </h1>
+      </div>
+      <p class="lead text-white px-5 mt-3" :style="{ fontWeight: '500' }">
         Sabores incríveis, momentos inesquecíveis.
       </p>
+
       <SearchBar class="mt-4" />
     </div>
   </div>
@@ -285,3 +292,30 @@ onUnmounted(() => {
   </div>
   <DefaultFooter />
 </template>
+
+<style scoped>
+
+  .hero-title {
+    font-size: 3rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+  }
+
+  .hero-title .check-group {
+    display: inline-flex;
+    align-items: center;
+  }
+
+  .hero-title .text-2 {
+    color: #095243;
+  }
+
+  .hero-logo {
+    width: 100px; /* podes afinar para 50px ou 60px */
+    height: 100px;
+    margin-left: 0; /* ⚡ margem pequenina agora! */
+    vertical-align: middle;
+  }
+
+</style>
