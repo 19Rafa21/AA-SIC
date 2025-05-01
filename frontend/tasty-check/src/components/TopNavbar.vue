@@ -8,8 +8,6 @@
   </nav>
 </template>
 
-<script>
-export default {
-  name: 'TopNavbar'
-}
+<script setup>
+// Convertido para <script setup> para manter consistência
 </script>

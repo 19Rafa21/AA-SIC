@@ -1,36 +1,61 @@
-<template>
-    <div>
-        <header-component 
-            :backgroundImage="backgroundImage"
-            logoImage="../../public/img/logo.png"
-            :useGradient="true"
-        />
+<script setup>
+import { onMounted, onUnmounted } from "vue";
+import HeaderComponent from './HeaderComponent.vue';
+import TopNavbar from './TopNavbar.vue';
+import SearchBar from './SearchBar.vue';
 
-        <div class="bg-white rounded-lg shadow-xl mx-3 md:mx-4 -mt-24 relative z-10 p-6">
-            <div class="container mx-auto px-4">
-                <div class="py-16 text-center">
-                    <h2 class="text-3xl font-bold mt-8 mb-6">Bem-vindo à Tasty Check</h2>
-                    <p class="text-gray-600 mb-8">
-                        A plataforma perfeita para os amantes de gastronomia compartilharem suas experiências
-                    </p>
-                </div>
+const headerBgImage = '/img/header-bg.webp';
+
+const body = document.getElementsByTagName("body")[0];
+onMounted(() => {
+  body.classList.add("presentation-page");
+  body.classList.add("bg-gray-200");
+});
+onUnmounted(() => {
+  body.classList.remove("presentation-page");
+  body.classList.remove("bg-gray-200");
+});
+</script>
+
+<template>
+  <TopNavbar/>
+  <HeaderComponent>
+    <div class="page-header min-vh-100"
+         :style="`background-image: url(${headerBgImage})`"
+         loading="lazy">
+
+        <div class="container h-100 flex flex-col justify-center items-center">
+            <div class="hero-brand flex items-center justify-center">
+                <h1 class="text-3xl font-bold flex items-center">
+                <span class="text-white">Tasty</span>
+                <span class="flex items-center">
+                    <span class="text-[#095243]">Check</span>
+                    <img src="../../public/img/logo.png" alt="Logo" class="w-[100px] h-[100px] hero-logo ms-2" />
+                </span>
+                </h1>
             </div>
+
+            <p class="lead text-white px-5 mt-3" :style="{ fontWeight: '500' }">
+                Sabores incríveis, momentos inesquecíveis.
+            </p>
+
+            <SearchBar class="mt-4"/>
         </div>
     </div>
+  </HeaderComponent>
+
+
 </template>
 
-<script>
-import HeaderComponent from './HeaderComponent.vue';
+<style scoped>
+/* Mantendo o estilo existente para compatibilidade, mas usando primariamente Tailwind nas classes */
 
-export default {
-    name: 'HomePage',
-    components: {
-        HeaderComponent
-    },
-    data() {
-        return {
-            backgroundImage: '../../public/img/header-bg.webp', 
-        }
-    }
+.container {
+  height: 100%;
 }
-</script>
+
+/* Replicando exatamente o estilo do PresentationView original */
+.min-h-screen {
+  min-height: 100vh;
+}
+</style>

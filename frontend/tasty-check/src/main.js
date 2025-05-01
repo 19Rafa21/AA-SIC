@@ -3,8 +3,13 @@ import { createPinia } from "pinia";
 import App from "./App.vue";
 import router from "./router";
 
-// Importando arquivo CSS principal com diretivas Tailwind
-import "./assets/main.css";
+// Tailwind CSS import
+import "tailwindcss/tailwind.css";
+
+import "./assets/css/nucleo-icons.css";
+import "./assets/css/nucleo-svg.css";
+import '@fortawesome/fontawesome-free/css/all.css'
+
 import materialKit from "./material-kit";
 
 const app = createApp(App);
