@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  database:
+    build: ./data
+    container_name: postgres_container
+    ports:
+      - "5433:5432"
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: tasty
+    networks:
+      - tasty_net
+
+  # frontend:
+  #   build: ./frontend/vue-material-kit-master
+  #   container_name: frontend_container
+  #   ports:
+  #     - "5173:5173"
+  #   networks:
+  #     - tasty_net
+  #   command: npm run preview -- --host
+
+networks:
+  tasty_net:
+    name: tasty_net
+    driver: bridge
