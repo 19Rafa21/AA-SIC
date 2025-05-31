@@ -1,0 +1,22 @@
+# === IntelliJ IDEA ===
+.idea/
+*.iml
+
+# === Maven ===
+target/
+
+# === Node/Vue (frontend) ===
+node_modules/
+dist/
+.env
+
+# === Logs ===
+*.log
+
+# === Sistema operativo ===
+.DS_Store
+Thumbs.db
+
+# === Docker ===
+*.pid
+*.sock
