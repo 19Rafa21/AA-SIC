@@ -14,6 +14,8 @@
 package backend;
 
 import javax.persistence.*;
+import java.util.HashMap;
+import java.util.Map;
 
 @Entity
 @Table(name = "Restaurant")
@@ -73,11 +75,11 @@ public class Restaurant {
 		return getId();
 	}
 	
-	public void setOwner(String value) {
+	public void setOwner(Owner value) {
 		this.owner = value;
 	}
 	
-	public String getOwner() {
+	public Owner getOwner() {
 		return owner;
 	}
 	
@@ -120,25 +122,53 @@ public class Restaurant {
 	public String getImage() {
 		return image;
 	}
-	
+
 	public void setOwner(backend.Owner owner) {
-		//TODO: Implement Method
-		throw new UnsupportedOperationException();
+		this.owner = owner;
 	}
-	
+
 	public void setRating(Double rating) {
-		//TODO: Implement Method
-		throw new UnsupportedOperationException();
+		this.rating = rating;
 	}
-	
-	public void getAttribute() {
-		//TODO: Implement Method
-		throw new UnsupportedOperationException();
+
+	public Map<String, Object> getAttribute() {
+		Map<String, Object> attributes = new HashMap<>();
+		attributes.put("id", this.id);
+		attributes.put("name", this.name);
+		attributes.put("location", this.location);
+		attributes.put("cuisineType", this.cuisineType);
+		attributes.put("rating", this.rating);
+		attributes.put("image", this.image);
+		attributes.put("owner", this.owner);
+		return attributes;
 	}
-	
-	public void setAttribute(int attribute) {
-		//TODO: Implement Method
-		throw new UnsupportedOperationException();
+
+	public void setAttribute(int attribute, Object value) {
+		switch(attribute) {
+			case 0:
+				if (value instanceof String) this.id = (String) value;
+				break;
+			case 1:
+				if (value instanceof Owner) this.owner = (Owner) value;
+				break;
+			case 2:
+				if (value instanceof String) this.name = (String) value;
+				break;
+			case 3:
+				if (value instanceof String) this.location = (String) value;
+				break;
+			case 4:
+				if (value instanceof String) this.cuisineType = (String) value;
+				break;
+			case 5:
+				if (value instanceof Double) this.rating = (Double) value;
+				break;
+			case 6:
+				if (value instanceof String) this.image = (String) value;
+				break;
+			default:
+				throw new IllegalArgumentException("Invalid attribute index: " + attribute);
+		}
 	}
 	
 	public String toString() {

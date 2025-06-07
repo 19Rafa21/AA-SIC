@@ -100,10 +100,9 @@ public class Review {
 	public Restaurant getRestaurant() {
 		return restaurant;
 	}
-	
+
 	public void setRating(Double rating) {
-		//TODO: Implement Method
-		throw new UnsupportedOperationException();
+		this.rating = rating;
 	}
 
 	public String toString() {
