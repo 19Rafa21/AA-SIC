@@ -13,7 +13,30 @@
  */
 package backend;
 
+import javax.persistence.*;
+
+@Entity
+@Table(name = "Review")
 public class Review {
+
+	@Id
+	@Column(name = "Id")
+	private String id;
+
+	@Column(name = "Rating")
+	private Double rating;
+
+	@Column(name = "Text")
+	private String text;
+
+	@ManyToOne
+	@JoinColumn(name = "Author")
+	private Client author;
+
+	@ManyToOne
+	@JoinColumn(name = "Restaurant")
+	private Restaurant restaurant;
+	
 	public Review() {
 	}
 	
@@ -34,16 +57,6 @@ public class Review {
 		return hashcode;
 	}
 	
-	private String id;
-	
-	private Double rating;
-	
-	private String text;
-	
-	private String author;
-	
-	private String restaurant;
-	
 	public void setId(String value) {
 		this.id = value;
 	}
@@ -60,10 +73,6 @@ public class Review {
 		setRating(Double.valueOf(value));
 	}
 	
-	public void setRating(Double value) {
-		this.rating = value;
-	}
-	
 	public Double getRating() {
 		return rating;
 	}
@@ -76,19 +85,19 @@ public class Review {
 		return text;
 	}
 	
-	public void setAuthor(String value) {
+	public void setAuthor(Client value) {
 		this.author = value;
 	}
 	
-	public String getAuthor() {
+	public Client getAuthor() {
 		return author;
 	}
 	
-	public void setRestaurant(String value) {
+	public void setRestaurant(Restaurant value) {
 		this.restaurant = value;
 	}
 	
-	public String getRestaurant() {
+	public Restaurant getRestaurant() {
 		return restaurant;
 	}
 	
@@ -96,9 +105,9 @@ public class Review {
 		//TODO: Implement Method
 		throw new UnsupportedOperationException();
 	}
-	
+
 	public String toString() {
 		return String.valueOf(getId());
 	}
-	
+
 }

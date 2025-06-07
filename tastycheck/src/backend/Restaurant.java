@@ -13,7 +13,34 @@
  */
 package backend;
 
+import javax.persistence.*;
+
+@Entity
+@Table(name = "Restaurant")
 public class Restaurant {
+
+	@Id
+	@Column(name = "Id")
+	private String id;
+
+	@ManyToOne
+	@JoinColumn(name = "Owner")
+	private Owner owner;
+
+	@Column(name = "Name")
+	private String name;
+
+	@Column(name = "Location")
+	private String location;
+
+	@Column(name = "CuisineType")
+	private String cuisineType;
+
+	@Column(name = "Rating")
+	private Double rating;
+
+	@Column(name = "Image")
+	private String image;
 	public Restaurant() {
 	}
 	
@@ -33,20 +60,6 @@ public class Restaurant {
 		hashcode = hashcode + (getId() == null ? 0 : getId().hashCode());
 		return hashcode;
 	}
-	
-	private String id;
-	
-	private String owner;
-	
-	private String name;
-	
-	private String location;
-	
-	private String cuisineType;
-	
-	private Double rating;
-	
-	private String image;
 	
 	public void setId(String value) {
 		this.id = value;
@@ -94,10 +107,6 @@ public class Restaurant {
 	
 	public void setRating(double value) {
 		setRating(Double.valueOf(value));
-	}
-	
-	public void setRating(Double value) {
-		this.rating = value;
 	}
 	
 	public Double getRating() {

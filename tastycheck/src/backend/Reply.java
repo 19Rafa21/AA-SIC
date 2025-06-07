@@ -13,6 +13,10 @@
  */
 package backend;
 
+import javax.persistence.*;
+
+@Entity
+@Table(name = "Reply")
 public class Reply {
 	public Reply() {
 	}
@@ -37,10 +41,14 @@ public class Reply {
 	private String id;
 	
 	private String text;
-	
-	private String review;
-	
-	private String author;
+
+	@ManyToOne
+	@JoinColumn(name = "Review")
+	private Review review;
+
+	@ManyToOne
+	@JoinColumn(name = "Author")
+	private User author;
 	
 	public void setId(String value) {
 		this.id = value;
@@ -62,19 +70,19 @@ public class Reply {
 		return text;
 	}
 	
-	public void setReview(String value) {
+	public void setReview(Review value) {
 		this.review = value;
 	}
 	
-	public String getReview() {
+	public Review getReview() {
 		return review;
 	}
 	
-	public void setAuthor(String value) {
+	public void setAuthor(User value) {
 		this.author = value;
 	}
 	
-	public String getAuthor() {
+	public User getAuthor() {
 		return author;
 	}
 	

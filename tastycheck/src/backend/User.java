@@ -12,8 +12,27 @@
  * License Type: Academic
  */
 package backend;
+import javax.persistence.*;
 
+@Entity
+@Table(name = "`User`")
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "Discriminator", discriminatorType = DiscriminatorType.STRING)
+@DiscriminatorValue("User")
 public class User {
+
+	@Id
+	@Column(name = "Id")
+	private String id;
+
+	@Column(name = "Username")
+	private String username;
+
+	@Column(name = "Password")
+	private String password;
+
+	@Column(name = "Email")
+	private String email;
 	public User() {
 	}
 	
@@ -33,14 +52,6 @@ public class User {
 		hashcode = hashcode + (getId() == null ? 0 : getId().hashCode());
 		return hashcode;
 	}
-	
-	private String id;
-	
-	private String username;
-	
-	private String password;
-	
-	private String email;
 	
 	public void setId(String value) {
 		this.id = value;

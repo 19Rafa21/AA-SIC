@@ -13,6 +13,10 @@
  */
 package backend;
 
+import javax.persistence.*;
+
+@Entity
+@DiscriminatorValue("Owner")
 public class Owner extends backend.User {
 	public Owner() {
 	}
