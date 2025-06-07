@@ -13,6 +13,8 @@
  */
 package backend;
 
+import java.util.List;
+
 public class Restaurant {
 	public Restaurant() {
 	}
@@ -47,6 +49,8 @@ public class Restaurant {
 	private Double rating;
 	
 	private String image;
+
+	private List<Review> reviews;
 	
 	public void setId(String value) {
 		this.id = value;
@@ -91,11 +95,6 @@ public class Restaurant {
 	public String getCuisineType() {
 		return cuisineType;
 	}
-	
-	public void setRating(double value) {
-		setRating(Double.valueOf(value));
-	}
-	
 	public void setRating(Double value) {
 		this.rating = value;
 	}
@@ -117,11 +116,6 @@ public class Restaurant {
 		throw new UnsupportedOperationException();
 	}
 	
-	public void setRating(Double rating) {
-		//TODO: Implement Method
-		throw new UnsupportedOperationException();
-	}
-	
 	public void getAttribute() {
 		//TODO: Implement Method
 		throw new UnsupportedOperationException();
@@ -135,5 +129,8 @@ public class Restaurant {
 	public String toString() {
 		return String.valueOf(getId());
 	}
-	
+
+	public void setReviews(List<Review> reviews) {
+		this.reviews = reviews;
+	}
 }

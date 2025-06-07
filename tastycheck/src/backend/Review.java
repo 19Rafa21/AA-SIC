@@ -55,11 +55,7 @@ public class Review {
 	public String getORMID() {
 		return getId();
 	}
-	
-	public void setRating(double value) {
-		setRating(Double.valueOf(value));
-	}
-	
+
 	public void setRating(Double value) {
 		this.rating = value;
 	}
@@ -92,13 +88,11 @@ public class Review {
 		return restaurant;
 	}
 	
-	public void setRating(Double rating) {
-		//TODO: Implement Method
-		throw new UnsupportedOperationException();
-	}
-	
 	public String toString() {
 		return String.valueOf(getId());
 	}
-	
+
+	public void setComment(String s) {
+		this.text = s;
+	}
 }
