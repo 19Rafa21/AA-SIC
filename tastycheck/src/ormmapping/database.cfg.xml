@@ -21,10 +21,10 @@
     <DriverFiles>&lt;&lt;PostgreSQL 42.2.2&gt;&gt;</DriverFiles>
     <Dialect>org.hibernate.dialect.PostgreSQLDialect</Dialect>
     <DriverClass>org.postgresql.Driver</DriverClass>
-    <URL>jdbc:postgresql://34.27.94.162:5432/tastycheck</URL>
+    <URL>jdbc:postgresql://35.223.193.37:5432/tastycheck</URL>
     <UserName>admin</UserName>
     <EncryptedPassword>2011802F73D90F020A7512EABA605B00</EncryptedPassword>
-    <HostName>34.27.94.162</HostName>
+    <HostName>35.223.193.37</HostName>
     <PortNO>5432</PortNO>
     <DBName>tastycheck</DBName>
     <ServiceName></ServiceName>

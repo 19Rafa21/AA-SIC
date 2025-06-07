@@ -11,7 +11,7 @@ License Type: Academic
    	<!-- properties -->
 		<property name="dialect">org.hibernate.dialect.PostgreSQLDialect</property>
 		<property name="connection.driver_class">org.postgresql.Driver</property>
-		<property name="connection.url">jdbc:postgresql://34.27.94.162:5432/tastycheck</property>
+		<property name="connection.url">jdbc:postgresql://35.193.167.93:5432/tastycheck</property>
 		<property name="connection.username">admin</property>
 		<property name="connection.password">admin</property>
 		<property name="show_sql">false</property>
