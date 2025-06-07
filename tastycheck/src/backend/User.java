@@ -15,7 +15,7 @@ package backend;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "`User`")
+@Table(name = "Users")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "Discriminator", discriminatorType = DiscriminatorType.STRING)
 @DiscriminatorValue("User")

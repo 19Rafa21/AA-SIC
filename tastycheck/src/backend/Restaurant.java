@@ -123,10 +123,6 @@ public class Restaurant {
 		return image;
 	}
 
-	public void setOwner(backend.Owner owner) {
-		this.owner = owner;
-	}
-
 	public void setRating(Double rating) {
 		this.rating = rating;
 	}
