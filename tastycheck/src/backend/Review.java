@@ -15,9 +15,12 @@ package backend;
 
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 public class Review {
 	public Review() {
+		this.replies = new HashSet<>();
 	}
 	
 	public boolean equals(Object aObj) {
@@ -48,6 +51,8 @@ public class Review {
 	private Restaurant restaurant;
 
 	private Date data;
+
+	private Set<Reply> replies;
 
 	public void setId(String value) {
 		this.id = value;
@@ -99,6 +104,14 @@ public class Review {
 
 	public void setData(Date data) {
 		this.data = data;
+	}
+
+	public Set<Reply> getReplies() {
+		return replies;
+	}
+
+	public void setReplies(Set<Reply> replies) {
+		this.replies = replies;
 	}
 
 	public String toString() {
