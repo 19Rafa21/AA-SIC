@@ -1,16 +1,30 @@
 <script setup>
 
-import { onMounted, onUnmounted, ref, watch } from "vue";
+import { onMounted, onUnmounted, ref, watch, computed } from "vue";
 import HeaderComponent from './MainPage/HeaderComponent.vue';
 import TopNavbar from './MainPage/TopNavbar.vue';
 import SearchBar from './MainPage/SearchBar.vue';
 import PresentationCounter from "./MainPage/PresentationCounter.vue";
 import RestaurantCarousel from "./RestaurantBlock/RestauranteCarousel.vue";
 import RestaurantMap from "./RestaurantBlock/RestaurantMap.vue";
+import Footer from "./Footer.vue";
 import restaurantesData from '../dataTesting/restaurantes.json';
 
 const headerBgImage = '/img/header-bg.webp';
-const restaurants = ref(restaurantesData.slice(0, 5)); // Taking the first 5 restaurants
+// Adaptando os restaurantes para o formato compatível com o componente
+const restaurants = computed(() => {
+  return restaurantesData.slice(0, 5).map(r => ({
+    ...r,
+    category: r.cuisineType // Mapeando cuisineType para category para manter compatibilidade
+  }));
+});
+
+const NearbyRestaurants = computed(() => {
+  return restaurantesData.slice(restaurantesData.length - 7).map(r => ({
+    ...r,
+    category: r.cuisineType 
+  }));
+});
 const body = document.getElementsByTagName("body")[0];
 
 const showMapModal = ref(false)
@@ -59,7 +73,13 @@ async function loadRestaurantsCoords() {
   const promises = restaurantesData.slice(0, 5).map(async r => {
     const coords = await geocodeAddress(r.location)
     return coords
-      ? { ...r, lat: coords.lat, lng: coords.lng }
+      ? { 
+          ...r, 
+          lat: coords.lat, 
+          lng: coords.lng,
+          // Garantindo compatibilidade com qualquer versão do JSON
+          category: r.cuisineType || r.category 
+        }
       : null
   })
   const results = await Promise.all(promises)
@@ -153,8 +173,9 @@ onUnmounted(() => {
    </div>
  </div>
 
+ <RestaurantCarousel :title="'Perto de si'" :restaurants="NearbyRestaurants" :visibleCount="4"/>
 
-  
+ <Footer />
 
 </template>
 
