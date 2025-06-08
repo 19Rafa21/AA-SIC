@@ -1,0 +1,137 @@
+[
+    {
+        "id": 1,
+        "name": "Trattoria Bella Vita",
+        "category": "Italiana",
+        "rating": 4.7,
+        "averagePrice": 25,
+        "location": "1150 Lisboa",
+        "image": "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4"
+    },
+    {
+        "id": 2,
+        "name": "Sakura Sushi House",
+        "category": "Japonesa",
+        "rating": 4.3,
+        "averagePrice": 30,
+        "location": "1200 Lisboa",
+        "image": "https://images.unsplash.com/photo-1579871494447-9811cf80d66c"
+    },
+    {
+        "id": 3,
+        "name": "Casa do Bacalhau",
+        "category": "Portuguesa",
+        "rating": 4.8,
+        "averagePrice": 35,
+        "location": "1170 Lisboa",
+        "image": "https://images.unsplash.com/photo-1504674900247-0877df9cc836"
+    },
+    {
+        "id": 4,
+        "name": "El Tapas",
+        "category": "Espanhola",
+        "rating": 4.1,
+        "averagePrice": 22,
+        "location": "1050 Lisboa",
+        "image": "https://images.unsplash.com/photo-1414235077428-338989a2e8c0"
+    },
+    {
+        "id": 5,
+        "name": "Green Garden",
+        "category": "Vegetariana",
+        "rating": 4.5,
+        "averagePrice": 18,
+        "location": "1100 Lisboa",
+        "image": "https://images.unsplash.com/photo-1498837167922-ddd27525d352"
+    },
+    {
+        "id": 6,
+        "name": "Burger King Street",
+        "category": "Hambúrgueres",
+        "rating": 4.0,
+        "averagePrice": 15,
+        "location": "1250 Lisboa",
+        "image": "https://images.unsplash.com/photo-1550547660-d9450f859349"
+    },
+    {
+        "id": 7,
+        "name": "Taj Mahal",
+        "category": "Indiana",
+        "rating": 4.6,
+        "averagePrice": 20,
+        "location": "1150 Lisboa",
+        "image": "https://images.unsplash.com/photo-1542367592-8849eb950fd8"
+    },
+    {
+        "id": 8,
+        "name": "Dragonfly",
+        "category": "Asiática",
+        "rating": 4.2,
+        "averagePrice": 28,
+        "location": "1300 Lisboa",
+        "image": "https://images.unsplash.com/photo-1554118811-1e0d58224f24"
+    },
+    {
+        "id": 9,
+        "name": "Le Petit Café",
+        "category": "Francesa",
+        "rating": 4.9,
+        "averagePrice": 40,
+        "location": "1150 Lisboa",
+        "image": "https://images.unsplash.com/photo-1559329007-40df8a9345d8"
+    },
+    {
+        "id": 10,
+        "name": "Pizzeria Napoletana",
+        "category": "Italiana",
+        "rating": 4.4,
+        "averagePrice": 22,
+        "location": "1170 Lisboa",
+        "image": "https://images.unsplash.com/photo-1565299507177-b0ac66763828"
+    },
+    {
+        "id": 11,
+        "name": "Churrasqueira do Bairro",
+        "category": "Portuguesa",
+        "rating": 4.3,
+        "averagePrice": 16,
+        "location": "1150 Lisboa",
+        "image": "https://images.unsplash.com/photo-1555939594-58d7cb561ad1"
+    },
+    {
+        "id": 12,
+        "name": "Athens Souvlaki",
+        "category": "Grega",
+        "rating": 4.0,
+        "averagePrice": 18,
+        "location": "1200 Lisboa",
+        "image": "https://images.unsplash.com/photo-1583224874248-9d7bbbd89d27"
+    },
+    {
+        "id": 13,
+        "name": "Istanbul Kebab",
+        "category": "Turca",
+        "rating": 3.8,
+        "averagePrice": 12,
+        "location": "1150 Lisboa",
+        "image": "https://images.unsplash.com/photo-1561651823-34feb02250e4"
+    },
+    {
+        "id": 14,
+        "name": "Cantinho do Mar",
+        "category": "Marisqueira",
+        "rating": 4.7,
+        "averagePrice": 45,
+        "location": "1100 Lisboa",
+        "image": "https://images.unsplash.com/photo-1579631542761-d7c4e423dbaf"
+    },
+    {
+        "id": 15,
+        "name": "Vegan Paradise",
+        "category": "Vegana",
+        "rating": 4.5,
+        "averagePrice": 23,
+        "location": "1050 Lisboa",
+        "image": "https://images.unsplash.com/photo-1513442542250-854d436a73f2"
+    }
+]
