@@ -13,6 +13,8 @@
  */
 package backend;
 
+import java.util.Date;
+
 public class Reply {
 	public Reply() {
 	}
@@ -38,9 +40,11 @@ public class Reply {
 	
 	private String text;
 	
-	private String review;
+	private Review review;
 	
 	private String author;
+
+	private Date data;
 	
 	public void setId(String value) {
 		this.id = value;
@@ -62,14 +66,6 @@ public class Reply {
 		return text;
 	}
 	
-	public void setReview(String value) {
-		this.review = value;
-	}
-	
-	public String getReview() {
-		return review;
-	}
-	
 	public void setAuthor(String value) {
 		this.author = value;
 	}
@@ -77,7 +73,23 @@ public class Reply {
 	public String getAuthor() {
 		return author;
 	}
-	
+
+	public Review getReview() {
+		return review;
+	}
+
+	public void setReview(Review review) {
+		this.review = review;
+	}
+
+	public Date getData() {
+		return data;
+	}
+
+	public void setData(Date data) {
+		this.data = data;
+	}
+
 	public String toString() {
 		return String.valueOf(getId());
 	}
