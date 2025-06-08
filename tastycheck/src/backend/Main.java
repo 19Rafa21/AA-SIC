@@ -5,73 +5,64 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
+import org.orm.PersistentException;
+
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class Main {
 	public static void main(String[] args) {
-		// Criar o SessionFactory a partir do configuration
-		Configuration configuration = new Configuration();
-		configuration.configure("ormmapping/AASIC.cfg.xml"); // Caminho para o teu ficheiro cfg
+		try{
+			//Client client = ClientDAO.getClientByORMID("u3");
 
-		SessionFactory sessionFactory = configuration.buildSessionFactory();
+			Restaurant restaurant = RestaurantDAO.getRestaurantByORMID("r1");
 
-		// Abrir uma nova sessão
-		Session session = sessionFactory.openSession();
-		Transaction tx = null;
-
-		try {
-			tx = session.beginTransaction();
-
-			// Supondo que já tens um Owner (User com discriminator = "Owner") com ID = "1"
-			//User owner = session.get(User.class, "1"); // Põe aqui o ID correto de um Owner existente na BD
-
-			// Criar restaurante
-			//backend.Restaurant restaurante = new backend.Restaurant();
-			//restaurante.setId("rest2");
-			//restaurante.setName("Marisqueira Estrela do Mar");
-			//restaurante.setLocation("Aveiro");
-
-
-			// Criar reviews
-			backend.Review r1 = new Review();
-			r1.setId("1");
-			r1.setRating(4.5);
-			r1.setComment("Marisco fresquíssimo!");
-			r1.setRestaurant("Marisqueira Estrela do Mar");
-
-			session.save(r1);
-
-			backend.Review r2 = new Review();
-			r2.setId("2");
-			r2.setRating(4.4);
-			r2.setComment("Ambiente agradável.");
-			r2.setRestaurant("Marisqueira Estrela do Mar");
-
-			session.save(r2);
-
-			// Adicionar à lista do restaurante
-			List<Review> reviews = new ArrayList<>();
-			reviews.add(r1);
-			reviews.add(r2);
-			//restaurante.setReviews(reviews);
-
-			// Guardar restaurante (cascade salva as reviews)
-			//session.save(restaurante);
-
-			//AASICPersistentManager.instance().getSession().save(restaurante);
-
-			tx.commit();
-			System.out.println("Dados guardados com sucesso!");
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				AASICPersistentManager.instance().disposePersistentManager();
-			} catch (Exception ex) {
-				ex.printStackTrace();
+			if (restaurant == null) {
+				System.out.println("Restaurante não encontrado!");
+				return;
 			}
+
+			// 2️⃣ Criar nova Review
+			//Review review = new Review();
+			//review.setId("rev2"); // ID único
+			//review.setRating(3.5);
+			//review.setText("Comida boa e atendimento bom!");
+			//review.setData(new Date());
+			//review.setAuthor(client.getId()); // por exemplo, ID do utilizador que fez a review
+			//review.setRestaurant(restaurant);
+
+			//restaurant.getReviews().add(review);
+
+			//Client client = new Client();
+			//client.setId("u3");
+			//client.setEmail("teste3@teste.com");
+			//client.setPassword("12");
+			//client.setUsername("teste3");
+
+			//boolean saved = RestaurantDAO.save(restaurant);
+
+			//if (saved) {
+			//	System.out.println("Restaurante atualizado com sucesso!");
+			//} else {
+			//	System.out.println("Falha ao atualizar Restaurante.");
+			//}
+
+			// Listar as reviews
+			System.out.println("Reviews do restaurante " + restaurant.getName() + ":");
+
+			for (Review review : restaurant.getReviews()) {
+				System.out.println(" - Autor: " + review.getAuthor());
+				System.out.println("   Rating: " + review.getRating());
+				System.out.println("   Texto: " + review.getText());
+				System.out.println("   Data: " + review.getData());
+				System.out.println();
+			}
+
+			AASICPersistentManager.instance().disposePersistentManager();
+		} catch (PersistentException e) {
+			e.printStackTrace();
 		}
 	}
 }

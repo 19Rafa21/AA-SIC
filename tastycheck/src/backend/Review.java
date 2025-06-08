@@ -13,6 +13,9 @@
  */
 package backend;
 
+import java.time.LocalDateTime;
+import java.util.Date;
+
 public class Review {
 	public Review() {
 	}
@@ -42,8 +45,10 @@ public class Review {
 	
 	private String author;
 	
-	private String restaurant;
-	
+	private Restaurant restaurant;
+
+	private Date data;
+
 	public void setId(String value) {
 		this.id = value;
 	}
@@ -80,16 +85,24 @@ public class Review {
 		return author;
 	}
 	
-	public void setRestaurant(String value) {
-		this.restaurant = value;
+	public void setRestaurant(Restaurant restaurant) {
+		this.restaurant = restaurant;
 	}
 	
-	public String getRestaurant() {
+	public Restaurant getRestaurant() {
 		return restaurant;
 	}
-	
+
+	public Date getData() {
+		return data;
+	}
+
+	public void setData(Date data) {
+		this.data = data;
+	}
+
 	public String toString() {
-		return String.valueOf(getId());
+		return String.format("Review[id=%s, rating=%.2f, text=%s, date=%s]", id, rating, text, data);
 	}
 
 	public void setComment(String s) {

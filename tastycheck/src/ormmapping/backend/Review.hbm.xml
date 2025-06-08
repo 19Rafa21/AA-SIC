@@ -12,7 +12,8 @@ License Type: Academic
 		</id>
 		<property name="rating" column="Rating" type="double" not-null="false" lazy="false"/>
 		<property name="text" column="Text" type="string" length="255" not-null="false" lazy="false"/>
+		<property name="data" column="date" type="timestamp" not-null="false" lazy="false"/>
 		<property name="author" column="Author" type="string" length="255" not-null="false" lazy="false"/>
-		<property name="restaurant" column="Restaurant" type="string" length="255" not-null="false" lazy="false"/>
+		<many-to-one name="restaurant" column="Restaurant" class="backend.Restaurant" not-null="false" lazy="false"/>
 	</class>
 </hibernate-mapping>

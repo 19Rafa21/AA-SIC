@@ -13,10 +13,12 @@
  */
 package backend;
 
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 public class Restaurant {
 	public Restaurant() {
+		this.reviews = new HashSet<>();
 	}
 	
 	public boolean equals(Object aObj) {
@@ -38,7 +40,7 @@ public class Restaurant {
 	
 	private String id;
 	
-	private String owner;
+	private Owner owner;
 	
 	private String name;
 	
@@ -50,7 +52,7 @@ public class Restaurant {
 	
 	private String image;
 
-	private List<Review> reviews;
+	private Set<Review> reviews;
 	
 	public void setId(String value) {
 		this.id = value;
@@ -64,11 +66,11 @@ public class Restaurant {
 		return getId();
 	}
 	
-	public void setOwner(String value) {
-		this.owner = value;
+	public void setOwner(Owner owner) {
+		this.owner = owner;
 	}
 	
-	public String getOwner() {
+	public Owner getOwner() {
 		return owner;
 	}
 	
@@ -111,11 +113,6 @@ public class Restaurant {
 		return image;
 	}
 	
-	public void setOwner(backend.Owner owner) {
-		//TODO: Implement Method
-		throw new UnsupportedOperationException();
-	}
-	
 	public void getAttribute() {
 		//TODO: Implement Method
 		throw new UnsupportedOperationException();
@@ -130,7 +127,11 @@ public class Restaurant {
 		return String.valueOf(getId());
 	}
 
-	public void setReviews(List<Review> reviews) {
+	public Set<Review> getReviews() {
+		return reviews;
+	}
+
+	public void setReviews(Set<Review> reviews) {
 		this.reviews = reviews;
 	}
 }

@@ -10,11 +10,15 @@ License Type: Academic
 			<generator class="assigned">
 			</generator>
 		</id>
-		<property name="owner" column="Owner" type="string" length="255" not-null="false" lazy="false"/>
+		<many-to-one name="owner" class="backend.Owner" column="Owner" not-null="false" lazy="false"/>
 		<property name="name" column="Name" type="string" length="255" not-null="false" lazy="false"/>
 		<property name="location" column="Location" type="string" length="255" not-null="false" lazy="false"/>
 		<property name="cuisineType" column="CuisineType" type="string" length="255" not-null="false" lazy="false"/>
 		<property name="rating" column="Rating" type="double" not-null="false" lazy="false"/>
 		<property name="image" column="Image" type="string" length="255" not-null="false" lazy="false"/>
+		<set name="reviews" table="Review" inverse="true" lazy="true" cascade="all">
+			<key column="Restaurant"/>
+			<one-to-many class="backend.Review"/>
+		</set>
 	</class>
 </hibernate-mapping>

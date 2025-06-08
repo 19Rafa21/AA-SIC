@@ -114,6 +114,17 @@
       <Index>false</Index>
       <UserTypes/>
     </Column>
+    <Column name="Date">
+      <PrimaryKey>false</PrimaryKey>
+      <ForeignKey>false</ForeignKey>
+      <Type>25</Type> <!-- Type 25 geralmente mapeia para TIMESTAMP no VP -->
+      <Length>0</Length>
+      <Nullable>true</Nullable>
+      <IDGenerator>native</IDGenerator>
+      <Unique>false</Unique>
+      <Index>false</Index>
+      <UserTypes/>
+    </Column>
     <Column name="Author">
       <PrimaryKey>false</PrimaryKey>
       <ForeignKey>false</ForeignKey>
