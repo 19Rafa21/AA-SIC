@@ -16,7 +16,7 @@ License Type: Academic
 		<property name="cuisineType" column="CuisineType" type="string" length="255" not-null="false" lazy="false"/>
 		<property name="rating" column="Rating" type="double" not-null="false" lazy="false"/>
 		<property name="image" column="Image" type="string" length="255" not-null="false" lazy="false"/>
-		<set name="reviews" table="Review" inverse="true" lazy="true" cascade="all">
+		<set name="reviews" table="Review" inverse="true" lazy="true" cascade="all-delete-orphan">
 			<key column="Restaurant"/>
 			<one-to-many class="backend.Review"/>
 		</set>
