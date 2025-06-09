@@ -4,9 +4,13 @@ import backend.DAOs.OwnerDAO;
 import backend.DAOs.UserDAO;
 import backend.Exceptions.UserException;
 import backend.Models.Owner;
+import backend.Models.Review;
 import backend.Models.User;
 import org.orm.PersistentException;
 import org.mindrot.jbcrypt.BCrypt;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class UserService {
 
@@ -92,5 +96,20 @@ public class UserService {
 		} else {
 			return false;
 		}
+	}
+
+	public List<User> getAllUsers() throws PersistentException {
+		User[] users = UserDAO.listUserByQuery(null, null);
+		return List.of(users);
+	}
+
+	public List<Review> getReviewsByUserId(String userId) throws PersistentException, UserException {
+		User user = getUserById(userId);
+		return new ArrayList<>(user.getReviews());
+	}
+
+	public List<Review> getReviewsByUsername(String username) throws PersistentException, UserException {
+		User user = getUserByUsername(username);
+		return new ArrayList<>(user.getReviews());
 	}
 }

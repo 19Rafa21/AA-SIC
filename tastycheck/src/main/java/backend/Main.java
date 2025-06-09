@@ -5,23 +5,39 @@ import backend.Models.*;
 import backend.Services.*;
 import org.orm.PersistentException;
 
+import java.util.List;
+
 public class Main {
 	public static void main(String[] args) {
 		try{
 
 			UserService userService = new UserService();
 
-			User user = new User();
-			user.setId("u123");
-			user.setUsername("john");
-			user.setPassword("1234");
-			user.setEmail("john@example.com");
+			/*User user = new User();
+			user.setId("u245");
+			user.setUsername("jake");
+			user.setPassword("345");
+			user.setEmail("jake@example.com");
 
 			boolean saved = userService.registerUser(user);
 
 			if (saved) {
 				System.out.println("User criado com sucesso!");
 			}
+			 */
+
+
+			System.out.println("---- Lista de Users registados ----");
+			List<User> users = userService.getAllUsers();
+
+			for (User user : users) {
+				System.out.println("ID: " + user.getId());
+				System.out.println("Username: " + user.getUsername());
+				System.out.println("Email: " + user.getEmail());
+				System.out.println("Discriminator: " + user.getDiscriminator()); // se tiveres o campo
+				System.out.println("-----------------------------");
+			}
+
 
 
 			/*User user = userService.getUserById("u123");
