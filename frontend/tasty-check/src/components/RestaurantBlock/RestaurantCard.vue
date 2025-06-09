@@ -1,5 +1,5 @@
 <template>
-  <div class="restaurant-card">
+  <div class="restaurant-card" @click="navigateToDetails">
     <img
       class="restaurant-card__image"
       :src="restaurant.image"
@@ -40,8 +40,14 @@ export default {
   },
   methods: {
     formatPrice(value) {
-      // formata como '25 €'
       return value + ' €';
+    },
+    navigateToDetails() {
+      this.$router.push({ 
+        name: 'RestaurantDetails', 
+        params: { name: this.restaurant.name },
+        state: { restaurant: this.restaurant }
+      });
     }
   }
 };
