@@ -2,12 +2,42 @@ package backend;
 
 import backend.DAOs.*;
 import backend.Models.*;
+import backend.Services.*;
 import org.orm.PersistentException;
 
 public class Main {
 	public static void main(String[] args) {
 		try{
-			Owner owner = OwnerDAO.getOwnerByORMID("u2");
+
+			UserService userService = new UserService();
+
+			User user = new User();
+			user.setId("u123");
+			user.setUsername("john");
+			user.setPassword("1234");
+			user.setEmail("john@example.com");
+
+			boolean saved = userService.registerUser(user);
+
+			if (saved) {
+				System.out.println("User criado com sucesso!");
+			}
+
+
+			/*User user = userService.getUserById("u123");
+
+			boolean valid = userService.checkPassword("12345", user.getPassword());
+
+			if (valid) {
+				System.out.println("Password corresponde ao User!");
+			} else {
+				System.out.println("Password não corresponde ao User!");
+			}
+			 */
+
+
+
+			//Owner owner = OwnerDAO.getOwnerByORMID("u2");
 
 			//Restaurant restaurant = RestaurantDAO.getRestaurantByORMID("rest_001");
 
@@ -30,7 +60,7 @@ public class Main {
 			//	System.out.println("Erro ao guardar Restaurante.");
 			//}
 
-			if (owner != null) {
+			/*if (owner != null) {
 				System.out.println(" - ID: " + owner.getId());
 				System.out.println("   Name: " + owner.getUsername());
 				System.out.println("   pass: " + owner.getPassword());
@@ -46,6 +76,7 @@ public class Main {
 					System.out.println("   Image: " + restaurant.getImage());
 				}
 			}
+			 */
 
 
 			/*if (restaurant != null) {
