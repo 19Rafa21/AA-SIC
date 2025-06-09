@@ -11,45 +11,45 @@
  * Licensee: lucas(Universidade do Minho)
  * License Type: Academic
  */
-package backend;
+package backend.Criteria;
 
 import java.util.List;
+
+import backend.Criteria.ReplyCriteria;
+import backend.Models.Reply;
 import org.hibernate.criterion.DetachedCriteria;
 import org.orm.PersistentSession;
 import org.orm.criteria.*;
 
-public class ReviewDetachedCriteria extends AbstractORMDetachedCriteria {
+public class ReplyDetachedCriteria extends AbstractORMDetachedCriteria {
 	public final StringExpression id;
-	public final DoubleExpression rating;
 	public final StringExpression text;
+	public final StringExpression review;
 	public final StringExpression author;
-	public final StringExpression restaurant;
 	
-	public ReviewDetachedCriteria() {
-		super(backend.Review.class, backend.ReviewCriteria.class);
+	public ReplyDetachedCriteria() {
+		super(Reply.class, ReplyCriteria.class);
 		id = new StringExpression("id", this.getDetachedCriteria());
-		rating = new DoubleExpression("rating", this.getDetachedCriteria());
 		text = new StringExpression("text", this.getDetachedCriteria());
+		review = new StringExpression("review", this.getDetachedCriteria());
 		author = new StringExpression("author", this.getDetachedCriteria());
-		restaurant = new StringExpression("restaurant", this.getDetachedCriteria());
 	}
 	
-	public ReviewDetachedCriteria(DetachedCriteria aDetachedCriteria) {
-		super(aDetachedCriteria, backend.ReviewCriteria.class);
+	public ReplyDetachedCriteria(DetachedCriteria aDetachedCriteria) {
+		super(aDetachedCriteria, ReplyCriteria.class);
 		id = new StringExpression("id", this.getDetachedCriteria());
-		rating = new DoubleExpression("rating", this.getDetachedCriteria());
 		text = new StringExpression("text", this.getDetachedCriteria());
+		review = new StringExpression("review", this.getDetachedCriteria());
 		author = new StringExpression("author", this.getDetachedCriteria());
-		restaurant = new StringExpression("restaurant", this.getDetachedCriteria());
 	}
 	
-	public Review uniqueReview(PersistentSession session) {
-		return (Review) super.createExecutableCriteria(session).uniqueResult();
+	public Reply uniqueReply(PersistentSession session) {
+		return (Reply) super.createExecutableCriteria(session).uniqueResult();
 	}
 	
-	public Review[] listReview(PersistentSession session) {
+	public Reply[] listReply(PersistentSession session) {
 		List list = super.createExecutableCriteria(session).list();
-		return (Review[]) list.toArray(new Review[list.size()]);
+		return (Reply[]) list.toArray(new Reply[list.size()]);
 	}
 }
 

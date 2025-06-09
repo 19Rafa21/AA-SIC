@@ -11,9 +11,12 @@
  * Licensee: lucas(Universidade do Minho)
  * License Type: Academic
  */
-package backend;
+package backend.Criteria;
 
 import java.util.List;
+
+import backend.Criteria.RestaurantCriteria;
+import backend.Models.Restaurant;
 import org.hibernate.criterion.DetachedCriteria;
 import org.orm.PersistentSession;
 import org.orm.criteria.*;
@@ -28,7 +31,7 @@ public class RestaurantDetachedCriteria extends AbstractORMDetachedCriteria {
 	public final StringExpression image;
 	
 	public RestaurantDetachedCriteria() {
-		super(backend.Restaurant.class, backend.RestaurantCriteria.class);
+		super(Restaurant.class, RestaurantCriteria.class);
 		id = new StringExpression("id", this.getDetachedCriteria());
 		owner = new StringExpression("owner", this.getDetachedCriteria());
 		name = new StringExpression("name", this.getDetachedCriteria());
@@ -39,7 +42,7 @@ public class RestaurantDetachedCriteria extends AbstractORMDetachedCriteria {
 	}
 	
 	public RestaurantDetachedCriteria(DetachedCriteria aDetachedCriteria) {
-		super(aDetachedCriteria, backend.RestaurantCriteria.class);
+		super(aDetachedCriteria, RestaurantCriteria.class);
 		id = new StringExpression("id", this.getDetachedCriteria());
 		owner = new StringExpression("owner", this.getDetachedCriteria());
 		name = new StringExpression("name", this.getDetachedCriteria());

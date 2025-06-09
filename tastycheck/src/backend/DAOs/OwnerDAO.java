@@ -11,11 +11,14 @@
  * Licensee: lucas(Universidade do Minho)
  * License Type: Academic
  */
-package backend;
+package backend.DAOs;
 
+import backend.AASICPersistentManager;
+import backend.Models.Owner;
+import backend.Criteria.OwnerCriteria;
 import org.orm.*;
 import org.hibernate.Query;
-import org.hibernate.LockMode;
+
 import java.util.List;
 
 public class OwnerDAO {
@@ -65,7 +68,7 @@ public class OwnerDAO {
 	
 	public static Owner loadOwnerByORMID(PersistentSession session, String id) throws PersistentException {
 		try {
-			return (Owner) session.load(backend.Owner.class, id);
+			return (Owner) session.load(Owner.class, id);
 		}
 		catch (Exception e) {
 			e.printStackTrace();
@@ -75,7 +78,7 @@ public class OwnerDAO {
 	
 	public static Owner getOwnerByORMID(PersistentSession session, String id) throws PersistentException {
 		try {
-			return (Owner) session.get(backend.Owner.class, id);
+			return (Owner) session.get(Owner.class, id);
 		}
 		catch (Exception e) {
 			e.printStackTrace();
@@ -85,7 +88,7 @@ public class OwnerDAO {
 	
 	public static Owner loadOwnerByORMID(PersistentSession session, String id, org.hibernate.LockMode lockMode) throws PersistentException {
 		try {
-			return (Owner) session.load(backend.Owner.class, id, lockMode);
+			return (Owner) session.load(Owner.class, id, lockMode);
 		}
 		catch (Exception e) {
 			e.printStackTrace();
@@ -95,7 +98,7 @@ public class OwnerDAO {
 	
 	public static Owner getOwnerByORMID(PersistentSession session, String id, org.hibernate.LockMode lockMode) throws PersistentException {
 		try {
-			return (Owner) session.get(backend.Owner.class, id, lockMode);
+			return (Owner) session.get(Owner.class, id, lockMode);
 		}
 		catch (Exception e) {
 			e.printStackTrace();
@@ -148,7 +151,7 @@ public class OwnerDAO {
 	}
 	
 	public static List queryOwner(PersistentSession session, String condition, String orderBy) throws PersistentException {
-		StringBuffer sb = new StringBuffer("From backend.Owner as Owner");
+		StringBuffer sb = new StringBuffer("From backend.Models.Owner as Owner");
 		if (condition != null)
 			sb.append(" Where ").append(condition);
 		if (orderBy != null)
@@ -164,7 +167,7 @@ public class OwnerDAO {
 	}
 	
 	public static List queryOwner(PersistentSession session, String condition, String orderBy, org.hibernate.LockMode lockMode) throws PersistentException {
-		StringBuffer sb = new StringBuffer("From backend.Owner as Owner");
+		StringBuffer sb = new StringBuffer("From backend.Models.Owner as Owner");
 		if (condition != null)
 			sb.append(" Where ").append(condition);
 		if (orderBy != null)
@@ -263,7 +266,7 @@ public class OwnerDAO {
 	}
 	
 	public static java.util.Iterator iterateOwnerByQuery(PersistentSession session, String condition, String orderBy) throws PersistentException {
-		StringBuffer sb = new StringBuffer("From backend.Owner as Owner");
+		StringBuffer sb = new StringBuffer("From backend.Models.Owner as Owner");
 		if (condition != null)
 			sb.append(" Where ").append(condition);
 		if (orderBy != null)
@@ -279,7 +282,7 @@ public class OwnerDAO {
 	}
 	
 	public static java.util.Iterator iterateOwnerByQuery(PersistentSession session, String condition, String orderBy, org.hibernate.LockMode lockMode) throws PersistentException {
-		StringBuffer sb = new StringBuffer("From backend.Owner as Owner");
+		StringBuffer sb = new StringBuffer("From backend.Models.Owner as Owner");
 		if (condition != null)
 			sb.append(" Where ").append(condition);
 		if (orderBy != null)
@@ -296,10 +299,10 @@ public class OwnerDAO {
 	}
 	
 	public static Owner createOwner() {
-		return new backend.Owner();
+		return new Owner();
 	}
 	
-	public static boolean save(backend.Owner owner) throws PersistentException {
+	public static boolean save(Owner owner) throws PersistentException {
 		try {
 			AASICPersistentManager.instance().saveObject(owner);
 			return true;
@@ -310,7 +313,7 @@ public class OwnerDAO {
 		}
 	}
 	
-	public static boolean delete(backend.Owner owner) throws PersistentException {
+	public static boolean delete(Owner owner) throws PersistentException {
 		try {
 			AASICPersistentManager.instance().deleteObject(owner);
 			return true;
@@ -321,7 +324,7 @@ public class OwnerDAO {
 		}
 	}
 	
-	public static boolean refresh(backend.Owner owner) throws PersistentException {
+	public static boolean refresh(Owner owner) throws PersistentException {
 		try {
 			AASICPersistentManager.instance().getSession().refresh(owner);
 			return true;
@@ -332,7 +335,7 @@ public class OwnerDAO {
 		}
 	}
 	
-	public static boolean evict(backend.Owner owner) throws PersistentException {
+	public static boolean evict(Owner owner) throws PersistentException {
 		try {
 			AASICPersistentManager.instance().getSession().evict(owner);
 			return true;

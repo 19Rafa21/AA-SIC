@@ -11,11 +11,14 @@
  * Licensee: lucas(Universidade do Minho)
  * License Type: Academic
  */
-package backend;
+package backend.DAOs;
 
+import backend.AASICPersistentManager;
+import backend.Criteria.ClientCriteria;
+import backend.Models.Client;
 import org.orm.*;
 import org.hibernate.Query;
-import org.hibernate.LockMode;
+
 import java.util.List;
 
 public class ClientDAO {
@@ -65,7 +68,7 @@ public class ClientDAO {
 	
 	public static Client loadClientByORMID(PersistentSession session, String id) throws PersistentException {
 		try {
-			return (Client) session.load(backend.Client.class, id);
+			return (Client) session.load(Client.class, id);
 		}
 		catch (Exception e) {
 			e.printStackTrace();
@@ -75,7 +78,7 @@ public class ClientDAO {
 	
 	public static Client getClientByORMID(PersistentSession session, String id) throws PersistentException {
 		try {
-			return (Client) session.get(backend.Client.class, id);
+			return (Client) session.get(Client.class, id);
 		}
 		catch (Exception e) {
 			e.printStackTrace();
@@ -85,7 +88,7 @@ public class ClientDAO {
 	
 	public static Client loadClientByORMID(PersistentSession session, String id, org.hibernate.LockMode lockMode) throws PersistentException {
 		try {
-			return (Client) session.load(backend.Client.class, id, lockMode);
+			return (Client) session.load(Client.class, id, lockMode);
 		}
 		catch (Exception e) {
 			e.printStackTrace();
@@ -95,7 +98,7 @@ public class ClientDAO {
 	
 	public static Client getClientByORMID(PersistentSession session, String id, org.hibernate.LockMode lockMode) throws PersistentException {
 		try {
-			return (Client) session.get(backend.Client.class, id, lockMode);
+			return (Client) session.get(Client.class, id, lockMode);
 		}
 		catch (Exception e) {
 			e.printStackTrace();
@@ -148,7 +151,7 @@ public class ClientDAO {
 	}
 	
 	public static List queryClient(PersistentSession session, String condition, String orderBy) throws PersistentException {
-		StringBuffer sb = new StringBuffer("From backend.Client as Client");
+		StringBuffer sb = new StringBuffer("From backend.Models.Client as Client");
 		if (condition != null)
 			sb.append(" Where ").append(condition);
 		if (orderBy != null)
@@ -164,7 +167,7 @@ public class ClientDAO {
 	}
 	
 	public static List queryClient(PersistentSession session, String condition, String orderBy, org.hibernate.LockMode lockMode) throws PersistentException {
-		StringBuffer sb = new StringBuffer("From backend.Client as Client");
+		StringBuffer sb = new StringBuffer("From backend.Models.Client as Client");
 		if (condition != null)
 			sb.append(" Where ").append(condition);
 		if (orderBy != null)
@@ -263,7 +266,7 @@ public class ClientDAO {
 	}
 	
 	public static java.util.Iterator iterateClientByQuery(PersistentSession session, String condition, String orderBy) throws PersistentException {
-		StringBuffer sb = new StringBuffer("From backend.Client as Client");
+		StringBuffer sb = new StringBuffer("From backend.Models.Client as Client");
 		if (condition != null)
 			sb.append(" Where ").append(condition);
 		if (orderBy != null)
@@ -279,7 +282,7 @@ public class ClientDAO {
 	}
 	
 	public static java.util.Iterator iterateClientByQuery(PersistentSession session, String condition, String orderBy, org.hibernate.LockMode lockMode) throws PersistentException {
-		StringBuffer sb = new StringBuffer("From backend.Client as Client");
+		StringBuffer sb = new StringBuffer("From backend.Models.Client as Client");
 		if (condition != null)
 			sb.append(" Where ").append(condition);
 		if (orderBy != null)
@@ -296,10 +299,10 @@ public class ClientDAO {
 	}
 	
 	public static Client createClient() {
-		return new backend.Client();
+		return new Client();
 	}
 	
-	public static boolean save(backend.Client client) throws PersistentException {
+	public static boolean save(Client client) throws PersistentException {
 		try {
 			AASICPersistentManager.instance().saveObject(client);
 			return true;
@@ -310,7 +313,7 @@ public class ClientDAO {
 		}
 	}
 	
-	public static boolean delete(backend.Client client) throws PersistentException {
+	public static boolean delete(Client client) throws PersistentException {
 		try {
 			AASICPersistentManager.instance().deleteObject(client);
 			return true;
@@ -321,7 +324,7 @@ public class ClientDAO {
 		}
 	}
 	
-	public static boolean refresh(backend.Client client) throws PersistentException {
+	public static boolean refresh(Client client) throws PersistentException {
 		try {
 			AASICPersistentManager.instance().getSession().refresh(client);
 			return true;
@@ -332,7 +335,7 @@ public class ClientDAO {
 		}
 	}
 	
-	public static boolean evict(backend.Client client) throws PersistentException {
+	public static boolean evict(Client client) throws PersistentException {
 		try {
 			AASICPersistentManager.instance().getSession().evict(client);
 			return true;

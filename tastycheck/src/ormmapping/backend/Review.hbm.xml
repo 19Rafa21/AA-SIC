@@ -5,7 +5,7 @@ License Type: Academic
 -->
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <hibernate-mapping>
-	<class name="backend.Review" table="Review" lazy="false">
+	<class name="backend.Models.Review" table="Review" lazy="false">
 		<id name="id" column="Id" type="string">
 			<generator class="assigned">
 			</generator>
@@ -14,10 +14,10 @@ License Type: Academic
 		<property name="text" column="Text" type="string" length="255" not-null="false" lazy="false"/>
 		<property name="data" column="date" type="timestamp" not-null="false" lazy="false"/>
 		<property name="author" column="Author" type="string" length="255" not-null="false" lazy="false"/>
-		<many-to-one name="restaurant" column="Restaurant" class="backend.Restaurant" not-null="false" lazy="false"/>
+		<many-to-one name="restaurant" column="Restaurant" class="backend.Models.Restaurant" not-null="false" lazy="false"/>
 		<set name="replies" inverse="true" lazy="false" cascade="all-delete-orphan">
 			<key column="Review"/>
-			<one-to-many class="backend.Reply"/>
+			<one-to-many class="backend.Models.Reply"/>
 		</set>
 	</class>
 </hibernate-mapping>

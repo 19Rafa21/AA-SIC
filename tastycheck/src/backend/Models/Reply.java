@@ -11,19 +11,21 @@
  * Licensee: lucas(Universidade do Minho)
  * License Type: Academic
  */
-package backend;
+package backend.Models;
 
-public class User {
-	public User() {
+import java.util.Date;
+
+public class Reply {
+	public Reply() {
 	}
 	
 	public boolean equals(Object aObj) {
 		if (aObj == this)
 			return true;
-		if (!(aObj instanceof User))
+		if (!(aObj instanceof Reply))
 			return false;
-		User user = (User)aObj;
-		if ((getId() != null && !getId().equals(user.getId())) || (getId() == null && user.getId() != null))
+		Reply reply = (Reply)aObj;
+		if ((getId() != null && !getId().equals(reply.getId())) || (getId() == null && reply.getId() != null))
 			return false;
 		return true;
 	}
@@ -36,11 +38,13 @@ public class User {
 	
 	private String id;
 	
-	private String username;
+	private String text;
 	
-	private String password;
+	private Review review;
 	
-	private String email;
+	private String author;
+
+	private Date data;
 	
 	public void setId(String value) {
 		this.id = value;
@@ -54,35 +58,38 @@ public class User {
 		return getId();
 	}
 	
-	public void setUsername(String value) {
-		this.username = value;
+	public void setText(String value) {
+		this.text = value;
 	}
 	
-	public String getUsername() {
-		return username;
+	public String getText() {
+		return text;
 	}
 	
-	public void setPassword(String value) {
-		this.password = value;
+	public void setAuthor(String value) {
+		this.author = value;
 	}
 	
-	public String getPassword() {
-		return password;
+	public String getAuthor() {
+		return author;
 	}
-	
-	public void setEmail(String value) {
-		this.email = value;
+
+	public Review getReview() {
+		return review;
 	}
-	
-	public String getEmail() {
-		return email;
+
+	public void setReview(Review review) {
+		this.review = review;
 	}
-	
-	public void setId(int id) {
-		//TODO: Implement Method
-		throw new UnsupportedOperationException();
+
+	public Date getData() {
+		return data;
 	}
-	
+
+	public void setData(Date data) {
+		this.data = data;
+	}
+
 	public String toString() {
 		return String.valueOf(getId());
 	}

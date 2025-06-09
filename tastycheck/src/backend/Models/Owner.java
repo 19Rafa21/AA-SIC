@@ -11,12 +11,26 @@
  * Licensee: lucas(Universidade do Minho)
  * License Type: Academic
  */
-package backend;
+package backend.Models;
 
-public class Client extends backend.User {
-	public Client() {
+import java.util.HashSet;
+import java.util.Set;
+
+public class Owner extends User {
+	public Owner() {
+		this.restaurants = new HashSet<>();
 	}
-	
+
+	private Set<Restaurant> restaurants;
+
+	public Set<Restaurant> getRestaurants() {
+		return restaurants;
+	}
+
+	public void setRestaurants(Set<Restaurant> restaurants) {
+		this.restaurants = restaurants;
+	}
+
 	public String toString() {
 		return super.toString();
 	}

@@ -11,11 +11,14 @@
  * Licensee: lucas(Universidade do Minho)
  * License Type: Academic
  */
-package backend;
+package backend.DAOs;
 
+import backend.AASICPersistentManager;
+import backend.Models.Reply;
+import backend.Criteria.ReplyCriteria;
 import org.orm.*;
 import org.hibernate.Query;
-import org.hibernate.LockMode;
+
 import java.util.List;
 
 public class ReplyDAO {
@@ -65,7 +68,7 @@ public class ReplyDAO {
 	
 	public static Reply loadReplyByORMID(PersistentSession session, String id) throws PersistentException {
 		try {
-			return (Reply) session.load(backend.Reply.class, id);
+			return (Reply) session.load(Reply.class, id);
 		}
 		catch (Exception e) {
 			e.printStackTrace();
@@ -75,7 +78,7 @@ public class ReplyDAO {
 	
 	public static Reply getReplyByORMID(PersistentSession session, String id) throws PersistentException {
 		try {
-			return (Reply) session.get(backend.Reply.class, id);
+			return (Reply) session.get(Reply.class, id);
 		}
 		catch (Exception e) {
 			e.printStackTrace();
@@ -85,7 +88,7 @@ public class ReplyDAO {
 	
 	public static Reply loadReplyByORMID(PersistentSession session, String id, org.hibernate.LockMode lockMode) throws PersistentException {
 		try {
-			return (Reply) session.load(backend.Reply.class, id, lockMode);
+			return (Reply) session.load(Reply.class, id, lockMode);
 		}
 		catch (Exception e) {
 			e.printStackTrace();
@@ -95,7 +98,7 @@ public class ReplyDAO {
 	
 	public static Reply getReplyByORMID(PersistentSession session, String id, org.hibernate.LockMode lockMode) throws PersistentException {
 		try {
-			return (Reply) session.get(backend.Reply.class, id, lockMode);
+			return (Reply) session.get(Reply.class, id, lockMode);
 		}
 		catch (Exception e) {
 			e.printStackTrace();
@@ -148,7 +151,7 @@ public class ReplyDAO {
 	}
 	
 	public static List queryReply(PersistentSession session, String condition, String orderBy) throws PersistentException {
-		StringBuffer sb = new StringBuffer("From backend.Reply as Reply");
+		StringBuffer sb = new StringBuffer("From backend.Models.Reply as Reply");
 		if (condition != null)
 			sb.append(" Where ").append(condition);
 		if (orderBy != null)
@@ -164,7 +167,7 @@ public class ReplyDAO {
 	}
 	
 	public static List queryReply(PersistentSession session, String condition, String orderBy, org.hibernate.LockMode lockMode) throws PersistentException {
-		StringBuffer sb = new StringBuffer("From backend.Reply as Reply");
+		StringBuffer sb = new StringBuffer("From backend.Models.Reply as Reply");
 		if (condition != null)
 			sb.append(" Where ").append(condition);
 		if (orderBy != null)
@@ -263,7 +266,7 @@ public class ReplyDAO {
 	}
 	
 	public static java.util.Iterator iterateReplyByQuery(PersistentSession session, String condition, String orderBy) throws PersistentException {
-		StringBuffer sb = new StringBuffer("From backend.Reply as Reply");
+		StringBuffer sb = new StringBuffer("From backend.Models.Reply as Reply");
 		if (condition != null)
 			sb.append(" Where ").append(condition);
 		if (orderBy != null)
@@ -279,7 +282,7 @@ public class ReplyDAO {
 	}
 	
 	public static java.util.Iterator iterateReplyByQuery(PersistentSession session, String condition, String orderBy, org.hibernate.LockMode lockMode) throws PersistentException {
-		StringBuffer sb = new StringBuffer("From backend.Reply as Reply");
+		StringBuffer sb = new StringBuffer("From backend.Models.Reply as Reply");
 		if (condition != null)
 			sb.append(" Where ").append(condition);
 		if (orderBy != null)
@@ -296,10 +299,10 @@ public class ReplyDAO {
 	}
 	
 	public static Reply createReply() {
-		return new backend.Reply();
+		return new Reply();
 	}
 	
-	public static boolean save(backend.Reply reply) throws PersistentException {
+	public static boolean save(Reply reply) throws PersistentException {
 		try {
 			AASICPersistentManager.instance().saveObject(reply);
 			return true;
@@ -310,7 +313,7 @@ public class ReplyDAO {
 		}
 	}
 	
-	public static boolean delete(backend.Reply reply) throws PersistentException {
+	public static boolean delete(Reply reply) throws PersistentException {
 		try {
 			AASICPersistentManager.instance().deleteObject(reply);
 			return true;
@@ -321,7 +324,7 @@ public class ReplyDAO {
 		}
 	}
 	
-	public static boolean refresh(backend.Reply reply) throws PersistentException {
+	public static boolean refresh(Reply reply) throws PersistentException {
 		try {
 			AASICPersistentManager.instance().getSession().refresh(reply);
 			return true;
@@ -332,7 +335,7 @@ public class ReplyDAO {
 		}
 	}
 	
-	public static boolean evict(backend.Reply reply) throws PersistentException {
+	public static boolean evict(Reply reply) throws PersistentException {
 		try {
 			AASICPersistentManager.instance().getSession().evict(reply);
 			return true;

@@ -11,8 +11,10 @@
  * Licensee: lucas(Universidade do Minho)
  * License Type: Academic
  */
-package backend;
+package backend.Criteria;
 
+import backend.AASICPersistentManager;
+import backend.Models.Restaurant;
 import org.hibernate.Criteria;
 import org.orm.PersistentException;
 import org.orm.PersistentSession;
