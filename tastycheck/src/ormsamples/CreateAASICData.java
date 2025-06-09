@@ -4,29 +4,31 @@
  */
 package ormsamples;
 
+import backend.DAOs.*;
+import backend.Models.*;
 import org.orm.*;
 public class CreateAASICData {
 	public void createTestData() throws PersistentException {
 		PersistentTransaction t = backend.AASICPersistentManager.instance().getSession().beginTransaction();
 		try {
-			backend.Restaurant lbackendRestaurant = backend.RestaurantDAO.createRestaurant();
+			Restaurant lbackendRestaurant = RestaurantDAO.createRestaurant();
 			// TODO Initialize the properties of the persistent object here, the following properties must be initialized before saving : id
-			backend.RestaurantDAO.save(lbackendRestaurant);
-			backend.Review lbackendReview = backend.ReviewDAO.createReview();
+			RestaurantDAO.save(lbackendRestaurant);
+			Review lbackendReview = ReviewDAO.createReview();
 			// TODO Initialize the properties of the persistent object here, the following properties must be initialized before saving : id
-			backend.ReviewDAO.save(lbackendReview);
-			backend.Reply lbackendReply = backend.ReplyDAO.createReply();
+			ReviewDAO.save(lbackendReview);
+			Reply lbackendReply = ReplyDAO.createReply();
 			// TODO Initialize the properties of the persistent object here, the following properties must be initialized before saving : id
-			backend.ReplyDAO.save(lbackendReply);
-			backend.User lbackendUser = backend.UserDAO.createUser();
+			ReplyDAO.save(lbackendReply);
+			User lbackendUser = UserDAO.createUser();
 			// TODO Initialize the properties of the persistent object here, the following properties must be initialized before saving : id
-			backend.UserDAO.save(lbackendUser);
-			backend.Client lbackendClient = backend.ClientDAO.createClient();
+			UserDAO.save(lbackendUser);
+			Client lbackendClient = ClientDAO.createClient();
 			// Initialize the properties of the persistent object here
-			backend.ClientDAO.save(lbackendClient);
-			backend.Owner lbackendOwner = backend.OwnerDAO.createOwner();
+			ClientDAO.save(lbackendClient);
+			Owner lbackendOwner = OwnerDAO.createOwner();
 			// Initialize the properties of the persistent object here
-			backend.OwnerDAO.save(lbackendOwner);
+			OwnerDAO.save(lbackendOwner);
 			t.commit();
 		}
 		catch (Exception e) {

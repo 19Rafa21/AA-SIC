@@ -11,10 +11,10 @@
  * Licensee: lucas(Universidade do Minho)
  * License Type: Academic
  */
-package backend;
+package backend.Models;
 
-public class Owner extends backend.User {
-	public Owner() {
+public class Client extends User {
+	public Client() {
 	}
 	
 	public String toString() {

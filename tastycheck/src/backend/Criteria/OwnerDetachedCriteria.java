@@ -11,42 +11,45 @@
  * Licensee: lucas(Universidade do Minho)
  * License Type: Academic
  */
-package backend;
+package backend.Criteria;
 
 import java.util.List;
+
+import backend.Criteria.OwnerCriteria;
+import backend.Models.Owner;
 import org.hibernate.criterion.DetachedCriteria;
 import org.orm.PersistentSession;
 import org.orm.criteria.*;
 
-public class ClientDetachedCriteria extends AbstractORMDetachedCriteria {
+public class OwnerDetachedCriteria extends AbstractORMDetachedCriteria {
 	public final StringExpression id;
 	public final StringExpression username;
 	public final StringExpression password;
 	public final StringExpression email;
 	
-	public ClientDetachedCriteria() {
-		super(backend.Client.class, backend.ClientCriteria.class);
+	public OwnerDetachedCriteria() {
+		super(Owner.class, OwnerCriteria.class);
 		id = new StringExpression("id", this.getDetachedCriteria());
 		username = new StringExpression("username", this.getDetachedCriteria());
 		password = new StringExpression("password", this.getDetachedCriteria());
 		email = new StringExpression("email", this.getDetachedCriteria());
 	}
 	
-	public ClientDetachedCriteria(DetachedCriteria aDetachedCriteria) {
-		super(aDetachedCriteria, backend.ClientCriteria.class);
+	public OwnerDetachedCriteria(DetachedCriteria aDetachedCriteria) {
+		super(aDetachedCriteria, OwnerCriteria.class);
 		id = new StringExpression("id", this.getDetachedCriteria());
 		username = new StringExpression("username", this.getDetachedCriteria());
 		password = new StringExpression("password", this.getDetachedCriteria());
 		email = new StringExpression("email", this.getDetachedCriteria());
 	}
 	
-	public Client uniqueClient(PersistentSession session) {
-		return (Client) super.createExecutableCriteria(session).uniqueResult();
+	public Owner uniqueOwner(PersistentSession session) {
+		return (Owner) super.createExecutableCriteria(session).uniqueResult();
 	}
 	
-	public Client[] listClient(PersistentSession session) {
+	public Owner[] listOwner(PersistentSession session) {
 		List list = super.createExecutableCriteria(session).list();
-		return (Client[]) list.toArray(new Client[list.size()]);
+		return (Owner[]) list.toArray(new Owner[list.size()]);
 	}
 }
 

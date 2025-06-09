@@ -11,20 +11,22 @@
  * Licensee: lucas(Universidade do Minho)
  * License Type: Academic
  */
-package backend;
+package backend.Criteria;
 
+import backend.AASICPersistentManager;
+import backend.Models.Owner;
 import org.hibernate.Criteria;
 import org.orm.PersistentException;
 import org.orm.PersistentSession;
 import org.orm.criteria.*;
 
-public class UserCriteria extends AbstractORMCriteria {
+public class OwnerCriteria extends AbstractORMCriteria {
 	public final StringExpression id;
 	public final StringExpression username;
 	public final StringExpression password;
 	public final StringExpression email;
 	
-	public UserCriteria(Criteria criteria) {
+	public OwnerCriteria(Criteria criteria) {
 		super(criteria);
 		id = new StringExpression("id", this);
 		username = new StringExpression("username", this);
@@ -32,21 +34,21 @@ public class UserCriteria extends AbstractORMCriteria {
 		email = new StringExpression("email", this);
 	}
 	
-	public UserCriteria(PersistentSession session) {
-		this(session.createCriteria(User.class));
+	public OwnerCriteria(PersistentSession session) {
+		this(session.createCriteria(Owner.class));
 	}
 	
-	public UserCriteria() throws PersistentException {
+	public OwnerCriteria() throws PersistentException {
 		this(AASICPersistentManager.instance().getSession());
 	}
 	
-	public User uniqueUser() {
-		return (User) super.uniqueResult();
+	public Owner uniqueOwner() {
+		return (Owner) super.uniqueResult();
 	}
 	
-	public User[] listUser() {
+	public Owner[] listOwner() {
 		java.util.List list = super.list();
-		return (User[]) list.toArray(new User[list.size()]);
+		return (Owner[]) list.toArray(new Owner[list.size()]);
 	}
 }
 

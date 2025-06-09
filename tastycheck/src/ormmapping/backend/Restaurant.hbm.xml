@@ -5,12 +5,12 @@ License Type: Academic
 -->
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <hibernate-mapping>
-	<class name="backend.Restaurant" table="Restaurant" lazy="false">
+	<class name="backend.Models.Restaurant" table="Restaurant" lazy="false">
 		<id name="id" column="Id" type="string">
 			<generator class="assigned">
 			</generator>
 		</id>
-		<many-to-one name="owner" class="backend.Owner" column="Owner" not-null="false" lazy="false"/>
+		<many-to-one name="owner" class="backend.Models.Owner" column="Owner" not-null="false" lazy="false"/>
 		<property name="name" column="Name" type="string" length="255" not-null="false" lazy="false"/>
 		<property name="location" column="Location" type="string" length="255" not-null="false" lazy="false"/>
 		<property name="cuisineType" column="CuisineType" type="string" length="255" not-null="false" lazy="false"/>
@@ -18,7 +18,7 @@ License Type: Academic
 		<property name="image" column="Image" type="string" length="255" not-null="false" lazy="false"/>
 		<set name="reviews" table="Review" inverse="true" lazy="true" cascade="all-delete-orphan">
 			<key column="Restaurant"/>
-			<one-to-many class="backend.Review"/>
+			<one-to-many class="backend.Models.Review"/>
 		</set>
 	</class>
 </hibernate-mapping>

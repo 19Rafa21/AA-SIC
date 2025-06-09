@@ -11,11 +11,14 @@
  * Licensee: lucas(Universidade do Minho)
  * License Type: Academic
  */
-package backend;
+package backend.DAOs;
 
+import backend.AASICPersistentManager;
+import backend.Models.Restaurant;
+import backend.Criteria.RestaurantCriteria;
 import org.orm.*;
 import org.hibernate.Query;
-import org.hibernate.LockMode;
+
 import java.util.List;
 
 public class RestaurantDAO {
@@ -65,7 +68,7 @@ public class RestaurantDAO {
 	
 	public static Restaurant loadRestaurantByORMID(PersistentSession session, String id) throws PersistentException {
 		try {
-			return (Restaurant) session.load(backend.Restaurant.class, id);
+			return (Restaurant) session.load(Restaurant.class, id);
 		}
 		catch (Exception e) {
 			e.printStackTrace();
@@ -75,7 +78,7 @@ public class RestaurantDAO {
 	
 	public static Restaurant getRestaurantByORMID(PersistentSession session, String id) throws PersistentException {
 		try {
-			return (Restaurant) session.get(backend.Restaurant.class, id);
+			return (Restaurant) session.get(Restaurant.class, id);
 		}
 		catch (Exception e) {
 			e.printStackTrace();
@@ -85,7 +88,7 @@ public class RestaurantDAO {
 	
 	public static Restaurant loadRestaurantByORMID(PersistentSession session, String id, org.hibernate.LockMode lockMode) throws PersistentException {
 		try {
-			return (Restaurant) session.load(backend.Restaurant.class, id, lockMode);
+			return (Restaurant) session.load(Restaurant.class, id, lockMode);
 		}
 		catch (Exception e) {
 			e.printStackTrace();
@@ -95,7 +98,7 @@ public class RestaurantDAO {
 	
 	public static Restaurant getRestaurantByORMID(PersistentSession session, String id, org.hibernate.LockMode lockMode) throws PersistentException {
 		try {
-			return (Restaurant) session.get(backend.Restaurant.class, id, lockMode);
+			return (Restaurant) session.get(Restaurant.class, id, lockMode);
 		}
 		catch (Exception e) {
 			e.printStackTrace();
@@ -148,7 +151,7 @@ public class RestaurantDAO {
 	}
 	
 	public static List queryRestaurant(PersistentSession session, String condition, String orderBy) throws PersistentException {
-		StringBuffer sb = new StringBuffer("From backend.Restaurant as Restaurant");
+		StringBuffer sb = new StringBuffer("From backend.Models.Restaurant as Restaurant");
 		if (condition != null)
 			sb.append(" Where ").append(condition);
 		if (orderBy != null)
@@ -164,7 +167,7 @@ public class RestaurantDAO {
 	}
 	
 	public static List queryRestaurant(PersistentSession session, String condition, String orderBy, org.hibernate.LockMode lockMode) throws PersistentException {
-		StringBuffer sb = new StringBuffer("From backend.Restaurant as Restaurant");
+		StringBuffer sb = new StringBuffer("From backend.Models.Restaurant as Restaurant");
 		if (condition != null)
 			sb.append(" Where ").append(condition);
 		if (orderBy != null)
@@ -263,7 +266,7 @@ public class RestaurantDAO {
 	}
 	
 	public static java.util.Iterator iterateRestaurantByQuery(PersistentSession session, String condition, String orderBy) throws PersistentException {
-		StringBuffer sb = new StringBuffer("From backend.Restaurant as Restaurant");
+		StringBuffer sb = new StringBuffer("From backend.Models.Restaurant as Restaurant");
 		if (condition != null)
 			sb.append(" Where ").append(condition);
 		if (orderBy != null)
@@ -279,7 +282,7 @@ public class RestaurantDAO {
 	}
 	
 	public static java.util.Iterator iterateRestaurantByQuery(PersistentSession session, String condition, String orderBy, org.hibernate.LockMode lockMode) throws PersistentException {
-		StringBuffer sb = new StringBuffer("From backend.Restaurant as Restaurant");
+		StringBuffer sb = new StringBuffer("From backend.Models.Restaurant as Restaurant");
 		if (condition != null)
 			sb.append(" Where ").append(condition);
 		if (orderBy != null)
@@ -296,10 +299,10 @@ public class RestaurantDAO {
 	}
 	
 	public static Restaurant createRestaurant() {
-		return new backend.Restaurant();
+		return new Restaurant();
 	}
 	
-	public static boolean save(backend.Restaurant restaurant) throws PersistentException {
+	public static boolean save(Restaurant restaurant) throws PersistentException {
 		try {
 			AASICPersistentManager.instance().saveObject(restaurant);
 			return true;
@@ -310,7 +313,7 @@ public class RestaurantDAO {
 		}
 	}
 	
-	public static boolean delete(backend.Restaurant restaurant) throws PersistentException {
+	public static boolean delete(Restaurant restaurant) throws PersistentException {
 		try {
 			AASICPersistentManager.instance().deleteObject(restaurant);
 			return true;
@@ -321,7 +324,7 @@ public class RestaurantDAO {
 		}
 	}
 	
-	public static boolean refresh(backend.Restaurant restaurant) throws PersistentException {
+	public static boolean refresh(Restaurant restaurant) throws PersistentException {
 		try {
 			AASICPersistentManager.instance().getSession().refresh(restaurant);
 			return true;
@@ -332,7 +335,7 @@ public class RestaurantDAO {
 		}
 	}
 	
-	public static boolean evict(backend.Restaurant restaurant) throws PersistentException {
+	public static boolean evict(Restaurant restaurant) throws PersistentException {
 		try {
 			AASICPersistentManager.instance().getSession().evict(restaurant);
 			return true;

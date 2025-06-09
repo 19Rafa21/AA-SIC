@@ -11,21 +11,23 @@
  * Licensee: lucas(Universidade do Minho)
  * License Type: Academic
  */
-package backend;
+package backend.Models;
 
-import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
-public class Reply {
-	public Reply() {
+public class User {
+	public User() {
+		this.reviews = new HashSet<>();
 	}
 	
 	public boolean equals(Object aObj) {
 		if (aObj == this)
 			return true;
-		if (!(aObj instanceof Reply))
+		if (!(aObj instanceof User))
 			return false;
-		Reply reply = (Reply)aObj;
-		if ((getId() != null && !getId().equals(reply.getId())) || (getId() == null && reply.getId() != null))
+		User user = (User)aObj;
+		if ((getId() != null && !getId().equals(user.getId())) || (getId() == null && user.getId() != null))
 			return false;
 		return true;
 	}
@@ -38,13 +40,13 @@ public class Reply {
 	
 	private String id;
 	
-	private String text;
+	private String username;
 	
-	private Review review;
+	private String password;
 	
-	private String author;
+	private String email;
 
-	private Date data;
+	private Set<Review> reviews;
 	
 	public void setId(String value) {
 		this.id = value;
@@ -58,36 +60,36 @@ public class Reply {
 		return getId();
 	}
 	
-	public void setText(String value) {
-		this.text = value;
+	public void setUsername(String value) {
+		this.username = value;
 	}
 	
-	public String getText() {
-		return text;
+	public String getUsername() {
+		return username;
 	}
 	
-	public void setAuthor(String value) {
-		this.author = value;
+	public void setPassword(String value) {
+		this.password = value;
 	}
 	
-	public String getAuthor() {
-		return author;
+	public String getPassword() {
+		return password;
+	}
+	
+	public void setEmail(String value) {
+		this.email = value;
+	}
+	
+	public String getEmail() {
+		return email;
 	}
 
-	public Review getReview() {
-		return review;
+	public Set<Review> getReviews() {
+		return reviews;
 	}
 
-	public void setReview(Review review) {
-		this.review = review;
-	}
-
-	public Date getData() {
-		return data;
-	}
-
-	public void setData(Date data) {
-		this.data = data;
+	public void setReviews(Set<Review> reviews) {
+		this.reviews = reviews;
 	}
 
 	public String toString() {

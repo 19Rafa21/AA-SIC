@@ -11,11 +11,14 @@
  * Licensee: lucas(Universidade do Minho)
  * License Type: Academic
  */
-package backend;
+package backend.DAOs;
 
+import backend.AASICPersistentManager;
+import backend.Models.Review;
+import backend.Criteria.ReviewCriteria;
 import org.orm.*;
 import org.hibernate.Query;
-import org.hibernate.LockMode;
+
 import java.util.List;
 
 public class ReviewDAO {
@@ -65,7 +68,7 @@ public class ReviewDAO {
 	
 	public static Review loadReviewByORMID(PersistentSession session, String id) throws PersistentException {
 		try {
-			return (Review) session.load(backend.Review.class, id);
+			return (Review) session.load(Review.class, id);
 		}
 		catch (Exception e) {
 			e.printStackTrace();
@@ -75,7 +78,7 @@ public class ReviewDAO {
 	
 	public static Review getReviewByORMID(PersistentSession session, String id) throws PersistentException {
 		try {
-			return (Review) session.get(backend.Review.class, id);
+			return (Review) session.get(Review.class, id);
 		}
 		catch (Exception e) {
 			e.printStackTrace();
@@ -85,7 +88,7 @@ public class ReviewDAO {
 	
 	public static Review loadReviewByORMID(PersistentSession session, String id, org.hibernate.LockMode lockMode) throws PersistentException {
 		try {
-			return (Review) session.load(backend.Review.class, id, lockMode);
+			return (Review) session.load(Review.class, id, lockMode);
 		}
 		catch (Exception e) {
 			e.printStackTrace();
@@ -95,7 +98,7 @@ public class ReviewDAO {
 	
 	public static Review getReviewByORMID(PersistentSession session, String id, org.hibernate.LockMode lockMode) throws PersistentException {
 		try {
-			return (Review) session.get(backend.Review.class, id, lockMode);
+			return (Review) session.get(Review.class, id, lockMode);
 		}
 		catch (Exception e) {
 			e.printStackTrace();
@@ -148,7 +151,7 @@ public class ReviewDAO {
 	}
 	
 	public static List queryReview(PersistentSession session, String condition, String orderBy) throws PersistentException {
-		StringBuffer sb = new StringBuffer("From backend.Review as Review");
+		StringBuffer sb = new StringBuffer("From backend.Models.Review as Review");
 		if (condition != null)
 			sb.append(" Where ").append(condition);
 		if (orderBy != null)
@@ -164,7 +167,7 @@ public class ReviewDAO {
 	}
 	
 	public static List queryReview(PersistentSession session, String condition, String orderBy, org.hibernate.LockMode lockMode) throws PersistentException {
-		StringBuffer sb = new StringBuffer("From backend.Review as Review");
+		StringBuffer sb = new StringBuffer("From backend.Models.Review as Review");
 		if (condition != null)
 			sb.append(" Where ").append(condition);
 		if (orderBy != null)
@@ -263,7 +266,7 @@ public class ReviewDAO {
 	}
 	
 	public static java.util.Iterator iterateReviewByQuery(PersistentSession session, String condition, String orderBy) throws PersistentException {
-		StringBuffer sb = new StringBuffer("From backend.Review as Review");
+		StringBuffer sb = new StringBuffer("From backend.Models.Review as Review");
 		if (condition != null)
 			sb.append(" Where ").append(condition);
 		if (orderBy != null)
@@ -279,7 +282,7 @@ public class ReviewDAO {
 	}
 	
 	public static java.util.Iterator iterateReviewByQuery(PersistentSession session, String condition, String orderBy, org.hibernate.LockMode lockMode) throws PersistentException {
-		StringBuffer sb = new StringBuffer("From backend.Review as Review");
+		StringBuffer sb = new StringBuffer("From backend.Models.Review as Review");
 		if (condition != null)
 			sb.append(" Where ").append(condition);
 		if (orderBy != null)
@@ -296,10 +299,10 @@ public class ReviewDAO {
 	}
 	
 	public static Review createReview() {
-		return new backend.Review();
+		return new Review();
 	}
 	
-	public static boolean save(backend.Review review) throws PersistentException {
+	public static boolean save(Review review) throws PersistentException {
 		try {
 			AASICPersistentManager.instance().saveObject(review);
 			return true;
@@ -310,7 +313,7 @@ public class ReviewDAO {
 		}
 	}
 	
-	public static boolean delete(backend.Review review) throws PersistentException {
+	public static boolean delete(Review review) throws PersistentException {
 		try {
 			AASICPersistentManager.instance().deleteObject(review);
 			return true;
@@ -321,7 +324,7 @@ public class ReviewDAO {
 		}
 	}
 	
-	public static boolean refresh(backend.Review review) throws PersistentException {
+	public static boolean refresh(Review review) throws PersistentException {
 		try {
 			AASICPersistentManager.instance().getSession().refresh(review);
 			return true;
@@ -332,7 +335,7 @@ public class ReviewDAO {
 		}
 	}
 	
-	public static boolean evict(backend.Review review) throws PersistentException {
+	public static boolean evict(Review review) throws PersistentException {
 		try {
 			AASICPersistentManager.instance().getSession().evict(review);
 			return true;

@@ -11,7 +11,7 @@
  * Licensee: lucas(Universidade do Minho)
  * License Type: Academic
  */
-package backend;
+package backend.Models;
 
 import java.util.HashSet;
 import java.util.Set;

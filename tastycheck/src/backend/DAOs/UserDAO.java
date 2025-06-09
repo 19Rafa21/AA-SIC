@@ -11,11 +11,14 @@
  * Licensee: lucas(Universidade do Minho)
  * License Type: Academic
  */
-package backend;
+package backend.DAOs;
 
+import backend.AASICPersistentManager;
+import backend.Models.User;
+import backend.Criteria.UserCriteria;
 import org.orm.*;
 import org.hibernate.Query;
-import org.hibernate.LockMode;
+
 import java.util.List;
 
 public class UserDAO {
@@ -65,7 +68,7 @@ public class UserDAO {
 	
 	public static User loadUserByORMID(PersistentSession session, String id) throws PersistentException {
 		try {
-			return (User) session.load(backend.User.class, id);
+			return (User) session.load(User.class, id);
 		}
 		catch (Exception e) {
 			e.printStackTrace();
@@ -75,7 +78,7 @@ public class UserDAO {
 	
 	public static User getUserByORMID(PersistentSession session, String id) throws PersistentException {
 		try {
-			return (User) session.get(backend.User.class, id);
+			return (User) session.get(User.class, id);
 		}
 		catch (Exception e) {
 			e.printStackTrace();
@@ -85,7 +88,7 @@ public class UserDAO {
 	
 	public static User loadUserByORMID(PersistentSession session, String id, org.hibernate.LockMode lockMode) throws PersistentException {
 		try {
-			return (User) session.load(backend.User.class, id, lockMode);
+			return (User) session.load(User.class, id, lockMode);
 		}
 		catch (Exception e) {
 			e.printStackTrace();
@@ -95,7 +98,7 @@ public class UserDAO {
 	
 	public static User getUserByORMID(PersistentSession session, String id, org.hibernate.LockMode lockMode) throws PersistentException {
 		try {
-			return (User) session.get(backend.User.class, id, lockMode);
+			return (User) session.get(User.class, id, lockMode);
 		}
 		catch (Exception e) {
 			e.printStackTrace();
@@ -148,7 +151,7 @@ public class UserDAO {
 	}
 	
 	public static List queryUser(PersistentSession session, String condition, String orderBy) throws PersistentException {
-		StringBuffer sb = new StringBuffer("From backend.User as User");
+		StringBuffer sb = new StringBuffer("From backend.Models.User as User");
 		if (condition != null)
 			sb.append(" Where ").append(condition);
 		if (orderBy != null)
@@ -164,7 +167,7 @@ public class UserDAO {
 	}
 	
 	public static List queryUser(PersistentSession session, String condition, String orderBy, org.hibernate.LockMode lockMode) throws PersistentException {
-		StringBuffer sb = new StringBuffer("From backend.User as User");
+		StringBuffer sb = new StringBuffer("From backend.Models.User as User");
 		if (condition != null)
 			sb.append(" Where ").append(condition);
 		if (orderBy != null)
@@ -263,7 +266,7 @@ public class UserDAO {
 	}
 	
 	public static java.util.Iterator iterateUserByQuery(PersistentSession session, String condition, String orderBy) throws PersistentException {
-		StringBuffer sb = new StringBuffer("From backend.User as User");
+		StringBuffer sb = new StringBuffer("From backend.Models.User as User");
 		if (condition != null)
 			sb.append(" Where ").append(condition);
 		if (orderBy != null)
@@ -279,7 +282,7 @@ public class UserDAO {
 	}
 	
 	public static java.util.Iterator iterateUserByQuery(PersistentSession session, String condition, String orderBy, org.hibernate.LockMode lockMode) throws PersistentException {
-		StringBuffer sb = new StringBuffer("From backend.User as User");
+		StringBuffer sb = new StringBuffer("From backend.Models.User as User");
 		if (condition != null)
 			sb.append(" Where ").append(condition);
 		if (orderBy != null)
@@ -296,10 +299,10 @@ public class UserDAO {
 	}
 	
 	public static User createUser() {
-		return new backend.User();
+		return new User();
 	}
 	
-	public static boolean save(backend.User user) throws PersistentException {
+	public static boolean save(User user) throws PersistentException {
 		try {
 			AASICPersistentManager.instance().saveObject(user);
 			return true;
@@ -310,7 +313,7 @@ public class UserDAO {
 		}
 	}
 	
-	public static boolean delete(backend.User user) throws PersistentException {
+	public static boolean delete(User user) throws PersistentException {
 		try {
 			AASICPersistentManager.instance().deleteObject(user);
 			return true;
@@ -321,7 +324,7 @@ public class UserDAO {
 		}
 	}
 	
-	public static boolean refresh(backend.User user) throws PersistentException {
+	public static boolean refresh(User user) throws PersistentException {
 		try {
 			AASICPersistentManager.instance().getSession().refresh(user);
 			return true;
@@ -332,7 +335,7 @@ public class UserDAO {
 		}
 	}
 	
-	public static boolean evict(backend.User user) throws PersistentException {
+	public static boolean evict(User user) throws PersistentException {
 		try {
 			AASICPersistentManager.instance().getSession().evict(user);
 			return true;

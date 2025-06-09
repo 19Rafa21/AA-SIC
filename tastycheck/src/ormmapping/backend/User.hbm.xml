@@ -5,7 +5,7 @@ License Type: Academic
 -->
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <hibernate-mapping>
-	<class name="backend.User" table="users" lazy="false" discriminator-value="User">
+	<class name="backend.Models.User" table="users" lazy="false" discriminator-value="User">
 		<id name="id" column="Id" type="string">
 			<generator class="assigned">
 			</generator>
@@ -14,9 +14,18 @@ License Type: Academic
 		<property name="username" column="Username" type="string" length="255" not-null="false" lazy="false"/>
 		<property name="password" column="Password" type="string" length="255" not-null="false" lazy="false"/>
 		<property name="email" column="Email" type="string" length="255" not-null="false" lazy="false"/>
-		<subclass name="backend.Client" discriminator-value="Client" lazy="false">
-		</subclass>
-		<subclass name="backend.Owner" discriminator-value="Owner" lazy="false">
+		<set name="reviews" inverse="true" cascade="all-delete-orphan">
+			<key column="Author"/>
+			<one-to-many class="backend.Models.Review"/>
+		</set>
+
+		<!--<subclass name="backend.Models.Client" discriminator-value="Client" lazy="false">
+		</subclass> -->
+		<subclass name="backend.Models.Owner" discriminator-value="Owner" lazy="false">
+			<set name="restaurants" inverse="true" cascade="all-delete-orphan">
+				<key column="Owner"/>
+				<one-to-many class="backend.Models.Restaurant"/>
+			</set>
 		</subclass>
 	</class>
 </hibernate-mapping>
