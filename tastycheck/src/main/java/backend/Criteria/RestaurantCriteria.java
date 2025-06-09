@@ -20,6 +20,8 @@ import org.orm.PersistentException;
 import org.orm.PersistentSession;
 import org.orm.criteria.*;
 
+import java.util.List;
+
 public class RestaurantCriteria extends AbstractORMCriteria {
 	public final StringExpression id;
 	public final StringExpression owner;
@@ -53,7 +55,7 @@ public class RestaurantCriteria extends AbstractORMCriteria {
 	}
 	
 	public Restaurant[] listRestaurant() {
-		java.util.List list = super.list();
+		List list = super.list();
 		return (Restaurant[]) list.toArray(new Restaurant[list.size()]);
 	}
 }
