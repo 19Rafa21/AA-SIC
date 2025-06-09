@@ -13,6 +13,7 @@
  */
 package backend.Models;
 
+import javax.persistence.Transient;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -82,6 +83,12 @@ public class User {
 	
 	public String getEmail() {
 		return email;
+	}
+
+	@Transient
+	public String getDiscriminator() {
+		if (this instanceof Owner) return "Owner";
+		else return "User";
 	}
 
 	public Set<Review> getReviews() {
