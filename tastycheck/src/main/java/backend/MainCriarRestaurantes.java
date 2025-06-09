@@ -2,6 +2,7 @@ package backend;
 import backend.Models.Restaurant;
 import backend.Models.Owner;
 import backend.Services.RestaurantService;
+import backend.Services.UserService;
 import org.orm.PersistentException;
 
 public class MainCriarRestaurantes {
@@ -9,12 +10,14 @@ public class MainCriarRestaurantes {
     public static void main(String[] args) {
         try {
             RestaurantService restaurantService = new RestaurantService();
+            UserService userService = new UserService();
 
             // Supondo que já tens este owner na BD
             Owner owner = new Owner();
             owner.setId("o1"); // ID deve existir na BD
             owner.setUsername("chef_gino");
-            
+
+            userService.registerOwner(owner);
 
             // Restaurante 1
             Restaurant r1 = new Restaurant();

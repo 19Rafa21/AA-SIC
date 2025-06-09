@@ -93,24 +93,34 @@ public class RestaurantService {
         }
     }
 
-    public List<Restaurant> procurarComFiltros(String name, String kitchen, String city, Double rate) {
+    public List<Restaurant> searchWithAllFilters(String nome, String tipoCozinha, String cidade, Double avaliacaoMin) {
         try {
             RestaurantCriteria criteria = new RestaurantCriteria();
 
-            if (name != null && !name.isBlank()) {
-                searchForName(name);
+            boolean filtroAtivo = false;
+
+            if (nome != null && !nome.isBlank()) {
+                criteria.name.like("%" + nome + "%");
+                filtroAtivo = true;
             }
 
-            if (kitchen != null && !kitchen.isBlank()) {
-                searchForCuisineType(kitchen);
+            if (tipoCozinha != null && !tipoCozinha.isBlank()) {
+                criteria.cuisineType.like("%" + tipoCozinha + "%");
+                filtroAtivo = true;
             }
 
-            if (city != null && !city.isBlank()) {
-                searchForLocation(city);
+            if (cidade != null && !cidade.isBlank()) {
+                criteria.location.like("%, " + cidade); // assume cidade como último campo
+                filtroAtivo = true;
             }
 
-            if (rate != null) {
-                searchForRating(rate);
+            if (avaliacaoMin != null) {
+                criteria.rating.ge(avaliacaoMin);
+                filtroAtivo = true;
+            }
+
+            if (!filtroAtivo) {
+                return List.of(); // nenhum filtro → devolve lista vazia
             }
 
             return List.of(criteria.listRestaurant());
@@ -120,6 +130,7 @@ public class RestaurantService {
             return null;
         }
     }
+
 
 
 }
