@@ -4,6 +4,7 @@ import backend.DAOs.OwnerDAO;
 import backend.DAOs.UserDAO;
 import backend.Exceptions.UserException;
 import backend.Models.Owner;
+import backend.Models.Restaurant;
 import backend.Models.Review;
 import backend.Models.User;
 import org.orm.PersistentException;
@@ -36,6 +37,14 @@ public class UserService {
 		return OwnerDAO.save(owner);
 	}
 
+	public boolean updateUser(User user) throws  PersistentException {
+		return  UserDAO.save(user);
+	}
+
+	public boolean updateOwner(Owner owner) throws  PersistentException {
+		return  OwnerDAO.save(owner);
+	}
+
 	public User getUserById(String id) throws PersistentException, UserException {
 		User user = UserDAO.getUserByORMID(id);
 		if (user == null) {
@@ -50,6 +59,14 @@ public class UserService {
 			throw new UserException("User with username '" + username + "' does not exist");
 		}
 		return user;
+	}
+
+	public Owner getOwnerByUsername(String username) throws PersistentException, UserException {
+		Owner owner = OwnerDAO.loadOwnerByQuery("username = '" + username + "'", null);
+		if (owner == null) {
+			throw new UserException("User with username '" + username + "' does not exist");
+		}
+		return owner;
 	}
 
 	public boolean usernameExists(String username) throws PersistentException {
@@ -111,5 +128,10 @@ public class UserService {
 	public List<Review> getReviewsByUsername(String username) throws PersistentException, UserException {
 		User user = getUserByUsername(username);
 		return new ArrayList<>(user.getReviews());
+	}
+
+	public List<Restaurant> getRestaurantsByOwner(String username) throws PersistentException, UserException {
+		Owner owner = getOwnerByUsername(username);
+		return new ArrayList<>(owner.getRestaurants());
 	}
 }
