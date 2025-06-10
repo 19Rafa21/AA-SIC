@@ -45,7 +45,7 @@ public class Review {
 	
 	private String text;
 	
-	private String author;
+	private User author;
 	
 	private Restaurant restaurant;
 
@@ -80,15 +80,15 @@ public class Review {
 	public String getText() {
 		return text;
 	}
-	
-	public void setAuthor(String value) {
-		this.author = value;
-	}
-	
-	public String getAuthor() {
+
+	public User getAuthor() {
 		return author;
 	}
-	
+
+	public void setAuthor(User author) {
+		this.author = author;
+	}
+
 	public void setRestaurant(Restaurant restaurant) {
 		this.restaurant = restaurant;
 	}

@@ -13,7 +13,7 @@ License Type: Academic
 		<property name="rating" column="Rating" type="double" not-null="false" lazy="false"/>
 		<property name="text" column="Text" type="string" length="255" not-null="false" lazy="false"/>
 		<property name="data" column="date" type="timestamp" not-null="false" lazy="false"/>
-		<property name="author" column="Author" type="string" length="255" not-null="false" lazy="false"/>
+		<many-to-one name="author" column="Author" class="backend.Models.User" not-null="false" lazy="false"/>
 		<many-to-one name="restaurant" column="Restaurant" class="backend.Models.Restaurant" not-null="false" lazy="false"/>
 		<set name="replies" inverse="true" lazy="false" cascade="all-delete-orphan">
 			<key column="Review"/>
