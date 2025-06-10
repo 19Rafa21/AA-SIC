@@ -47,7 +47,7 @@
         </div>
 
 
-        <div class="p-4 m-6 flex justify-between items-center">
+        <div class="p-4 m-6 flex justify-between">
 
             <div>
                 <!-- Fotografias Menu -->
@@ -142,9 +142,13 @@
 
             </div>
 
-            <div>
-                mapa 
+            <div class="ml-20 flex-1"> 
+                <RestaurantGoogleMap :location="restaurant.location" :zoom="14"/>
             </div>
+
+        </div>
+
+        <div class="bg-white rounded-[26px] shadow mt-6 min-h-[200px] m-4">
 
         </div>
 
@@ -159,6 +163,7 @@ import Footer from '../Footer.vue';
 import FrequencyBar from '../utils/FrequencyBar.vue';
 import StarRating from '../utils/Stars.vue';
 import ReviewModal from './ReviewModal.vue';
+import RestaurantGoogleMap from '../Maps/RestaurantGoogleMap.vue';
 import { ref } from 'vue';
 
 export default {
@@ -167,7 +172,8 @@ export default {
         StarRating,
         ReviewModal,
         FrequencyBar,
-        Footer
+        Footer,
+        RestaurantGoogleMap
     },
     props: {
         name: {

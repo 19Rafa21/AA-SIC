@@ -6,7 +6,7 @@ import TopNavbar from './MainPage/TopNavbar.vue';
 import SearchBar from './MainPage/SearchBar.vue';
 import PresentationCounter from "./MainPage/PresentationCounter.vue";
 import RestaurantCarousel from "./RestaurantBlock/RestauranteCarousel.vue";
-import RestaurantMap from "./RestaurantBlock/RestaurantMap.vue";
+import RestaurantMap from "./Maps/RestaurantMap.vue";
 import Footer from "./Footer.vue";
 import restaurantesData from '../dataTesting/restaurantes.json';
 
@@ -151,27 +151,21 @@ onUnmounted(() => {
   </div>
 
   <!-- MAPA -->
-  <div v-if="showMapModal"
-       class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 overflow-auto">
-   <div class="bg-white rounded-lg overflow-hidden w-[90vw] max-w-5xl">
-     <div class="flex justify-between items-center px-6 py-3 border-b">
-       <h3 class="text-xl font-semibold">Mapa de Restaurantes</h3>
-       <button
-         @click="showMapModal = false"
-         class="text-gray-600 hover:text-gray-800 text-2xl leading-none"
-       >
-         &times;
-       </button>
-     </div>
-     <div class="p-4 h-[75vh]">
-       <RestaurantMap
-         :center="[userLocation.lat, userLocation.lng]"
-         :restaurants="restaurantsWithCoords"
-         class="h-full w-full"
-       />
-     </div>
-   </div>
- </div>
+  <div v-if="showMapModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 overflow-auto">
+    <div class="bg-white rounded-lg w-[90vw] max-w-5xl">
+      <div class="flex justify-between items-center px-6 py-3 border-b">
+        <h3 class="text-xl font-semibold">Mapa de Restaurantes</h3>
+        <button @click="showMapModal = false" class="text-gray-600 hover:text-gray-800 text-2xl">×</button>
+      </div>
+      <div class="p-4 h-[75vh]">
+        <RestaurantMap
+          :center="[userLocation.lat, userLocation.lng]"
+          :restaurants="restaurantsWithCoords"
+          class="h-full w-full"
+        />
+      </div>
+    </div>
+  </div>
 
  <RestaurantCarousel :title="'Perto de si'" :restaurants="NearbyRestaurants" :visibleCount="4"/>
 
