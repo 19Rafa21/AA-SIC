@@ -141,7 +141,7 @@ onUnmounted(() => {
         VEJA A LISTA COMPLETA &rsaquo;
       </button>
     </div>
-    <div class="h-[190px] w-auto mt-2 mb-2 overflow-hidden rounded-lg">
+    <div class="h-[190px] max-w-[50%] mt-2 mb-2 overflow-hidden rounded-lg">
       <img
         src="../../public/img/top100.png"
         alt="Prato delicioso"
@@ -175,6 +175,11 @@ onUnmounted(() => {
 
 <style scoped>
 /* Mantendo o estilo existente para compatibilidade, mas usando primariamente Tailwind nas classes */
+
+html, body {
+  overflow-x: hidden;
+  max-width: 100%;
+}
 
 .container {
   height: 100%;

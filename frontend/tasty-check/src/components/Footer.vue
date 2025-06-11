@@ -1,9 +1,9 @@
 <template>
-  <footer class="bg-[#08342c] text-white py-4 mt-24">
+  <footer class="bg-[#095243] text-white py-4 mt-24">
     <div class="container mx-auto px-6 flex flex-col md:flex-row items-center justify-between">
       <!-- Logo e slogan -->
       <div class="flex flex-col items-center">
-        <span class="text-3xl font-bold mb-2">Tasty<span class="text-[#1b6522]">Check</span></span>
+        <span class="text-3xl font-bold mb-2">Tasty<span class="text-[#1A2D29] ml-1">Check</span></span>
         <p class="text-sm">Connect with Us and Explore</p>
       </div>
 
