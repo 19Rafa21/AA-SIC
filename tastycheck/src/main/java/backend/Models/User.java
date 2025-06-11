@@ -21,7 +21,15 @@ public class User {
 	public User() {
 		this.reviews = new HashSet<>();
 	}
-	
+
+	public User(String id, String username, String email, String password) {
+		this.id = id;
+		this.username = username;
+		this.email = email;
+		this.password = password;
+		this.reviews = new HashSet<>();
+	}
+
 	public boolean equals(Object aObj) {
 		if (aObj == this)
 			return true;

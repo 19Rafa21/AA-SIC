@@ -2,6 +2,7 @@ package backend.Controllers;
 
 import backend.DAOs.UserDAO;
 import backend.DTOs.UserDTO;
+import backend.Exceptions.UserException;
 import backend.Models.User;
 import backend.Services.UserService;
 import org.orm.PersistentException;
@@ -32,8 +33,7 @@ public class UserController extends HttpServlet {
 
         try {
             if ("list".equals(action)) {
-                UserService service = new UserService();
-                List<User> users = service.listAllUsers();
+                List<User> users = userService.listAllUsers();
                 List<UserDTO> dtos = users.stream()
                         .map(u -> new UserDTO(u.getId(), u.getUsername(), u.getEmail()))
                         .collect(Collectors.toList());
@@ -55,21 +55,42 @@ public class UserController extends HttpServlet {
         String action = request.getParameter("action");
 
         if ("create".equals(action)) {
+            String id = request.getParameter("id");
+            String username = request.getParameter("username");
+            String email = request.getParameter("email");
+            String password = request.getParameter("password");
+
+            User user = new User(id,username, email, password);
             try {
-                createUser(request, response);
+                UserDAO.save(user);
             } catch (PersistentException e) {
                 throw new RuntimeException(e);
             }
+
+            response.setContentType("application/json");
+            response.getWriter().println("{\"status\": \"utilizador criado com sucesso\"}");
         } else if ("update".equals(action)) {
+            String id = request.getParameter("id");
+            String username = request.getParameter("username");
+            String email = request.getParameter("email");
+            String password = request.getParameter("password");
+
+            User user = new User(id, username, email, password);
             try {
-                updateUser(request, response);
+                UserDAO.save(user);
             } catch (PersistentException e) {
                 throw new RuntimeException(e);
             }
-        } else if ("delete".equals(action)) {
+
+            response.getWriter().println("{\"status\": \"utilizador atualizado\"}");
+    } else if ("delete".equals(action)) {
+            String id = request.getParameter("id");
+
             try {
-                deleteUser(request, response);
-            } catch (PersistentException e) {
+                User user= userService.getUserById(id);
+                UserDAO.delete(user);
+                response.getWriter().println("{\"status\": \"utilizador removido\"}");
+            } catch (PersistentException | UserException e) {
                 throw new RuntimeException(e);
             }
         } else {
