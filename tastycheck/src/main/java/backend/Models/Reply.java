@@ -42,7 +42,7 @@ public class Reply {
 	
 	private Review review;
 	
-	private String author;
+	private User author;
 
 	private Date data;
 	
@@ -65,13 +65,13 @@ public class Reply {
 	public String getText() {
 		return text;
 	}
-	
-	public void setAuthor(String value) {
-		this.author = value;
-	}
-	
-	public String getAuthor() {
+
+	public User getAuthor() {
 		return author;
+	}
+
+	public void setAuthor(User author) {
+		this.author = author;
 	}
 
 	public Review getReview() {

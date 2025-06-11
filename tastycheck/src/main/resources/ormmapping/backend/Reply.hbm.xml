@@ -12,7 +12,7 @@ License Type: Academic
 		</id>
 		<property name="text" column="Text" type="string" length="255" not-null="false" lazy="false"/>
 		<many-to-one name="review" column="Review" class="backend.Models.Review" not-null="false" lazy="false"/>
-		<property name="author" column="Author" type="string" length="255" not-null="false" lazy="false"/>
+		<many-to-one name="author" column="Author" class="backend.Models.User" not-null="false" lazy="false"/>
 		<property name="data" column="date" type="timestamp" not-null="false" lazy="false"/>
 	</class>
 </hibernate-mapping>
