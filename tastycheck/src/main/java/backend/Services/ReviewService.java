@@ -42,6 +42,11 @@ public class ReviewService {
 
 	public boolean registerReview(String userId, String restaurantId, Review review) throws PersistentException, UserException {
 		try {
+			Review existingReview = ReviewDAO.getReviewByORMID(review.getId());
+			if (existingReview != null) {
+				throw new IllegalArgumentException("Review com ID: '" + review.getId() + "' já existe!");
+			}
+
 			UserService userService = new UserService();
 			User user = userService.getUserById(userId);
 			if (user == null) throw new UserException("User com ID '" + userId + "' não existe.");
@@ -73,7 +78,7 @@ public class ReviewService {
 	public Review getReviewById(String id) throws PersistentException {
 		Review review = ReviewDAO.getReviewByORMID(id);
 		if (review == null) {
-			throw new IllegalArgumentException("Review with ID: '" + id + "' does not exist");
+			throw new IllegalArgumentException("Review com ID '" + id + "' não existe.");
 		}
 		return review;
 	}
@@ -82,7 +87,7 @@ public class ReviewService {
 		try {
 			Review review = ReviewDAO.getReviewByORMID(reviewId);
 			if (review == null) {
-				throw new IllegalArgumentException("Review com ID '" + reviewId + "' não existe.");
+				throw new IllegalArgumentException("Review não existe.");
 			}
 
 			User author = review.getAuthor();
@@ -110,7 +115,7 @@ public class ReviewService {
 	public boolean deleteReview(Review review) throws PersistentException {
 		try {
 			if (review == null) {
-				throw new IllegalArgumentException("Review com ID '" + review.getId() + "' não existe.");
+				throw new IllegalArgumentException("Review não existe.");
 			}
 
 			User author = review.getAuthor();
