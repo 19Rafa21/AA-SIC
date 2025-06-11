@@ -62,7 +62,7 @@ public class UserController extends HttpServlet {
 
             User user = new User(id,username, email, password);
             try {
-                UserDAO.save(user);
+                userService.registerUser(user);
             } catch (PersistentException e) {
                 throw new RuntimeException(e);
             }
@@ -77,7 +77,7 @@ public class UserController extends HttpServlet {
 
             User user = new User(id, username, email, password);
             try {
-                UserDAO.save(user);
+                userService.registerUser(user);
             } catch (PersistentException e) {
                 throw new RuntimeException(e);
             }
@@ -88,7 +88,7 @@ public class UserController extends HttpServlet {
 
             try {
                 User user= userService.getUserById(id);
-                UserDAO.delete(user);
+                userService.deleteUser(user);
                 response.getWriter().println("{\"status\": \"utilizador removido\"}");
             } catch (PersistentException | UserException e) {
                 throw new RuntimeException(e);
