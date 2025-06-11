@@ -1,8 +1,10 @@
 package backend.Services;
 import backend.Criteria.RestaurantCriteria;
 import backend.DAOs.RestaurantDAO;
-import backend.DTOs.RestaurantDTO;
+import backend.DAOs.ReviewDAO;
 import backend.Models.Restaurant;
+import backend.Models.Review;
+import org.orm.PersistentException;
 
 import java.util.List;
 import java.util.UUID;
@@ -134,6 +136,14 @@ public class RestaurantService {
             e.printStackTrace();
             return null;
         }
+    }
+
+    public Restaurant getRestaurantById(String id) throws PersistentException {
+        Restaurant restaurant = RestaurantDAO.getRestaurantByORMID(id);
+        if (restaurant == null) {
+            throw new IllegalArgumentException("Restaurant com ID '" + id + "' não existe.");
+        }
+        return restaurant;
     }
 
     public static Restaurant toRestaurant(RestaurantDTO dto) {
