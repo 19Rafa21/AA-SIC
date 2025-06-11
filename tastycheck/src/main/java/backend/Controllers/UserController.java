@@ -40,6 +40,10 @@ public class UserController extends HttpServlet {
 
                 Gson gson = new Gson();
                 out.println(gson.toJson(dtos));
+
+                response.setContentType("application/json");
+                response.setCharacterEncoding("UTF-8");
+                response.getWriter().write(gson.toJson(dtos));
             } else {
                 response.sendError(HttpServletResponse.SC_NOT_FOUND);
             }
