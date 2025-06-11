@@ -15,21 +15,32 @@ public class Main {
 
 			UserService userService = new UserService();
 			ReviewService reviewService = new ReviewService();
+			ReplyService replyService = new ReplyService();
 			//RestaurantService restaurantService = new RestaurantService();
 
 			User user = userService.getUserById("u123");
 			Restaurant restaurant = RestaurantDAO.getRestaurantByORMID("r1");
-			/*Review review = new Review();
+			Review review = new Review();
 			review.setId("rv1");
 			review.setRating(4.1);
 			review.setText("Bom Restaurante!");
 			review.setData(new Date());
-			 */
 
-			Review review = reviewService.getReviewById("rv1");
-			reviewService.deleteReview(review);
+			reviewService.registerReview(user,restaurant,review);
 
-			System.out.println("Review do User '" + user.getUsername() + "': ");
+			User user1 = userService.getUserById("u245");
+			Reply reply = new Reply();
+			reply.setId("rp1");
+			reply.setText("Concordo!");
+			reply.setData(new Date());
+
+			replyService.registerReply(user1,review,reply);
+
+
+			//Review review = reviewService.getReviewById("rv1");
+			//reviewService.deleteReview(review);
+
+			/*System.out.println("Review do User '" + user.getUsername() + "': ");
 			for (Review r : userService.getReviewsByUserId(user.getId())) {
 				System.out.println(" - " + r.getText() + " (rating: " + r.getRating() + ")");
 			}
@@ -40,6 +51,7 @@ public class Main {
 			for (Review r : restaurant.getReviews()) {
 				System.out.println(" - " + r.getText() + " (rating: " + r.getRating() + ")");
 			}
+			 */
 
 			AASICPersistentManager.instance().disposePersistentManager();
 		} catch (PersistentException e) {
