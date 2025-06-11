@@ -1,137 +1,446 @@
 [
     {
-        "id": 1,
+        "id": "r1",
+        "owner": "u3",
         "name": "Trattoria Bella Vita",
-        "category": "Italiana",
-        "rating": 4.7,
-        "averagePrice": 25,
-        "location": "1150 Lisboa",
-        "image": "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4"
+        "location": "Avenida da Liberdade 45, 1150 Lisboa",
+        "cuisineType": "Italian",
+        "rating": 2.7,
+        "image": "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4",
+        "reviews": [
+            {
+                "id": "rev1",
+                "rating": 4.8,
+                "text": "Comida autêntica italiana e atendimento excelente!",
+                "author": "u1",
+                "date": "2024-05-10T14:30:00Z",
+                "replies": [
+                    {
+                        "id": "rpl1",
+                        "text": "Obrigado pela sua visita! Esperamos vê-lo novamente.",
+                        "author": "u3",
+                        "date": "2024-05-11T09:15:00Z"
+                    }
+                ]
+            }
+        ]
     },
     {
-        "id": 2,
+        "id": "r2",
+        "owner": "u4",
         "name": "Sakura Sushi House",
-        "category": "Japonesa",
+        "location": "Rua do Comércio 78, 1200 Lisboa",
+        "cuisineType": "Japanese",
         "rating": 4.3,
-        "averagePrice": 30,
-        "location": "1200 Lisboa",
-        "image": "https://images.unsplash.com/photo-1579871494447-9811cf80d66c"
-    },
-    {
-        "id": 3,
-        "name": "Casa do Bacalhau",
-        "category": "Portuguesa",
+        "image": "https://images.unsplash.com/photo-1579871494447-9811cf80d66c",
+        "reviews": [
+            {
+            "id": "rev2",
+            "rating": 4.5,
+            "text": "O melhor sushi da cidade!",
+            "author": "u2",
+            "date": "2024-05-15T19:45:00Z",
+            "replies": []
+            },
+            {
+            "id": "rev3",
+            "rating": 4.1,
+            "text": "Sashimi muito fresco, recomendo!",
+            "author": "u5",
+            "date": "2024-05-18T20:30:00Z",
+            "replies": [
+                {
+                "id": "rpl2",
+                "text": "Obrigado pelo feedback positivo!",
+                "author": "u4",
+                "date": "2024-05-19T10:20:00Z"
+                }
+            ]
+            }
+        ]
+        },
+        {
+        "id": "r3",
+        "owner": "u7",
+        "name": "Cantinho do Alentejo",
+        "location": "Rua Augusta 112, 1100 Lisboa",
+        "cuisineType": "Portuguese",
         "rating": 4.8,
-        "averagePrice": 35,
-        "location": "1170 Lisboa",
-        "image": "https://images.unsplash.com/photo-1504674900247-0877df9cc836"
-    },
-    {
-        "id": 4,
-        "name": "El Tapas",
-        "category": "Espanhola",
-        "rating": 4.1,
-        "averagePrice": 22,
-        "location": "1050 Lisboa",
-        "image": "https://images.unsplash.com/photo-1414235077428-338989a2e8c0"
-    },
-    {
-        "id": 5,
-        "name": "Green Garden",
-        "category": "Vegetariana",
+        "image": "https://images.unsplash.com/photo-1555396273-367ea4eb4db5",
+        "reviews": [
+            {
+            "id": "rev4",
+            "rating": 5.0,
+            "text": "Comida tradicional portuguesa no seu melhor!",
+            "author": "u8",
+            "date": "2024-05-12T13:20:00Z",
+            "replies": []
+            }
+        ]
+        },
+        {
+        "id": "r4",
+        "owner": "u9",
+        "name": "El Torero",
+        "location": "Praça dos Restauradores 28, 1250 Lisboa",
+        "cuisineType": "Spanish",
         "rating": 4.5,
-        "averagePrice": 18,
-        "location": "1100 Lisboa",
-        "image": "https://images.unsplash.com/photo-1498837167922-ddd27525d352"
-    },
-    {
-        "id": 6,
-        "name": "Burger King Street",
-        "category": "Hambúrgueres",
-        "rating": 4.0,
-        "averagePrice": 15,
-        "location": "1250 Lisboa",
-        "image": "https://images.unsplash.com/photo-1550547660-d9450f859349"
-    },
-    {
-        "id": 7,
-        "name": "Taj Mahal",
-        "category": "Indiana",
-        "rating": 4.6,
-        "averagePrice": 20,
-        "location": "1150 Lisboa",
-        "image": "https://images.unsplash.com/photo-1542367592-8849eb950fd8"
-    },
-    {
-        "id": 8,
-        "name": "Dragonfly",
-        "category": "Asiática",
-        "rating": 4.2,
-        "averagePrice": 28,
-        "location": "1300 Lisboa",
-        "image": "https://images.unsplash.com/photo-1554118811-1e0d58224f24"
-    },
-    {
-        "id": 9,
-        "name": "Le Petit Café",
-        "category": "Francesa",
-        "rating": 4.9,
-        "averagePrice": 40,
-        "location": "1150 Lisboa",
-        "image": "https://images.unsplash.com/photo-1559329007-40df8a9345d8"
-    },
-    {
-        "id": 10,
-        "name": "Pizzeria Napoletana",
-        "category": "Italiana",
+        "image": "https://images.unsplash.com/photo-1515669097368-22e68427d265",
+        "reviews": [
+            {
+            "id": "rev5",
+            "rating": 4.6,
+            "text": "As tapas são deliciosas e autênticas!",
+            "author": "u11",
+            "date": "2024-05-17T21:15:00Z",
+            "replies": []
+            }
+        ]
+        },
+        {
+        "id": "r5",
+        "owner": "u12",
+        "name": "Maharaja Palace",
+        "location": "Avenida Almirante Reis 62, 1150 Lisboa",
+        "cuisineType": "Indian",
         "rating": 4.4,
-        "averagePrice": 22,
-        "location": "1170 Lisboa",
-        "image": "https://images.unsplash.com/photo-1565299507177-b0ac66763828"
-    },
-    {
-        "id": 11,
-        "name": "Churrasqueira do Bairro",
-        "category": "Portuguesa",
+        "image": "https://images.unsplash.com/photo-1517244683847-7456b63c5969",
+        "reviews": [
+            {
+            "id": "rev6",
+            "rating": 4.3,
+            "text": "Curry fantástico e naan perfeito!",
+            "author": "u2",
+            "date": "2024-05-11T20:45:00Z",
+            "replies": [
+                {
+                "id": "rpl3",
+                "text": "Muito obrigado pela sua visita!",
+                "author": "u12",
+                "date": "2024-05-12T09:30:00Z"
+                }
+            ]
+            }
+        ]
+        },
+        {
+        "id": "r6",
+        "owner": "u15",
+        "name": "Burger Blast",
+        "location": "Rua da Prata 221, 1100 Lisboa",
+        "cuisineType": "American",
+        "rating": 4.2,
+        "image": "https://images.unsplash.com/photo-1550547660-d9450f859349",
+        "reviews": [
+            {
+            "id": "rev7",
+            "rating": 4.0,
+            "text": "Hambúrgueres suculentos, mas as batatas fritas poderiam ser melhores.",
+            "author": "u6",
+            "date": "2024-05-14T18:30:00Z",
+            "replies": []
+            }
+        ]
+        },
+        {
+        "id": "r7",
+        "owner": "u18",
+        "name": "Thai Spice",
+        "location": "Avenida da República 45, 1050 Lisboa",
+        "cuisineType": "Thai",
+        "rating": 4.6,
+        "image": "https://images.unsplash.com/photo-1534620808146-d33bb39128b2",
+        "reviews": [
+            {
+            "id": "rev8",
+            "rating": 4.7,
+            "text": "O Pad Thai é divinal! Ambiente acolhedor.",
+            "author": "u3",
+            "date": "2024-05-19T19:15:00Z",
+            "replies": []
+            }
+        ]
+        },
+        {
+        "id": "r8",
+        "owner": "u20",
+        "name": "Coq au Vin",
+        "location": "Rua Garrett 19, 1200 Lisboa",
+        "cuisineType": "French",
+        "rating": 4.9,
+        "image": "https://images.unsplash.com/photo-1550966871-3ed3cdb5ed0c",
+        "reviews": [
+            {
+            "id": "rev9",
+            "rating": 5.0,
+            "text": "Experiência gastronómica de topo! Vale cada euro.",
+            "author": "u22",
+            "date": "2024-05-16T20:30:00Z",
+            "replies": [
+                {
+                "id": "rpl4",
+                "text": "Merci beaucoup! Esperamos vê-lo em breve.",
+                "author": "u20",
+                "date": "2024-05-17T09:45:00Z"
+                }
+            ]
+            }
+        ]
+        },
+        {
+        "id": "r9",
+        "owner": "u23",
+        "name": "El Mariachi",
+        "location": "Rua do Ouro 124, 1100 Lisboa",
+        "cuisineType": "Mexican",
         "rating": 4.3,
-        "averagePrice": 16,
-        "location": "1150 Lisboa",
-        "image": "https://images.unsplash.com/photo-1555939594-58d7cb561ad1"
-    },
-    {
-        "id": 12,
-        "name": "Athens Souvlaki",
-        "category": "Grega",
-        "rating": 4.0,
-        "averagePrice": 18,
-        "location": "1200 Lisboa",
-        "image": "https://images.unsplash.com/photo-1583224874248-9d7bbbd89d27"
-    },
-    {
-        "id": 13,
-        "name": "Istanbul Kebab",
-        "category": "Turca",
-        "rating": 3.8,
-        "averagePrice": 12,
-        "location": "1150 Lisboa",
-        "image": "https://images.unsplash.com/photo-1561651823-34feb02250e4"
-    },
-    {
-        "id": 14,
-        "name": "Cantinho do Mar",
-        "category": "Marisqueira",
-        "rating": 4.7,
-        "averagePrice": 45,
-        "location": "1100 Lisboa",
-        "image": "https://images.unsplash.com/photo-1579631542761-d7c4e423dbaf"
-    },
-    {
-        "id": 15,
-        "name": "Vegan Paradise",
-        "category": "Vegana",
+        "image": "https://images.unsplash.com/photo-1551504734-5ee1c4a1479b",
+        "reviews": [
+            {
+            "id": "rev10",
+            "rating": 4.4,
+            "text": "Tacos autênticos e margaritas excelentes!",
+            "author": "u1",
+            "date": "2024-05-18T21:20:00Z",
+            "replies": []
+            }
+        ]
+        },
+        {
+        "id": "r10",
+        "owner": "u25",
+        "name": "Athena",
+        "location": "Rua da Madalena 56, 1100 Lisboa",
+        "cuisineType": "Greek",
         "rating": 4.5,
-        "averagePrice": 23,
-        "location": "1050 Lisboa",
-        "image": "https://images.unsplash.com/photo-1513442542250-854d436a73f2"
-    }
+        "image": "https://images.unsplash.com/photo-1523294587484-bae6cc870010",
+        "reviews": [
+            {
+            "id": "rev11",
+            "rating": 4.6,
+            "text": "O melhor souvlaki que já provei em Lisboa!",
+            "author": "u4",
+            "date": "2024-05-15T13:10:00Z",
+            "replies": []
+            }
+        ]
+        },
+        {
+        "id": "r11",
+        "owner": "u27",
+        "name": "Shanghai Palace",
+        "location": "Avenida Fontes Pereira de Melo 28, 1050 Lisboa",
+        "cuisineType": "Chinese",
+        "rating": 4.1,
+        "image": "https://images.unsplash.com/photo-1563245372-f21724e3856d",
+        "reviews": [
+            {
+            "id": "rev12",
+            "rating": 4.0,
+            "text": "Dim sum delicioso, mas o serviço foi um pouco lento.",
+            "author": "u7",
+            "date": "2024-05-13T19:50:00Z",
+            "replies": [
+                {
+                "id": "rpl5",
+                "text": "Pedimos desculpa pelo atraso. Estamos melhorando nosso serviço.",
+                "author": "u27",
+                "date": "2024-05-14T10:25:00Z"
+                }
+            ]
+            }
+        ]
+        },
+        {
+        "id": "r12",
+        "owner": "u30",
+        "name": "Bacalhau com Todos",
+        "location": "Rua das Portas de Santo Antão 35, 1150 Lisboa",
+        "cuisineType": "Portuguese",
+        "rating": 4.7,
+        "image": "https://images.unsplash.com/photo-1512621776951-a57141f2eefd",
+        "reviews": [
+            {
+            "id": "rev13",
+            "rating": 4.9,
+            "text": "O melhor bacalhau da cidade! Sabores tradicionais portugueses.",
+            "author": "u5",
+            "date": "2024-05-17T14:40:00Z",
+            "replies": []
+            }
+        ]
+        },
+        {
+        "id": "r13",
+        "owner": "u32",
+        "name": "Istanbul Kebab",
+        "location": "Rua do Carmo 47, 1200 Lisboa",
+        "cuisineType": "Turkish",
+        "rating": 4.2,
+        "image": "https://images.unsplash.com/photo-1561651823-34feb02250e4",
+        "reviews": [
+            {
+            "id": "rev14",
+            "rating": 4.3,
+            "text": "Kebabs suculentos e baklava incrível!",
+            "author": "u8",
+            "date": "2024-05-14T22:10:00Z",
+            "replies": []
+            }
+        ]
+        },
+        {
+        "id": "r14",
+        "owner": "u35",
+        "name": "Vesuvio",
+        "location": "Avenida António Augusto Aguiar 98, 1050 Lisboa",
+        "cuisineType": "Italian",
+        "rating": 4.6,
+        "image": "https://images.unsplash.com/photo-1555396273-367ea4eb4db5",
+        "reviews": [
+            {
+            "id": "rev15",
+            "rating": 4.7,
+            "text": "Pizza napolitana autêntica, massa perfeita!",
+            "author": "u10",
+            "date": "2024-05-19T20:15:00Z",
+            "replies": [
+                {
+                "id": "rpl6",
+                "text": "Grazie mille pelo seu comentário maravilhoso!",
+                "author": "u35",
+                "date": "2024-05-20T09:05:00Z"
+                }
+            ]
+            }
+        ]
+        },
+        {
+        "id": "r15",
+        "owner": "u37",
+        "name": "Seoul Garden",
+        "location": "Praça da Figueira 15, 1100 Lisboa",
+        "cuisineType": "Korean",
+        "rating": 4.4,
+        "image": "https://images.unsplash.com/photo-1590330813083-fc22d4b6a48c",
+        "reviews": [
+            {
+            "id": "rev16",
+            "rating": 4.5,
+            "text": "O melhor bibimbap que já comi! Kimchi caseiro excelente.",
+            "author": "u9",
+            "date": "2024-05-16T19:30:00Z",
+            "replies": []
+            }
+        ]
+        },
+        {
+        "id": "r16",
+        "owner": "u40",
+        "name": "Veggie Paradise",
+        "location": "Rua da Escola Politécnica 42, 1250 Lisboa",
+        "cuisineType": "Vegetarian",
+        "rating": 4.3,
+        "image": "https://images.unsplash.com/photo-1543339308-43e59d6b73a6",
+        "reviews": [
+            {
+            "id": "rev17",
+            "rating": 4.4,
+            "text": "Opções vegetarianas criativas e saborosas!",
+            "author": "u12",
+            "date": "2024-05-18T13:25:00Z",
+            "replies": []
+            }
+        ]
+        },
+        {
+        "id": "r17",
+        "owner": "u42",
+        "name": "Beirut Palace",
+        "location": "Avenida Duque de Loulé 73, 1050 Lisboa",
+        "cuisineType": "Lebanese",
+        "rating": 4.6,
+        "image": "https://images.unsplash.com/photo-1565299507177-b0ac66763828",
+        "reviews": [
+            {
+            "id": "rev18",
+            "rating": 4.8,
+            "text": "Hummus divino e shawarma perfeito! Ambiente acolhedor.",
+            "author": "u15",
+            "date": "2024-05-12T20:55:00Z",
+            "replies": [
+                {
+                "id": "rpl7",
+                "text": "Shukran! Volte sempre.",
+                "author": "u42",
+                "date": "2024-05-13T11:10:00Z"
+                }
+            ]
+            }
+        ]
+        },
+        {
+        "id": "r18",
+        "owner": "u45",
+        "name": "Tapas & Vinhos",
+        "location": "Rua do Alecrim 35, 1200 Lisboa",
+        "cuisineType": "Spanish",
+        "rating": 4.7,
+        "image": "https://images.unsplash.com/photo-1560180474-e8563fd75bab",
+        "reviews": [
+            {
+            "id": "rev19",
+            "rating": 4.9,
+            "text": "Excelente seleção de vinhos e tapas autênticas!",
+            "author": "u20",
+            "date": "2024-05-19T21:40:00Z",
+            "replies": []
+            }
+        ]
+        },
+        {
+        "id": "r19",
+        "owner": "u48",
+        "name": "Saigon Express",
+        "location": "Rua da Prata 169, 1100 Lisboa",
+        "cuisineType": "Vietnamese",
+        "rating": 4.2,
+        "image": "https://images.unsplash.com/photo-1582878826629-29b7ad1cdc43",
+        "reviews": [
+            {
+            "id": "rev20",
+            "rating": 4.0,
+            "text": "Pho saboroso e rolos primavera frescos!",
+            "author": "u25",
+            "date": "2024-05-15T18:05:00Z",
+            "replies": []
+            }
+        ]
+        },
+        {
+        "id": "r20",
+        "owner": "u50",
+        "name": "Brasileiro Grill",
+        "location": "Avenida da Liberdade 185, 1250 Lisboa",
+        "cuisineType": "Brazilian",
+        "rating": 4.5,
+        "image": "https://images.unsplash.com/photo-1555939594-58d7cb561ad1",
+        "reviews": [
+            {
+            "id": "rev21",
+            "rating": 4.6,
+            "text": "Churrasco fantástico e caipirinha autêntica!",
+            "author": "u22",
+            "date": "2024-05-17T20:50:00Z",
+            "replies": [
+                {
+                "id": "rpl8",
+                "text": "Muito obrigado! Esperamos vê-lo novamente.",
+                "author": "u50",
+                "date": "2024-05-18T10:35:00Z"
+                }
+            ]
+            }
+        ]
+        }
 ]

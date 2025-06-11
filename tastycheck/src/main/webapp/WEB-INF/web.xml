@@ -33,4 +33,16 @@
 		<servlet-name>HelloServlet</servlet-name>
 		<url-pattern>/hello</url-pattern>
 	</servlet-mapping>
+
+	<!-- User -->
+	<servlet>
+		<servlet-name>UserServlet</servlet-name>
+		<servlet-class>backend.Controllers.UserController</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>UserServlet</servlet-name>
+		<url-pattern>/user</url-pattern>
+	</servlet-mapping>
+
 </web-app>

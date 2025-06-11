@@ -1,5 +1,6 @@
 package backend.Services;
 
+import backend.Criteria.UserCriteria;
 import backend.DAOs.OwnerDAO;
 import backend.DAOs.UserDAO;
 import backend.Exceptions.UserException;
@@ -11,6 +12,7 @@ import org.orm.PersistentException;
 import org.mindrot.jbcrypt.BCrypt;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class UserService {
@@ -148,4 +150,16 @@ public class UserService {
 		Owner owner = getOwnerByUsername(username);
 		return new ArrayList<>(owner.getRestaurants());
 	}
+
+	public List<User> listAllUsers() {
+		try {
+			UserCriteria criteria = new UserCriteria();
+			// Sem filtros → devolve todos os utilizadores
+			return List.of(criteria.listUser());
+		} catch (Exception e) {
+			e.printStackTrace();
+			return Collections.emptyList();
+		}
+	}
+
 }

@@ -1,16 +1,30 @@
 <script setup>
 
-import { onMounted, onUnmounted, ref, watch } from "vue";
+import { onMounted, onUnmounted, ref, watch, computed } from "vue";
 import HeaderComponent from './MainPage/HeaderComponent.vue';
 import TopNavbar from './MainPage/TopNavbar.vue';
 import SearchBar from './MainPage/SearchBar.vue';
 import PresentationCounter from "./MainPage/PresentationCounter.vue";
 import RestaurantCarousel from "./RestaurantBlock/RestauranteCarousel.vue";
-import RestaurantMap from "./RestaurantBlock/RestaurantMap.vue";
+import RestaurantMap from "./Maps/RestaurantMap.vue";
+import Footer from "./Footer.vue";
 import restaurantesData from '../dataTesting/restaurantes.json';
 
 const headerBgImage = '/img/header-bg.webp';
-const restaurants = ref(restaurantesData.slice(0, 5)); // Taking the first 5 restaurants
+// Adaptando os restaurantes para o formato compatível com o componente
+const restaurants = computed(() => {
+  return restaurantesData.slice(0, 5).map(r => ({
+    ...r,
+    category: r.cuisineType // Mapeando cuisineType para category para manter compatibilidade
+  }));
+});
+
+const NearbyRestaurants = computed(() => {
+  return restaurantesData.slice(restaurantesData.length - 7).map(r => ({
+    ...r,
+    category: r.cuisineType 
+  }));
+});
 const body = document.getElementsByTagName("body")[0];
 
 const showMapModal = ref(false)
@@ -59,7 +73,13 @@ async function loadRestaurantsCoords() {
   const promises = restaurantesData.slice(0, 5).map(async r => {
     const coords = await geocodeAddress(r.location)
     return coords
-      ? { ...r, lat: coords.lat, lng: coords.lng }
+      ? { 
+          ...r, 
+          lat: coords.lat, 
+          lng: coords.lng,
+          // Garantindo compatibilidade com qualquer versão do JSON
+          category: r.cuisineType || r.category 
+        }
       : null
   })
   const results = await Promise.all(promises)
@@ -121,7 +141,7 @@ onUnmounted(() => {
         VEJA A LISTA COMPLETA &rsaquo;
       </button>
     </div>
-    <div class="h-[190px] w-auto mt-2 mb-2 overflow-hidden rounded-lg">
+    <div class="h-[190px] max-w-[50%] mt-2 mb-2 overflow-hidden rounded-lg">
       <img
         src="../../public/img/top100.png"
         alt="Prato delicioso"
@@ -131,35 +151,35 @@ onUnmounted(() => {
   </div>
 
   <!-- MAPA -->
-  <div v-if="showMapModal"
-       class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 overflow-auto">
-   <div class="bg-white rounded-lg overflow-hidden w-[90vw] max-w-5xl">
-     <div class="flex justify-between items-center px-6 py-3 border-b">
-       <h3 class="text-xl font-semibold">Mapa de Restaurantes</h3>
-       <button
-         @click="showMapModal = false"
-         class="text-gray-600 hover:text-gray-800 text-2xl leading-none"
-       >
-         &times;
-       </button>
-     </div>
-     <div class="p-4 h-[75vh]">
-       <RestaurantMap
-         :center="[userLocation.lat, userLocation.lng]"
-         :restaurants="restaurantsWithCoords"
-         class="h-full w-full"
-       />
-     </div>
-   </div>
- </div>
+  <div v-if="showMapModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 overflow-auto">
+    <div class="bg-white rounded-lg w-[90vw] max-w-5xl">
+      <div class="flex justify-between items-center px-6 py-3 border-b">
+        <h3 class="text-xl font-semibold">Mapa de Restaurantes</h3>
+        <button @click="showMapModal = false" class="text-gray-600 hover:text-gray-800 text-2xl">×</button>
+      </div>
+      <div class="p-4 h-[75vh]">
+        <RestaurantMap
+          :center="[userLocation.lat, userLocation.lng]"
+          :restaurants="restaurantsWithCoords"
+          class="h-full w-full"
+        />
+      </div>
+    </div>
+  </div>
 
+ <RestaurantCarousel :title="'Perto de si'" :restaurants="NearbyRestaurants" :visibleCount="4"/>
 
-  
+ <Footer />
 
 </template>
 
 <style scoped>
 /* Mantendo o estilo existente para compatibilidade, mas usando primariamente Tailwind nas classes */
+
+html, body {
+  overflow-x: hidden;
+  max-width: 100%;
+}
 
 .container {
   height: 100%;

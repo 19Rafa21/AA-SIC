@@ -1,12 +1,12 @@
 <template>
-  <div class="restaurant-card">
+  <div class="restaurant-card" @click="navigateToDetails">
     <img
       class="restaurant-card__image"
       :src="restaurant.image"
       :alt="restaurant.name"
     />
     <div class="restaurant-card__info">
-      <span class="restaurant-card__category">{{ restaurant.category }}</span>
+      <span class="restaurant-card__category">{{ restaurant.category || restaurant.cuisineType }}</span>
       <h2 class="restaurant-card__name">{{ restaurant.name }}</h2>
       <div class="restaurant-card__meta">
         <span class="restaurant-card__rating">
@@ -14,7 +14,7 @@
         </span>
         <span class="restaurant-card__location">{{ restaurant.location }}</span>
       </div>
-      <div class="restaurant-card__price">Preço médio: {{ formatPrice(restaurant.averagePrice) }}</div>
+      <div class="restaurant-card__price" v-if="restaurant.averagePrice">Preço médio: {{ formatPrice(restaurant.averagePrice) }}</div>
     </div>
   </div>
 </template>
@@ -28,11 +28,10 @@ export default {
       required: true,
       validator(obj) {
         return (
-          typeof obj.id === 'number' &&
+          (typeof obj.id === 'string' || typeof obj.id === 'number') &&
           typeof obj.name === 'string' &&
-          typeof obj.category === 'string' &&
+          (typeof obj.category === 'string' || typeof obj.cuisineType === 'string') &&
           typeof obj.rating === 'number' &&
-          typeof obj.averagePrice === 'number' &&
           typeof obj.location === 'string' &&
           typeof obj.image === 'string'
         );
@@ -41,8 +40,14 @@ export default {
   },
   methods: {
     formatPrice(value) {
-      // formata como '25 €'
       return value + ' €';
+    },
+    navigateToDetails() {
+      this.$router.push({ 
+        name: 'RestaurantDetails', 
+        params: { name: this.restaurant.name },
+        state: { restaurant: this.restaurant }
+      });
     }
   }
 };
@@ -87,20 +92,28 @@ export default {
 }
 
 .restaurant-card__meta {
-  font-size: 0.875rem;
-  color: #616161;
   display: flex;
-  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
 }
 
 .restaurant-card__rating .star {
   color: #ffc107;
   margin-right: 4px;
+  flex-shrink: 0;
 }
 
 .restaurant-card__price {
   font-size: 0.875rem;
   color: #424242;
   margin-top: auto;
+}
+
+.restaurant-card__location {
+  flex: 1;
+  min-width: 0;              
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;       
 }
 </style>

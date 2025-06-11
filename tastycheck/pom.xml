@@ -25,6 +25,12 @@
             <version>5.4.10.Final</version> <!-- ou versão compatível com teu orm.jar -->
         </dependency>
 
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.10.1</version>
+        </dependency>
+
         <!-- PostgreSQL driver -->
         <dependency>
             <groupId>org.postgresql</groupId>
