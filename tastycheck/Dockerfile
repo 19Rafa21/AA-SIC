@@ -1,3 +1,14 @@
+# Stage 1: Build the application
+FROM maven:3.9.7-eclipse-temurin-21 AS build
+
+WORKDIR /app
+
+# Copia tudo (podes limitar a pasta se quiseres)
+COPY . .
+
+# Faz o build do WAR (e ignora testes se quiseres)
+RUN mvn clean package -DskipTests
+
 # Usa imagem WildFly base (ou FROM jboss/wildfly:26.1.3.Final se tiveres no Docker Hub)
 FROM quay.io/wildfly/wildfly:26.1.2.Final-jdk17
 
