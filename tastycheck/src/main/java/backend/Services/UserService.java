@@ -53,6 +53,20 @@ public class UserService {
 		return user;
 	}
 
+	public Owner getOwnerById(String id) throws PersistentException, UserException {
+		User user = UserDAO.getUserByORMID(id);
+
+		if (user == null) {
+			throw new UserException("User with ID: '" + id + "' does not exist");
+		}
+
+		if (!(user instanceof Owner)) {
+			throw new UserException("User with ID: '" + id + "' is not an Owner");
+		}
+
+		return (Owner) user;
+	}
+
 	public User getUserByUsername(String username) throws PersistentException, UserException {
 		User user = UserDAO.loadUserByQuery("username = '" + username + "'", null);
 		if (user == null) {
@@ -62,9 +76,9 @@ public class UserService {
 	}
 
 	public Owner getOwnerByUsername(String username) throws PersistentException, UserException {
-		Owner owner = OwnerDAO.loadOwnerByQuery("username = '" + username + "'", null);
+		Owner owner = OwnerDAO.loadOwnerByQuery("username = '" + username + "' AND Discriminator = 'Owner'", null);
 		if (owner == null) {
-			throw new UserException("User with username '" + username + "' does not exist");
+			throw new UserException("User with username '" + username + "' does not exist or isn't a owner!");
 		}
 		return owner;
 	}
