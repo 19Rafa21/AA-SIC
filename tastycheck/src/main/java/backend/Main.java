@@ -12,8 +12,22 @@ import java.util.List;
 public class Main {
 	public static void main(String[] args) {
 		try{
-
 			UserService userService = new UserService();
+
+			System.out.println("Listar todos os utilizadores:");
+			List<User> users = userService.listAllUsers();
+
+			if (users == null || users.isEmpty()) {
+				System.out.println("Nenhum utilizador encontrado.");
+			} else {
+				for (User user : users) {
+					System.out.println("ID: " + user.getId());
+					System.out.println("Nome: " + user.getUsername());
+					System.out.println("Email: " + user.getEmail());
+					System.out.println("-------------------------");
+				}
+			}
+			/*UserService userService = new UserService();
 			ReviewService reviewService = new ReviewService();
 			ReplyService replyService = new ReplyService();
 			//RestaurantService restaurantService = new RestaurantService();
@@ -35,7 +49,7 @@ public class Main {
 			reply.setData(new Date());
 
 			replyService.registerReply(user1,review,reply);
-
+			*/
 
 			//Review review = reviewService.getReviewById("rv1");
 			//reviewService.deleteReview(review);
@@ -56,8 +70,6 @@ public class Main {
 			AASICPersistentManager.instance().disposePersistentManager();
 		} catch (PersistentException e) {
 			e.printStackTrace();
-		} catch (UserException e) {
-			throw new RuntimeException(e);
 		}
 	}
 }
