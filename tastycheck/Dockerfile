@@ -16,7 +16,7 @@ FROM quay.io/wildfly/wildfly:26.1.2.Final-jdk17
 COPY modules/orm /opt/jboss/wildfly/modules/com/orm
 
 # Copia o teu WAR para deployments
-COPY target/tastycheck.war /opt/jboss/wildfly/standalone/deployments/
+COPY --from=build /app/target/tastycheck.war /opt/jboss/wildfly/standalone/deployments/
 
 # Expõe a porta HTTP
 EXPOSE 8080
