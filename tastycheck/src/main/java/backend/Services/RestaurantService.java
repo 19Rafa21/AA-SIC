@@ -32,8 +32,12 @@ public class RestaurantService {
 
     public boolean updateRestaurant(RestaurantDTO dto) {
         try {
-            Restaurant r = toRestaurant(dto);
-            restaurantDAO.save(r);  // O mesmo método pode fazer update se o ID já existir
+            Restaurant r2 = getRestaurantById(dto.getId());
+
+            r2 = toRestaurantEdit(dto,r2);
+
+            restaurantDAO.save(r2);
+
             return true;
         } catch (Exception e) {
             e.printStackTrace();
@@ -150,6 +154,17 @@ public class RestaurantService {
     public static Restaurant toRestaurant(RestaurantDTO dto) {
         Restaurant restaurant = new Restaurant();
         restaurant.setId(UUID.randomUUID().toString());
+        restaurant.setName(dto.getName());
+        restaurant.setLocation(dto.getLocation());
+        restaurant.setCuisineType(dto.getCuisineType());
+        restaurant.setOwner(dto.getOwner());
+        restaurant.setImage(dto.getImage());
+        restaurant.setRating(0.0);
+
+        return restaurant;
+    }
+
+    public static Restaurant toRestaurantEdit(RestaurantDTO dto, Restaurant restaurant) {
         restaurant.setName(dto.getName());
         restaurant.setLocation(dto.getLocation());
         restaurant.setCuisineType(dto.getCuisineType());

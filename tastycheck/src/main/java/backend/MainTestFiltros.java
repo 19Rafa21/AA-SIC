@@ -14,10 +14,10 @@ public class MainTestFiltros {
             RestaurantService restaurantService = new RestaurantService();
 
             // Filtros aplicados
-            String nome = "Sabores do Norte";
-            String tipoCozinha = null;
-            String cidade = null;
-            Double avaliacaoMin = 4.5;
+            String nome = null;
+            String tipoCozinha = "Italiana";
+            String cidade = "Lisboa";
+            Double avaliacaoMin = 3.0;
 
             List<Restaurant> resultados = restaurantService.searchWithAllFilters(nome, tipoCozinha, cidade, avaliacaoMin);
 
