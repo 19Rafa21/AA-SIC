@@ -1,5 +1,6 @@
 package backend.Controllers;
 
+import backend.DTOs.Reply.ReplyDTO;
 import backend.DTOs.Restaurant.RestaurantDTO;
 import backend.DTOs.Review.RegisterReviewDTO;
 import backend.DTOs.Review.ReviewDTO;
@@ -20,6 +21,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import com.google.gson.Gson;
 import org.orm.PersistentException;
@@ -38,6 +40,8 @@ public class ReviewController extends HttpServlet {
 
 		String pathInfo = request.getPathInfo();
 		//System.out.println("PathInfo: " + pathInfo);
+		Gson gson = new Gson();
+
 
 		response.setCharacterEncoding("UTF-8");
 		response.setContentType("application/json; charset=UTF-8");
@@ -48,7 +52,6 @@ public class ReviewController extends HttpServlet {
 				List<ReviewDTO> dtos = reviews.stream()
 						.map(ReviewDTO::new)
 						.toList();
-				Gson gson = new Gson();
 				response.getWriter().println(gson.toJson(dtos));
 
 			} else {
@@ -63,12 +66,10 @@ public class ReviewController extends HttpServlet {
 					}
 
 					if (parts.length == 2) {
-						Gson gson = new Gson();
 						ReviewDTO reviewDTO = new ReviewDTO(review);
 						response.getWriter().println(gson.toJson(reviewDTO));
 					} else if (parts.length == 3) {
 						String subResource = parts[2];
-						Gson gson = new Gson();
 
 						if ("restaurant".equals(subResource)) {
 							RestaurantDTO restaurantDTO = new RestaurantDTO(review.getRestaurant());
@@ -76,6 +77,12 @@ public class ReviewController extends HttpServlet {
 						} else if ("author".equals(subResource)) {
 							UserDTO userDTO = new UserDTO(review.getAuthor());
 							response.getWriter().println(gson.toJson(userDTO));
+						} else if ("replies".equals(subResource)) {
+							List<ReplyDTO> replyDTOs = review.getReplies().stream()
+									.map(ReplyDTO::new)
+									.toList();
+
+							response.getWriter().println(gson.toJson(replyDTOs));
 						} else {
 							response.sendError(HttpServletResponse.SC_NOT_FOUND, "Sub-recurso não encontrado.");
 						}
