@@ -4,12 +4,14 @@ import backend.DAOs.RestaurantDAO;
 import backend.DAOs.ReviewDAO;
 import backend.DAOs.UserDAO;
 import backend.DTOs.Review.RegisterReviewDTO;
+import backend.DTOs.Review.UpdateReviewDTO;
 import backend.Exceptions.UserException;
 import backend.Models.Restaurant;
 import backend.Models.Review;
 import backend.Models.User;
 import org.orm.PersistentException;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -120,7 +122,30 @@ public class ReviewService {
 
 	}
 
-	public boolean updateReview(Review review) throws  PersistentException {
+	public boolean updateReview(String reviewId, UpdateReviewDTO updateDTO) throws  PersistentException {
+		Review review = getReviewById(reviewId);
+		if (review == null) {
+			throw new IllegalArgumentException("Review com ID '" + reviewId + "' não existe.");
+		}
+
+		boolean hasChanges = false;
+
+		if (updateDTO.getText() != null && !updateDTO.getText().isEmpty()) {
+			review.setText(updateDTO.getText());
+			hasChanges = true;
+		}
+
+		if (updateDTO.getRating() != null) {
+			review.setRating(updateDTO.getRating());
+			hasChanges = true;
+		}
+
+		if (!hasChanges) {
+			throw new IllegalArgumentException("Nenhum campo fornecido para atualizar.");
+		}
+
+		review.setData(new Date());
+
 		return  ReviewDAO.save(review);
 	}
 
