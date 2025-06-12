@@ -9,7 +9,7 @@
      >
        <!-- Avatar -->
        <img
-         src="/img/avatar.png"
+         src="/img/avatar.jpg"
          alt="Avatar"
          class="user-avatar"
        />
