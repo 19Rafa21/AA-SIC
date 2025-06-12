@@ -56,4 +56,15 @@
 		<url-pattern>/restaurant</url-pattern>
 	</servlet-mapping>
 
+	<!-- Review-->
+	<servlet>
+		<servlet-name>ReviewServlet</servlet-name>
+		<servlet-class>backend.Controllers.ReviewController</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>ReviewServlet</servlet-name>
+		<url-pattern>/review/*</url-pattern>
+	</servlet-mapping>
+
 </web-app>

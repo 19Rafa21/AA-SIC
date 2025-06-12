@@ -1,6 +1,8 @@
 
 package backend.DTOs;
 
+import backend.Models.User;
+
 public class UserDTO {
     private String id;
     private String username;
@@ -10,6 +12,12 @@ public class UserDTO {
         this.id = id;
         this.username = username;
         this.email = email;
+    }
+
+    public UserDTO(User user) {
+        this.id = user.getId();
+        this.username = user.getUsername();
+        this.email = user.getEmail();
     }
 
     public String getUsername() {

@@ -2,6 +2,7 @@ package backend.Services;
 import backend.Criteria.RestaurantCriteria;
 import backend.DAOs.RestaurantDAO;
 import backend.DAOs.ReviewDAO;
+import backend.DTOs.RestaurantDTO;
 import backend.Models.Restaurant;
 import backend.Models.Review;
 import org.orm.PersistentException;

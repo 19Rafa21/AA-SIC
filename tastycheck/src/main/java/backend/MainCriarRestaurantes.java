@@ -28,7 +28,7 @@ public class MainCriarRestaurantes {
             r1.setRating(4.5);
             r1.setOwner(owner);
 
-            restaurantService.createRestaurante(r1);
+            //restaurantService.createRestaurante(r1);
 
             // Restaurante 2
             Restaurant r2 = new Restaurant();
@@ -39,7 +39,7 @@ public class MainCriarRestaurantes {
             r2.setRating(4.2);
             r2.setOwner(owner);
 
-            restaurantService.createRestaurante(r2);
+            //restaurantService.createRestaurante(r2);
 
             // Restaurante 3
             Restaurant r3 = new Restaurant();
@@ -50,7 +50,7 @@ public class MainCriarRestaurantes {
             r3.setRating(3.8);
             r3.setOwner(owner);
 
-            restaurantService.createRestaurante(r3);
+            //restaurantService.createRestaurante(r3);
 
             System.out.println("Restaurantes criados com sucesso!");
 
