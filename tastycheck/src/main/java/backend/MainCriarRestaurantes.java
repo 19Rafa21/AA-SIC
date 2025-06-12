@@ -29,6 +29,7 @@ public class MainCriarRestaurantes {
             r1.setRating(4.5);
             r1.setOwner(owner);
 
+
             restaurantService.createRestaurant(r1);
 
             // Restaurante 2
