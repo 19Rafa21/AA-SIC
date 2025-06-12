@@ -67,4 +67,15 @@
 		<url-pattern>/review/*</url-pattern>
 	</servlet-mapping>
 
+	<!-- Reply-->
+	<servlet>
+		<servlet-name>RepliesServlet</servlet-name>
+		<servlet-class>backend.Controllers.ReplyController</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>RepliesServlet</servlet-name>
+		<url-pattern>/reply/*</url-pattern>
+	</servlet-mapping>
+
 </web-app>
