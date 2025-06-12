@@ -39,7 +39,8 @@ public class ReviewController extends HttpServlet {
 		String pathInfo = request.getPathInfo();
 		//System.out.println("PathInfo: " + pathInfo);
 
-		response.setContentType("application/json");
+		response.setCharacterEncoding("UTF-8");
+		response.setContentType("application/json; charset=UTF-8");
 
 		try {
 			if (pathInfo == null || pathInfo.equals("/")) {
@@ -99,7 +100,8 @@ public class ReviewController extends HttpServlet {
 
 			boolean saved = reviewService.registerReview(reviewDTO);
 			if (saved) {
-				response.setContentType("application/json");
+				response.setCharacterEncoding("UTF-8");
+				response.setContentType("application/json; charset=UTF-8");
 				response.getWriter().println("{\"status\": \"review registado com sucesso\"}");
 			}
 
@@ -133,7 +135,8 @@ public class ReviewController extends HttpServlet {
 
 			reviewService.updateReview(id, updateDTO);
 
-			response.setContentType("application/json");
+			response.setCharacterEncoding("UTF-8");
+			response.setContentType("application/json; charset=UTF-8");
 			response.getWriter().println("{\"status\": \"Review atualizada com sucesso.\"}");
 
 		} catch (Exception e) {
@@ -162,10 +165,12 @@ public class ReviewController extends HttpServlet {
 
 			boolean deleted = reviewService.deleteReview(review);
 			if (deleted) {
-				response.setContentType("application/json");
+				response.setCharacterEncoding("UTF-8");
+				response.setContentType("application/json; charset=UTF-8");
 				response.getWriter().println("{\"status\": \"review removida com sucesso\"}");
 			} else {
-				response.setContentType("application/json");
+				response.setCharacterEncoding("UTF-8");
+				response.setContentType("application/json; charset=UTF-8");
 				response.getWriter().println("{\"status\": \"Erro ao remover a review\"}");
 			}
 
@@ -176,6 +181,7 @@ public class ReviewController extends HttpServlet {
 	}
 
 	private String readBodyJson(HttpServletRequest req) throws IOException {
+		req.setCharacterEncoding("UTF-8");
 		BufferedReader reader = req.getReader();
 		StringBuilder sb = new StringBuilder();
 		String line;

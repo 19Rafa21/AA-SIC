@@ -38,6 +38,8 @@ public class ReviewService {
 			ReviewDAO.save(review);
 			UserDAO.save(user);
 			RestaurantDAO.save(restaurant);
+			RestaurantService restaurantService = new RestaurantService();
+			restaurantService.updateRating(restaurant);
 
 			System.out.println("Review registado com sucesso!");
 
@@ -75,6 +77,8 @@ public class ReviewService {
 			ReviewDAO.save(review);
 			UserDAO.save(user);
 			RestaurantDAO.save(restaurant);
+			RestaurantService restaurantService = new RestaurantService();
+			restaurantService.updateRating(restaurant);
 
 			return true;
 		} catch (Exception e) {
@@ -114,6 +118,7 @@ public class ReviewService {
 			ReviewDAO.save(review);
 			UserDAO.save(user);
 			RestaurantDAO.save(restaurant);
+			restaurantService.updateRating(restaurant);
 
 			return true;
 		} catch (PersistentException | UserException e) {
@@ -146,7 +151,10 @@ public class ReviewService {
 
 		review.setData(new Date());
 
-		return  ReviewDAO.save(review);
+		ReviewDAO.save(review);
+		RestaurantService restaurantService = new RestaurantService();
+		restaurantService.updateRating(review.getRestaurant());
+		return true;
 	}
 
 	public Review getReviewById(String id) throws PersistentException {
@@ -175,6 +183,8 @@ public class ReviewService {
 			if (restaurant != null) {
 				restaurant.getReviews().remove(review);
 				RestaurantDAO.save(restaurant); // atualiza a lista de reviews
+				RestaurantService restaurantService = new RestaurantService();
+				restaurantService.updateRating(restaurant);
 			}
 
 			ReviewDAO.delete(review);
