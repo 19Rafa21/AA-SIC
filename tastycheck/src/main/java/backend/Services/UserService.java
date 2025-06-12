@@ -1,7 +1,11 @@
 package backend.Services;
 
+import backend.Criteria.UserCriteria;
 import backend.DAOs.OwnerDAO;
 import backend.DAOs.UserDAO;
+import backend.DTOs.EditUserDTO;
+import backend.DTOs.RestaurantDTO;
+import backend.DTOs.UserDTO;
 import backend.Exceptions.UserException;
 import backend.Models.Owner;
 import backend.Models.Restaurant;
@@ -11,39 +15,52 @@ import org.orm.PersistentException;
 import org.mindrot.jbcrypt.BCrypt;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
+
+import static backend.Services.RestaurantService.toRestaurantEdit;
 
 public class UserService {
 
-	public boolean registerUser(User user) throws PersistentException {
-		if (usernameExists(user.getUsername())) {
+	public boolean registerUser(UserDTO dto) throws PersistentException {
+		if (usernameExists(dto.getUsername())) {
 			throw new IllegalArgumentException("Username já existe!");
 		}
 
-		String hashedPassword = BCrypt.hashpw(user.getPassword(), BCrypt.gensalt());
-		user.setPassword(hashedPassword);
+		String hashedPassword = BCrypt.hashpw(dto.getPassword(), BCrypt.gensalt());
+		dto.setPassword(hashedPassword);
 
-		return UserDAO.save(user);
-	}
+		String discriminator = dto.getDiscriminator();
 
-	public boolean registerOwner(Owner owner) throws  PersistentException {
-		if (usernameExists(owner.getUsername())) {
-			throw new IllegalArgumentException("Username já existe!");
+		if (discriminator.equalsIgnoreCase("User")){
+			User user = toUser(dto);
+			return UserDAO.save(user);
+		}
+		else if (discriminator.equalsIgnoreCase("Owner")){
+			Owner user = toOwner(dto);
+			return UserDAO.save(user);
 		}
 
-		String hashedPassword = BCrypt.hashpw(owner.getPassword(), BCrypt.gensalt());
-		owner.setPassword(hashedPassword);
-
-		return OwnerDAO.save(owner);
+		return false;
 	}
 
-	public boolean updateUser(User user) throws  PersistentException {
-		return  UserDAO.save(user);
+
+	public boolean updateUser(EditUserDTO dto,String id) {
+		try {
+			User u2 = getUserById(id);
+
+			u2 = toEditUser(dto,u2);
+
+			UserDAO.save(u2);
+
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
 	}
 
-	public boolean updateOwner(Owner owner) throws  PersistentException {
-		return  OwnerDAO.save(owner);
-	}
 
 	public User getUserById(String id) throws PersistentException, UserException {
 		User user = UserDAO.getUserByORMID(id);
@@ -53,19 +70,6 @@ public class UserService {
 		return user;
 	}
 
-	public Owner getOwnerById(String id) throws PersistentException, UserException {
-		User user = UserDAO.getUserByORMID(id);
-
-		if (user == null) {
-			throw new UserException("User with ID: '" + id + "' does not exist");
-		}
-
-		if (!(user instanceof Owner)) {
-			throw new UserException("User with ID: '" + id + "' is not an Owner");
-		}
-
-		return (Owner) user;
-	}
 
 	public User getUserByUsername(String username) throws PersistentException, UserException {
 		User user = UserDAO.loadUserByQuery("username = '" + username + "'", null);
@@ -116,7 +120,10 @@ public class UserService {
 		}
 	}
 
-	public boolean deleteUser(User user) throws PersistentException {
+	public boolean deleteUser(String id) throws PersistentException, UserException {
+		User user = getUserById(id);
+		if(user==null) throw new UserException("User with ID: '" + id + "' does not exist");
+
 		return UserDAO.delete(user);
 	}
 
@@ -147,5 +154,41 @@ public class UserService {
 	public List<Restaurant> getRestaurantsByOwner(String username) throws PersistentException, UserException {
 		Owner owner = getOwnerByUsername(username);
 		return new ArrayList<>(owner.getRestaurants());
+	}
+
+	public List<User> listAllUsers() {
+		try {
+			UserCriteria criteria = new UserCriteria();
+			// Sem filtros → devolve todos os utilizadores
+			return List.of(criteria.listUser());
+		} catch (Exception e) {
+			e.printStackTrace();
+			return Collections.emptyList();
+		}
+	}
+
+	public static User toUser(UserDTO dto) {
+		User user = new User();
+		user.setId(UUID.randomUUID().toString());
+		user.setUsername(dto.getUsername());
+		user.setEmail(dto.getEmail());
+		user.setPassword(dto.getPassword());
+		return user;
+	}
+
+	public static Owner toOwner(UserDTO dto) {
+		Owner user = new Owner();
+		user.setId(UUID.randomUUID().toString());
+		user.setUsername(dto.getUsername());
+		user.setEmail(dto.getEmail());
+		user.setPassword(dto.getPassword());
+		return user;
+	}
+
+	public static User toEditUser(EditUserDTO dto, User user) {
+		user.setUsername(dto.getUsername());
+		user.setEmail(dto.getEmail());
+		user.setPassword(dto.getPassword());
+		return user;
 	}
 }

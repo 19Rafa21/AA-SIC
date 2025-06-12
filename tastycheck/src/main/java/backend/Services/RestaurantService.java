@@ -1,9 +1,15 @@
 package backend.Services;
 import backend.Criteria.RestaurantCriteria;
 import backend.DAOs.RestaurantDAO;
+import backend.DAOs.ReviewDAO;
+import backend.DTOs.RestaurantDTO;
 import backend.Models.Restaurant;
+import backend.Models.Review;
+import org.orm.PersistentException;
 
 import java.util.List;
+import java.util.UUID;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class RestaurantService {
 
@@ -13,8 +19,9 @@ public class RestaurantService {
         restaurantDAO = new RestaurantDAO();
     }
 
-    public boolean createRestaurante(Restaurant r) {
+    public boolean createRestaurant(RestaurantDTO dto) {
         try {
+            Restaurant r = toRestaurant(dto);
             restaurantDAO.save(r);
             return true;
         } catch (Exception e) {
@@ -23,9 +30,14 @@ public class RestaurantService {
         }
     }
 
-    public boolean editRestaurant(Restaurant r) {
+    public boolean updateRestaurant(RestaurantDTO dto) {
         try {
-            restaurantDAO.save(r);  // O mesmo método pode fazer update se o ID já existir
+            Restaurant r2 = getRestaurantById(dto.getId());
+
+            r2 = toRestaurantEdit(dto,r2);
+
+            restaurantDAO.save(r2);
+
             return true;
         } catch (Exception e) {
             e.printStackTrace();
@@ -131,6 +143,35 @@ public class RestaurantService {
         }
     }
 
+    public Restaurant getRestaurantById(String id) throws PersistentException {
+        Restaurant restaurant = RestaurantDAO.getRestaurantByORMID(id);
+        if (restaurant == null) {
+            throw new IllegalArgumentException("Restaurant com ID '" + id + "' não existe.");
+        }
+        return restaurant;
+    }
 
+    public static Restaurant toRestaurant(RestaurantDTO dto) {
+        Restaurant restaurant = new Restaurant();
+        restaurant.setId(UUID.randomUUID().toString());
+        restaurant.setName(dto.getName());
+        restaurant.setLocation(dto.getLocation());
+        restaurant.setCuisineType(dto.getCuisineType());
+        restaurant.setOwner(dto.getOwner());
+        restaurant.setImage(dto.getImage());
+        restaurant.setRating(0.0);
 
+        return restaurant;
+    }
+
+    public static Restaurant toRestaurantEdit(RestaurantDTO dto, Restaurant restaurant) {
+        restaurant.setName(dto.getName());
+        restaurant.setLocation(dto.getLocation());
+        restaurant.setCuisineType(dto.getCuisineType());
+        restaurant.setOwner(dto.getOwner());
+        restaurant.setImage(dto.getImage());
+        restaurant.setRating(0.0);
+
+        return restaurant;
+    }
 }

@@ -312,7 +312,7 @@ public class RestaurantDAO {
 			throw new PersistentException(e);
 		}
 	}
-	
+
 	public static boolean delete(Restaurant restaurant) throws PersistentException {
 		try {
 			AASICPersistentManager.instance().deleteObject(restaurant);

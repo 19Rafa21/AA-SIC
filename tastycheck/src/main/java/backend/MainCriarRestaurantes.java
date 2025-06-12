@@ -1,4 +1,5 @@
 package backend;
+import backend.DTOs.RestaurantDTO;
 import backend.Models.Restaurant;
 import backend.Models.Owner;
 import backend.Services.RestaurantService;
@@ -17,10 +18,10 @@ public class MainCriarRestaurantes {
             owner.setId("o1"); // ID deve existir na BD
             owner.setUsername("chef_gino");
 
-            userService.registerOwner(owner);
+            //userService.registerOwner(owner);
 
             // Restaurante 1
-            Restaurant r1 = new Restaurant();
+            RestaurantDTO r1 = new RestaurantDTO();
             r1.setId("rest_001");
             r1.setName("Bella Italia");
             r1.setCuisineType("Italiana");
@@ -28,10 +29,11 @@ public class MainCriarRestaurantes {
             r1.setRating(4.5);
             r1.setOwner(owner);
 
-            restaurantService.createRestaurante(r1);
+
+            restaurantService.createRestaurant(r1);
 
             // Restaurante 2
-            Restaurant r2 = new Restaurant();
+            RestaurantDTO r2 = new RestaurantDTO();
             r2.setId("rest_002");
             r2.setName("Sabores do Norte");
             r2.setCuisineType("Portuguesa");
@@ -39,10 +41,10 @@ public class MainCriarRestaurantes {
             r2.setRating(4.2);
             r2.setOwner(owner);
 
-            restaurantService.createRestaurante(r2);
+            restaurantService.createRestaurant(r2);
 
             // Restaurante 3
-            Restaurant r3 = new Restaurant();
+            RestaurantDTO r3 = new RestaurantDTO();
             r3.setId("rest_003");
             r3.setName("Pasta & Pesto");
             r3.setCuisineType("Italiana");
@@ -50,7 +52,7 @@ public class MainCriarRestaurantes {
             r3.setRating(3.8);
             r3.setOwner(owner);
 
-            restaurantService.createRestaurante(r3);
+            restaurantService.createRestaurant(r3);
 
             System.out.println("Restaurantes criados com sucesso!");
 
