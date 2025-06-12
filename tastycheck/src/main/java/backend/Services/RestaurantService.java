@@ -174,4 +174,18 @@ public class RestaurantService {
 
         return restaurant;
     }
+
+    public void updateRating(Restaurant restaurant) throws PersistentException {
+        try {
+            double avgRating = restaurant.getReviews().stream()
+                    .mapToDouble(Review::getRating)
+                    .average()
+                    .orElse(0.0);
+
+            restaurant.setRating(avgRating);
+            RestaurantDAO.save(restaurant);
+        } catch (PersistentException e) {
+	        throw new RuntimeException(e);
+        }
+    }
 }
