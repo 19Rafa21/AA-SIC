@@ -18,6 +18,7 @@ import java.util.Set;
 
 public class Restaurant {
 	public Restaurant() {
+		this.rating = 0.0;
 		this.reviews = new HashSet<>();
 	}
 	

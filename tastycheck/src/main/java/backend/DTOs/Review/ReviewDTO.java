@@ -2,19 +2,25 @@ package backend.DTOs.Review;
 
 import backend.Models.Review;
 
+import java.util.Date;
+
 public class ReviewDTO {
 	private String id;
 	private String text;
 	private Double rating;
-	private String userId; // ou username
-	private String restaurantId; // ou nome
+	private String userId;
+	private String username;
+	private String restaurantId;
+	private Date date;
 
 	public ReviewDTO(Review review) {
 		this.id = review.getId();
 		this.text = review.getText();
 		this.rating = review.getRating();
 		this.userId = review.getAuthor() != null ? review.getAuthor().getId() : null;
+		this.username = review.getAuthor() != null ? review.getAuthor().getUsername() : null;
 		this.restaurantId = review.getRestaurant() != null ? review.getRestaurant().getId() : null;
+		this.date = review.getData();
 	}
 
 	public String getId() {
@@ -55,5 +61,21 @@ public class ReviewDTO {
 
 	public void setRestaurantId(String restaurantId) {
 		this.restaurantId = restaurantId;
+	}
+
+	public Date getDate() {
+		return date;
+	}
+
+	public void setDate(Date date) {
+		this.date = date;
+	}
+
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
 	}
 }
