@@ -3,6 +3,7 @@ package backend.Controllers;
 import backend.DTOs.Restaurant.RestaurantDTO;
 import backend.DTOs.Review.RegisterReviewDTO;
 import backend.DTOs.Review.ReviewDTO;
+import backend.DTOs.Review.UpdateReviewDTO;
 import backend.DTOs.UserDTO;
 import backend.Exceptions.UserException;
 import backend.Models.Restaurant;
@@ -35,14 +36,13 @@ public class ReviewController extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-		String pathInfo = request.getPathInfo(); // isto vai ser /abc123 ou /abc123/restaurant etc.
-		System.out.println("PathInfo: " + pathInfo);
+		String pathInfo = request.getPathInfo();
+		//System.out.println("PathInfo: " + pathInfo);
 
 		response.setContentType("application/json");
 
 		try {
 			if (pathInfo == null || pathInfo.equals("/")) {
-				// → LISTA TODAS AS REVIEWS
 				List<Review> reviews = reviewService.getAllReviews();
 				List<ReviewDTO> dtos = reviews.stream()
 						.map(ReviewDTO::new)
@@ -51,7 +51,6 @@ public class ReviewController extends HttpServlet {
 				response.getWriter().println(gson.toJson(dtos));
 
 			} else {
-				// Trata paths como /{id} ou /{id}/restaurant ou /{id}/author
 				String[] parts = pathInfo.split("/");
 				if (parts.length >= 2) {
 					String reviewId = parts[1];
@@ -63,7 +62,6 @@ public class ReviewController extends HttpServlet {
 					}
 
 					if (parts.length == 2) {
-						// → DEVOLVE A REVIEW COM AQUELA ID
 						Gson gson = new Gson();
 						ReviewDTO reviewDTO = new ReviewDTO(review);
 						response.getWriter().println(gson.toJson(reviewDTO));
@@ -112,6 +110,69 @@ public class ReviewController extends HttpServlet {
 			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Erro interno: " + e.getMessage());
 		}
 
+	}
+
+	@Override
+	protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		String pathInfo = request.getPathInfo();
+		if (pathInfo == null || pathInfo.equals("/")) {
+			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "ID da review é obrigatório na URL.");
+			return;
+		}
+
+		String id = pathInfo.substring(1);
+
+		try {
+			Gson gson = new Gson();
+			UpdateReviewDTO updateDTO = gson.fromJson(readBodyJson(request), UpdateReviewDTO.class);
+
+			if ((updateDTO.getText() == null || updateDTO.getText().isEmpty()) && updateDTO.getRating() == null) {
+				response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Nenhum campo fornecido para atualizar.");
+				return;
+			}
+
+			reviewService.updateReview(id, updateDTO);
+
+			response.setContentType("application/json");
+			response.getWriter().println("{\"status\": \"Review atualizada com sucesso.\"}");
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Erro interno: " + e.getMessage());
+		}
+	}
+
+	@Override
+	protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		String pathInfo = request.getPathInfo();
+
+		try {
+			if (pathInfo == null || pathInfo.equals("/") || pathInfo.split("/").length < 2) {
+				response.sendError(HttpServletResponse.SC_BAD_REQUEST, "ID da review não especificado.");
+				return;
+			}
+
+			String reviewId = pathInfo.split("/")[1];
+
+			Review review = reviewService.getReviewById(reviewId);
+			if (review == null) {
+				response.sendError(HttpServletResponse.SC_NOT_FOUND, "Review não encontrada.");
+				return;
+			}
+
+			boolean deleted = reviewService.deleteReview(review);
+			if (deleted) {
+				response.setContentType("application/json");
+				response.getWriter().println("{\"status\": \"review removida com sucesso\"}");
+			} else {
+				response.setContentType("application/json");
+				response.getWriter().println("{\"status\": \"Erro ao remover a review\"}");
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Erro interno: " + e.getMessage());
+		}
 	}
 
 	private String readBodyJson(HttpServletRequest req) throws IOException {
