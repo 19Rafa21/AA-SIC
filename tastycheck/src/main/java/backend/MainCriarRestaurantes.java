@@ -18,7 +18,7 @@ public class MainCriarRestaurantes {
             owner.setId("o1"); // ID deve existir na BD
             owner.setUsername("chef_gino");
 
-            userService.registerOwner(owner);
+            //userService.registerOwner(owner);
 
             // Restaurante 1
             RestaurantDTO r1 = new RestaurantDTO();

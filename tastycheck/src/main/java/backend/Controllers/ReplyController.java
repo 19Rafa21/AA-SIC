@@ -49,7 +49,7 @@ public class ReplyController extends HttpServlet {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Caminho inválido");
         }
     }
-
+/*
     // POST: /api/replies/review/{reviewId}
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -159,5 +159,5 @@ public class ReplyController extends HttpServlet {
             sb.append(line);
         }
         return sb.toString();
-    }
+    }*/
 }

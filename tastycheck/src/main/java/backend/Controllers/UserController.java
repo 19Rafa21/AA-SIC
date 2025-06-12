@@ -1,104 +1,179 @@
 package backend.Controllers;
 
-import backend.DAOs.UserDAO;
+import backend.DTOs.EditUserDTO;
+import backend.DTOs.Review.ReviewDTO;
 import backend.DTOs.UserDTO;
-import backend.Exceptions.UserException;
+import backend.Models.Review;
 import backend.Models.User;
 import backend.Services.UserService;
-import org.orm.PersistentException;
+import backend.Exceptions.UserException;
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import org.orm.PersistentException;
+
 import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.*;
+import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.List;
-import java.util.stream.Collectors;
 
-import static java.lang.System.out;
-
+@WebServlet("/users")
 public class UserController extends HttpServlet {
 
-    private UserService userService;
+    private final UserService userService = new UserService();
 
     @Override
-    public void init() throws ServletException {
-        userService = new UserService();
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        UserDTO dto;
+        try {
+            dto = parseUserDTO(req);
+            userService.registerUser(dto);
+            resp.setContentType("application/json");
+            resp.setStatus(HttpServletResponse.SC_OK);
+            resp.getWriter().write("{\"message\": \"Utilizador criado com sucesso\"}");
+        } catch (Exception e) {
+            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
+        }
     }
 
+    @Override
+    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        EditUserDTO dto;
+        try {
+            String pathInfo = req.getPathInfo();
+            if (pathInfo == null || pathInfo.equals("/")) {
+                resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "ID do user é obrigatório na URL.");
+                return;
+            }
+            String id = pathInfo.substring(1);
+
+            dto = parseEditUserDTO(req);
+            userService.updateUser(dto, id);
+            resp.setContentType("application/json");
+            resp.setStatus(HttpServletResponse.SC_OK);
+            resp.getWriter().write("{\"message\": \"Utilizador atualizado com sucesso\"}");
+        } catch (Exception e) {
+            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
+        }
+    }
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        String action = request.getParameter("action");
+    protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String pathInfo = request.getPathInfo();
 
         try {
-            if ("list".equals(action)) {
-                List<User> users = userService.listAllUsers();
-                List<UserDTO> dtos = users.stream()
-                        .map(u -> new UserDTO(u.getId(), u.getUsername(), u.getEmail()))
-                        .collect(Collectors.toList());
-
-                Gson gson = new Gson();
-                out.println(gson.toJson(dtos));
-
-                response.setContentType("application/json");
-                response.setCharacterEncoding("UTF-8");
-                response.getWriter().write(gson.toJson(dtos));
-            } else {
-                response.sendError(HttpServletResponse.SC_NOT_FOUND);
+            if (pathInfo == null || pathInfo.equals("/") || pathInfo.split("/").length < 2) {
+                response.sendError(HttpServletResponse.SC_BAD_REQUEST, "ID do utilizador não especificado.");
+                return;
             }
+
+            String userId = pathInfo.split("/")[1];
+
+            User user = userService.getUserById(userId);
+            if (user == null) {
+                response.sendError(HttpServletResponse.SC_NOT_FOUND, "Utilizador não encontrado.");
+                return;
+            }
+
+            boolean deleted = userService.deleteUser(userId);
+            response.setContentType("application/json");
+            if (deleted) {
+                response.getWriter().println("{\"status\": \"Utilizador removido com sucesso\"}");
+            } else {
+                response.getWriter().println("{\"status\": \"Erro ao remover o utilizador\"}");
+            }
+
+        } catch (NumberFormatException e) {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "ID do utilizador inválido.");
         } catch (Exception e) {
-            e.printStackTrace(); // Vai aparecer na consola
+            e.printStackTrace();
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Erro interno: " + e.getMessage());
         }
     }
 
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String action = request.getParameter("action");
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String pathInfo = request.getPathInfo();
+        response.setContentType("application/json");
 
-        if ("create".equals(action)) {
-            String id = request.getParameter("id");
-            String username = request.getParameter("username");
-            String email = request.getParameter("email");
-            String password = request.getParameter("password");
+        try {
+            Gson gson = new Gson();
 
-            User user = new User(id,username, email, password);
-            try {
-                userService.registerUser(user);
-            } catch (PersistentException e) {
-                throw new RuntimeException(e);
+            if (pathInfo == null || pathInfo.equals("/")) {
+                // /users → listar todos os users
+                List<User> users = userService.listAllUsers();
+                List<UserDTO> dtos = users.stream()
+                        .map(user -> new UserDTO(user.getUsername(), user.getEmail(), user.getPassword(),user.getDiscriminator()))
+                        .toList();
+                response.getWriter().println(gson.toJson(dtos));
+
+            } else {
+                String[] parts = pathInfo.split("/");
+                if (parts.length >= 2) {
+                    String userId = parts[1];
+                    User user = userService.getUserById(userId);
+
+                    if (user == null) {
+                        response.sendError(HttpServletResponse.SC_NOT_FOUND, "Utilizador não encontrado.");
+                        return;
+                    }
+
+                    if (parts.length == 2) {
+                        // /users/{id} → detalhes do user
+                        UserDTO userDTO = new UserDTO(user.getUsername(), user.getEmail(), user.getPassword(),user.getDiscriminator());
+                        response.getWriter().println(gson.toJson(userDTO));
+
+                    } else if (parts.length == 3) {
+                        String subResource = parts[2];
+
+                        if ("reviews".equals(subResource)) {
+                            // /users/{id}/reviews → reviews feitas por este user
+                            List<Review> reviews = userService.getReviewsByUserId(userId); // ou: reviewService.getReviewsByAuthor(user)
+                            List<ReviewDTO> dtos = reviews.stream()
+                                    .map(ReviewDTO::new)
+                                    .toList();
+                            response.getWriter().println(gson.toJson(dtos));
+                        } else {
+                            response.sendError(HttpServletResponse.SC_NOT_FOUND, "Sub-recurso não encontrado.");
+                        }
+
+                    } else {
+                        response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Formato de URL inválido.");
+                    }
+
+                } else {
+                    response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Formato de URL inválido.");
+                }
             }
 
-            response.setContentType("application/json");
-            response.getWriter().println("{\"status\": \"utilizador criado com sucesso\"}");
-        } else if ("update".equals(action)) {
-            String id = request.getParameter("id");
-            String username = request.getParameter("username");
-            String email = request.getParameter("email");
-            String password = request.getParameter("password");
-
-            User user = new User(id, username, email, password);
-            try {
-                userService.registerUser(user);
-            } catch (PersistentException e) {
-                throw new RuntimeException(e);
-            }
-
-            response.getWriter().println("{\"status\": \"utilizador atualizado\"}");
-    } else if ("delete".equals(action)) {
-            String id = request.getParameter("id");
-
-            try {
-                User user= userService.getUserById(id);
-                userService.deleteUser(user);
-                response.getWriter().println("{\"status\": \"utilizador removido\"}");
-            } catch (PersistentException | UserException e) {
-                throw new RuntimeException(e);
-            }
-        } else {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Ação desconhecida.");
+        } catch (NumberFormatException e) {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "ID inválido.");
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Erro interno: " + e.getMessage());
         }
+    }
+
+
+    private UserDTO parseUserDTO(HttpServletRequest req) throws IOException {
+        Gson gson = new Gson();
+        return gson.fromJson(req.getReader(), UserDTO.class);
+    }
+
+    private EditUserDTO parseEditUserDTO(HttpServletRequest req) throws IOException {
+        Gson gson = new Gson();
+        return gson.fromJson(req.getReader(), EditUserDTO.class);
+    }
+
+    private JsonObject parseJson(HttpServletRequest req) throws IOException {
+        BufferedReader reader = req.getReader();
+        StringBuilder sb = new StringBuilder();
+        String line;
+        while ((line = reader.readLine()) != null) {
+            sb.append(line);
+        }
+        return new Gson().fromJson(sb.toString(), JsonObject.class);
     }
 }

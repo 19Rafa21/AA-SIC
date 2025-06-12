@@ -3,20 +3,18 @@ package backend.DTOs;
 
 import backend.Models.User;
 
-public class UserDTO {
+public class EditUserDTO {
     private String username;
     private String email;
     private String password;
-    private String discriminator;
 
-    public UserDTO(String username, String email, String password, String discriminator) {
+    public EditUserDTO(String username, String email, String password) {
         this.username = username;
         this.email = email;
         this.password = password;
-        this.discriminator = discriminator;
     }
 
-    public UserDTO(User user) {
+    public EditUserDTO(User user) {
         this.username = user.getUsername();
         this.email = user.getEmail();
     }
@@ -44,13 +42,5 @@ public class UserDTO {
     public void setPassword(String password) {
         this.password = password;
     }
-
-    public String getDiscriminator() {
-        return discriminator;
-    }
-
-    public void setDiscriminator(String discriminator) {
-        this.discriminator = discriminator;
-    }
-
 }
+
