@@ -1,9 +1,9 @@
 <template>
-  <div class="mt-5 bg-gray-100 p-6 rounded-xl">
+  <div class="mt-5 bg-gray-100 p-5 rounded-xl">
     <h2 class="text-2xl font-bold mb-4">Restaurantes Favoritos</h2>
     <div class="flex gap-4">
       <!-- Exemplo estático -->
-      <div class="w-10">
+      <div class="w-30">
         <div class="aspect-square mb-2">
           <img
             src="/img/top100.png"

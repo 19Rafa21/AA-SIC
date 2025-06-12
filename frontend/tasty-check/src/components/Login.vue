@@ -19,7 +19,18 @@ const login = () => {
     localStorage.setItem('user', JSON.stringify({
       name: 'admin',
       email: 'admin@tasty.pt',
-      avatar: '/img/avatar.png'
+      avatar: '/img/avatar.png',
+      role: 'proprietario'
+    }))
+    router.push('/')
+    setTimeout(() => location.reload(), 100)
+  } else if (email.value === 'cliente' && password.value === '123') {
+    localStorage.setItem('isLoggedIn', 'true')
+    localStorage.setItem('user', JSON.stringify({
+      name: 'Maria Cliente',
+      email: 'maria@tasty.pt',
+      avatar: 'cliente.png',
+      role: 'cliente'
     }))
     router.push('/')
     setTimeout(() => location.reload(), 100)
