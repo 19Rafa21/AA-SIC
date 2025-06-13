@@ -19,7 +19,7 @@ import java.util.Set;
 
 public class User {
 	public User() {
-		this.reviews = new HashSet<>();
+		this.restaurantsFav = new HashSet<>();
 	}
 
 	public User(String id, String username, String email, String password) {
@@ -27,7 +27,7 @@ public class User {
 		this.username = username;
 		this.email = email;
 		this.password = password;
-		this.reviews = new HashSet<>();
+		this.restaurantsFav = new HashSet<>();
 	}
 
 	public boolean equals(Object aObj) {
@@ -57,7 +57,7 @@ public class User {
 
 	private String avatar;
 
-	private Set<Review> reviews;
+	//private Set<Review> reviews;
 
 	private Set<Restaurant> restaurantsFav;
 	
@@ -107,13 +107,14 @@ public class User {
 		this.avatar = avatar;
 	}
 
-	public Set<Review> getReviews() {
+	/*public Set<Review> getReviews() {
 		return reviews;
 	}
 
 	public void setReviews(Set<Review> reviews) {
 		this.reviews = reviews;
 	}
+	 */
 
 	public Set<Restaurant> getRestaurantsFav() {
 		return restaurantsFav;

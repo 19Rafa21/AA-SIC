@@ -32,7 +32,6 @@ public class ReviewService {
 			review.setAuthor(user);
 			review.setRestaurant(restaurant);
 
-			user.getReviews().add(review);
 			restaurant.getReviews().add(review);
 
 			ReviewDAO.save(review);
@@ -71,7 +70,6 @@ public class ReviewService {
 			review.setAuthor(user);
 			review.setRestaurant(restaurant);
 
-			user.getReviews().add(review);
 			restaurant.getReviews().add(review);
 
 			ReviewDAO.save(review);
@@ -112,7 +110,6 @@ public class ReviewService {
 			review.setAuthor(user);
 			review.setRestaurant(restaurant);
 
-			user.getReviews().add(review);
 			restaurant.getReviews().add(review);
 
 			ReviewDAO.save(review);
@@ -172,13 +169,7 @@ public class ReviewService {
 				throw new IllegalArgumentException("Review não existe.");
 			}
 
-			User author = review.getAuthor();
 			Restaurant restaurant = review.getRestaurant();
-
-			if (author != null) {
-				author.getReviews().remove(review);
-				UserDAO.save(author); // atualiza a lista de reviews
-			}
 
 			if (restaurant != null) {
 				restaurant.getReviews().remove(review);
@@ -202,13 +193,7 @@ public class ReviewService {
 				throw new IllegalArgumentException("Review não existe.");
 			}
 
-			User author = review.getAuthor();
 			Restaurant restaurant = review.getRestaurant();
-
-			if (author != null) {
-				author.getReviews().remove(review);
-				UserDAO.save(author); // atualiza a lista de reviews
-			}
 
 			if (restaurant != null) {
 				restaurant.getReviews().remove(review);
@@ -222,16 +207,6 @@ public class ReviewService {
 			e.printStackTrace();
 			throw new PersistentException(e);
 		}
-	}
-
-	public List<Review> getReviewsByUser(User user) throws PersistentException {
-		return new ArrayList<>(user.getReviews());
-	}
-
-	public List<Review> getReviewsByUserId(String userId) throws PersistentException, UserException {
-		User user = UserDAO.getUserByORMID(userId);
-		if (user == null) throw new UserException("User com ID '" + userId + "' não existe.");
-		return new ArrayList<>(user.getReviews());
 	}
 
 	public List<Review> getReviewsByRestaurant(Restaurant restaurant) throws PersistentException {
