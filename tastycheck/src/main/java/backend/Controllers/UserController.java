@@ -61,7 +61,7 @@ public class UserController extends HttpServlet {
                     if ("favorites".equals(action)) {
                         String restaurantId = parts[3];
 
-                        Restaurant restaurant = restaurantService.getRestaurantById(restaurantId);
+                        Restaurant restaurant = restaurantService.getRestaurantByOrmID(restaurantId);
                         if (restaurant == null) {
                             resp.sendError(HttpServletResponse.SC_NOT_FOUND, "Restaurante não encontrado!");
                             return;
@@ -141,7 +141,7 @@ public class UserController extends HttpServlet {
                 if ("favorites".equals(action)){
                     String restaurantId = parts[3];
 
-                    Restaurant restaurant = restaurantService.getRestaurantById(restaurantId);
+                    Restaurant restaurant = restaurantService.getRestaurantByOrmID(restaurantId);
                     if (restaurant == null) {
                         response.sendError(HttpServletResponse.SC_NOT_FOUND, "Restaurante não encontrado.");
                         return;
