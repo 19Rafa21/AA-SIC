@@ -1,6 +1,7 @@
 package backend.Controllers;
 
 import backend.DTOs.RestaurantDTO;
+import backend.DTOs.RestaurantDetailsDTO;
 import backend.Exceptions.UserException;
 import backend.Models.Restaurant;
 import backend.Services.RestaurantService;
@@ -101,37 +102,88 @@ public class RestaurantController extends HttpServlet {
         }
     }
 
+
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        resp.setCharacterEncoding("UTF-8");
-        resp.setContentType("application/json; charset=UTF-8");
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        String pathInfo = req.getPathInfo();
 
         try {
-            List<Restaurant> results = restaurantService.searchWithAllFilters("","", "", 0.0);
+            if (pathInfo == null || pathInfo.equals("/")) {
+                List<Restaurant> results = restaurantService.searchWithAllFilters("","", "", 0.0);
 
-            StringBuilder json = new StringBuilder();
-            json.append("[");
+                StringBuilder json = new StringBuilder();
+                json.append("[");
 
-            for (int i = 0; i < results.size(); i++) {
-                Restaurant r = results.get(i);
-                json.append("{")
-                        .append("\"id\":").append(r.getId()).append(",")
-                        .append("\"name\":\"").append(r.getName()).append("\",")
-                        .append("\"location\":\"").append(r.getLocation()).append("\",")
-                        .append("\"cuisineType\":\"").append(r.getCuisineType()).append("\",")
-                        .append("\"rating\":").append(r.getRating())
-                        .append("}");
-                if (i < results.size() - 1) json.append(",");
+                for (int i = 0; i < results.size(); i++) {
+                    Restaurant r = results.get(i);
+                    json.append("{")
+                            .append("\"id\":").append(r.getId()).append(",")
+                            .append("\"name\":\"").append(r.getName()).append("\",")
+                            .append("\"location\":\"").append(r.getLocation()).append("\",")
+                            .append("\"cuisineType\":\"").append(r.getCuisineType()).append("\",")
+                            .append("\"rating\":").append(r.getRating())
+                            .append("\"image\":").append(r.getCoverImage())
+                            .append("}");
+                    if (i < results.size() - 1) json.append(",");
+                }
+
+                json.append("]");
+
+                //Responde com os resultados
+                resp.setStatus(HttpServletResponse.SC_OK);
+                resp.getWriter().write(json.toString());
+
+            } else {
+                // GET /restaurants/rest_001
+                String[] parts = pathInfo.split("/");
+
+                if (parts.length >= 2) {
+                    String id = parts[1];
+
+                    RestaurantDetailsDTO dto = restaurantService.getRestaurantById(id);
+
+                    StringBuilder json = new StringBuilder();
+                    json.append("{");
+                    json.append("\"id\":\"").append(dto.getId()).append("\",");
+                    json.append("\"name\":\"").append(dto.getName()).append("\",");
+                    json.append("\"owner\":\"").append(dto.getOwner()).append("\",");
+                    json.append("\"location\":\"").append(dto.getLocation()).append("\",");
+                    json.append("\"cuisineType\":\"").append(dto.getCuisineType()).append("\",");
+                    json.append("\"rating\":").append(dto.getRating()).append(",");
+                    json.append("\"image\":\"").append(dto.getImage()).append("\",");
+
+                    // menuImages
+                    json.append("\"menuImages\":[");
+                    List<String> menuImages = dto.getMenuImages();
+                    for (int i = 0; i < menuImages.size(); i++) {
+                        json.append("\"").append(menuImages.get(i)).append("\"");
+                        if (i < menuImages.size() - 1) json.append(",");
+                    }
+                    json.append("],");
+
+                    // foodImages
+                    json.append("\"foodImages\":[");
+                    List<String> foodImages = dto.getFoodImages();
+                    for (int i = 0; i < foodImages.size(); i++) {
+                        json.append("\"").append(foodImages.get(i)).append("\"");
+                        if (i < foodImages.size() - 1) json.append(",");
+                    }
+                    json.append("]");
+
+                    json.append("}");
+
+                    resp.setContentType("application/json");
+                    resp.setStatus(HttpServletResponse.SC_OK);
+                    resp.getWriter().write(json.toString());
+
+                } else {
+                    resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "ID de restaurante em falta.");
+                }
             }
 
-            json.append("]");
-
-            //Responde com os resultados
-            resp.setStatus(HttpServletResponse.SC_OK);
-            resp.getWriter().write(json.toString());
         } catch (Exception e) {
             e.printStackTrace();
-            resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Erro interno: " + e.getMessage());
+            resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Erro no servidor: " + e.getMessage());
         }
     }
 
@@ -139,9 +191,9 @@ public class RestaurantController extends HttpServlet {
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-        RestaurantDTO dto = null;
+        RestaurantDetailsDTO dto = null;
         try {
-            dto = parseRestaurantDTO(req);
+            dto = parseRestaurantDetailsDTO(req);
         } catch (PersistentException | UserException e) {
             resp.setContentType("application/json");
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -152,7 +204,7 @@ public class RestaurantController extends HttpServlet {
         // Verifica se o restaurante existe
         Restaurant existing;
         try {
-            existing = restaurantService.getRestaurantById(dto.getId());
+            existing = restaurantService.getRestaurantByOrmID(dto.getId());
             if (existing == null) {
                 resp.setContentType("application/json");
                 resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
@@ -223,6 +275,29 @@ public class RestaurantController extends HttpServlet {
         UserService us = new UserService();
         if (dto.getOwner() != null && dto.getOwner().getUsername() != null) {
             dto.setOwner(us.getOwnerByUsername(dto.getOwner().getUsername()));
+        }
+
+        return dto;
+    }
+
+    private RestaurantDetailsDTO parseRestaurantDetailsDTO(HttpServletRequest req) throws IOException, PersistentException, UserException {
+        //Lê o body do POST → jsonPayload
+        BufferedReader reader = req.getReader();
+        StringBuilder sb = new StringBuilder();
+        String line;
+        while ((line = reader.readLine()) != null) {
+            sb.append(line);
+        }
+        String jsonPayload = sb.toString();
+
+        //Converte o JSON → DTO
+        Gson gson = new Gson();
+        RestaurantDetailsDTO dto = gson.fromJson(jsonPayload, RestaurantDetailsDTO.class);
+
+        //Preenche o owner usando o username recebido (assumindo que vem dentro do JSON)
+        UserService us = new UserService();
+        if (dto.getOwner() != null && dto.getOwner() != null) {
+            dto.setOwner(us.getOwnerById(dto.getOwner()));
         }
 
         return dto;

@@ -4,7 +4,6 @@ import backend.Criteria.UserCriteria;
 import backend.DAOs.OwnerDAO;
 import backend.DAOs.UserDAO;
 import backend.DTOs.EditUserDTO;
-import backend.DTOs.RestaurantDTO;
 import backend.DTOs.UserDTO;
 import backend.Exceptions.UserException;
 import backend.Models.Owner;
@@ -18,8 +17,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
-
-import static backend.Services.RestaurantService.toRestaurantEdit;
 
 public class UserService {
 
@@ -68,6 +65,14 @@ public class UserService {
 			throw new UserException("User with ID: '" + id + "' does not exist");
 		}
 		return user;
+	}
+
+	public String getOwnerById(String id) throws PersistentException, UserException {
+		Owner user = (Owner) UserDAO.getUserByORMID(id);
+		if (user == null) {
+			throw new UserException("User with ID: '" + id + "' does not exist");
+		}
+		return user.getId();
 	}
 
 

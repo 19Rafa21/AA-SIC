@@ -94,7 +94,7 @@ public class ReviewService {
 			if (user == null) throw new UserException("User com ID '" + dto.getUserId() + "' não existe.");
 
 			RestaurantService restaurantService = new RestaurantService();
-			Restaurant restaurant = restaurantService.getRestaurantById(dto.getRestaurantId());
+			Restaurant restaurant = restaurantService.getRestaurantByOrmID(dto.getRestaurantId());
 			if (restaurant == null) throw new PersistentException("Restaurant com ID '" + dto.getRestaurantId() + "' não existe.");
 
 			String reviewId = UUID.randomUUID().toString();
