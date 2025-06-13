@@ -158,7 +158,6 @@ public class RestaurantService {
         restaurant.setLocation(dto.getLocation());
         restaurant.setCuisineType(dto.getCuisineType());
         restaurant.setOwner(dto.getOwner());
-        restaurant.setImage(dto.getImage());
         restaurant.setRating(0.0);
 
         return restaurant;
@@ -169,7 +168,6 @@ public class RestaurantService {
         restaurant.setLocation(dto.getLocation());
         restaurant.setCuisineType(dto.getCuisineType());
         restaurant.setOwner(dto.getOwner());
-        restaurant.setImage(dto.getImage());
         restaurant.setRating(0.0);
 
         return restaurant;

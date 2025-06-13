@@ -5,6 +5,7 @@ import backend.Exceptions.UserException;
 import backend.Models.Restaurant;
 import backend.Services.RestaurantService;
 import backend.Services.UserService;
+import backend.Utils.HttpRequestUtils;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import org.orm.PersistentException;
@@ -18,74 +19,120 @@ import java.util.List;
 
 public class RestaurantController extends HttpServlet {
 
-    private final RestaurantService restaurantService = new RestaurantService();
+    private RestaurantService restaurantService;
+    private Gson gson;
+
+    @Override
+    public void init() throws ServletException {
+        restaurantService = new RestaurantService();
+        this.gson = new Gson();
+    }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        RestaurantDTO dto = null;
+
+        String pathInfo = req.getPathInfo();
+
+        resp.setCharacterEncoding("UTF-8");
+        resp.setContentType("application/json; charset=UTF-8");
+
         try {
-            dto = parseRestaurantDTO(req);
-        } catch (PersistentException | UserException e) {
-            throw new RuntimeException(e);
+            if (pathInfo == null || pathInfo.equals("/")) {
+                RestaurantDTO dto = null;
+                try {
+                    dto = parseRestaurantDTO(req);
+                } catch (PersistentException | UserException e) {
+                    throw new RuntimeException(e);
+                }
+                restaurantService.createRestaurant(dto);
+                resp.setContentType("application/json");
+                resp.setStatus(HttpServletResponse.SC_OK);
+                resp.getWriter().write("{\"message\": \"Restaurante criado com sucesso\"}");
+            } else {
+                String[] parts = pathInfo.split("/");
+                if (parts.length >= 2) {
+                    String action = parts[1];
+
+                    if ("filters".equals(action)) {
+                        JsonObject jsonObject = gson.fromJson(HttpRequestUtils.readBodyJson(req), JsonObject.class);
+
+                        // Extrai os campos
+                        String name = jsonObject.get("name").getAsString();
+
+                        String location = jsonObject.get("location").getAsString();
+
+                        String cuisineType = jsonObject.get("cuisineType").getAsString();
+
+                        double rating = jsonObject.get("rating").getAsDouble(); // atenção ao nome correto
+
+                        List<Restaurant> results = restaurantService.searchWithAllFilters(name,cuisineType, location, rating);
+
+                        //Constrói JSON manualmente (podes substituir por Gson se preferires)
+                        StringBuilder json = new StringBuilder();
+                        json.append("[");
+
+                        for (int i = 0; i < results.size(); i++) {
+                            Restaurant r = results.get(i);
+                            json.append("{")
+                                    .append("\"id\":").append(r.getId()).append(",")
+                                    .append("\"name\":\"").append(r.getName()).append("\",")
+                                    .append("\"location\":\"").append(r.getLocation()).append("\",")
+                                    .append("\"cuisineType\":\"").append(r.getCuisineType()).append("\",")
+                                    .append("\"rating\":").append(r.getRating())
+                                    .append("}");
+                            if (i < results.size() - 1) json.append(",");
+                        }
+
+                        json.append("]");
+
+                        //Responde com os resultados
+                        resp.setStatus(HttpServletResponse.SC_OK);
+                        resp.getWriter().write(json.toString());
+                    } else {
+                        resp.sendError(HttpServletResponse.SC_NOT_FOUND, "Sub-recurso não encontrado.");
+                    }
+                } else {
+                    resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Formato de URL inválido.");
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Erro interno: " + e.getMessage());
         }
-        restaurantService.createRestaurant(dto);
-        resp.setContentType("application/json");
-        resp.setStatus(HttpServletResponse.SC_OK);
-        resp.getWriter().write("{\"message\": \"Restaurante criado com sucesso\"}");
     }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        resp.setContentType("application/json");
+        resp.setCharacterEncoding("UTF-8");
+        resp.setContentType("application/json; charset=UTF-8");
 
-        //Lê o body do GET como JSON
-        BufferedReader reader = req.getReader();
-        StringBuilder sb = new StringBuilder();
-        String line;
-        while ((line = reader.readLine()) != null) {
-            sb.append(line);
+        try {
+            List<Restaurant> results = restaurantService.searchWithAllFilters("","", "", 0.0);
+
+            StringBuilder json = new StringBuilder();
+            json.append("[");
+
+            for (int i = 0; i < results.size(); i++) {
+                Restaurant r = results.get(i);
+                json.append("{")
+                        .append("\"id\":").append(r.getId()).append(",")
+                        .append("\"name\":\"").append(r.getName()).append("\",")
+                        .append("\"location\":\"").append(r.getLocation()).append("\",")
+                        .append("\"cuisineType\":\"").append(r.getCuisineType()).append("\",")
+                        .append("\"rating\":").append(r.getRating())
+                        .append("}");
+                if (i < results.size() - 1) json.append(",");
+            }
+
+            json.append("]");
+
+            //Responde com os resultados
+            resp.setStatus(HttpServletResponse.SC_OK);
+            resp.getWriter().write(json.toString());
+        } catch (Exception e) {
+            e.printStackTrace();
+            resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Erro interno: " + e.getMessage());
         }
-        String jsonPayload = sb.toString();
-
-        //Converte para JsonObject
-        Gson gson = new Gson();
-        JsonObject jsonObject = gson.fromJson(jsonPayload, JsonObject.class);
-
-        // Extrai os campos
-        String name = jsonObject.get("name").getAsString();
-
-        String location = jsonObject.get("location").getAsString();
-
-        String cuisineType = jsonObject.get("cuisineType").getAsString();
-
-        double rating = jsonObject.get("rating").getAsDouble(); // atenção ao nome correto
-
-
-
-        List<Restaurant> results = restaurantService.searchWithAllFilters(name,cuisineType, location, rating);
-
-
-        //Constrói JSON manualmente (podes substituir por Gson se preferires)
-        StringBuilder json = new StringBuilder();
-        json.append("[");
-
-        for (int i = 0; i < results.size(); i++) {
-            Restaurant r = results.get(i);
-            json.append("{")
-                    .append("\"id\":").append(r.getId()).append(",")
-                    .append("\"name\":\"").append(r.getName()).append("\",")
-                    .append("\"location\":\"").append(r.getLocation()).append("\",")
-                    .append("\"cuisineType\":\"").append(r.getCuisineType()).append("\",")
-                    .append("\"rating\":").append(r.getRating())
-                    .append("}");
-            if (i < results.size() - 1) json.append(",");
-        }
-
-        json.append("]");
-
-        //Responde com os resultados
-        resp.setStatus(HttpServletResponse.SC_OK);
-        resp.getWriter().write(json.toString());
     }
 
 
