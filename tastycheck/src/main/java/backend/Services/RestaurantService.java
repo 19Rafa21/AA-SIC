@@ -148,7 +148,6 @@ public class RestaurantService {
 
         restaurant.setId(dto.getId());
         restaurant.setName(dto.getName());
-        restaurant.setOwner(OwnerDAO.getOwnerByORMID(dto.getOwner()));
         restaurant.setLocation(dto.getLocation());
         restaurant.setCuisineType(dto.getCuisineType());
         restaurant.setRating(dto.getRating());
