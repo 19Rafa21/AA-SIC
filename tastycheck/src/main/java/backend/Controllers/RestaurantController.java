@@ -149,7 +149,7 @@ public class RestaurantController extends HttpServlet {
                     json.append("\"owner\":\"").append(dto.getOwner()).append("\",");
                     json.append("\"location\":\"").append(dto.getLocation()).append("\",");
                     json.append("\"cuisineType\":\"").append(dto.getCuisineType()).append("\",");
-                    json.append("\"rating\":").append(dto.getRating()).append(",");
+                    json.append("\"rating\":").append(dto.getRating()).append("\",");
                     json.append("\"image\":\"").append(dto.getImage()).append("\",");
 
                     // menuImages

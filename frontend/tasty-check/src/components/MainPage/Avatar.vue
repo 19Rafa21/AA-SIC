@@ -209,6 +209,7 @@ watch(() => props.editable, (isEditing) => {
 .user-dropdown-container {
   position: relative;
   display: inline-block;
+  top: -10px;
 }
 
 /* Container do avatar */
@@ -238,7 +239,7 @@ watch(() => props.editable, (isEditing) => {
 /* Indicador de status online */
 .avatar-status-indicator {
   position: absolute;
-  bottom: 2px;
+  bottom: auto;
   right: 2px;
   width: 12px;
   height: 12px;
@@ -246,6 +247,7 @@ watch(() => props.editable, (isEditing) => {
   border: 2px solid white;
   border-radius: 50%;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  top: 28px; 
 }
 
 /* Dropdown moderno */
