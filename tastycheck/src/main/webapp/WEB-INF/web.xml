@@ -53,7 +53,7 @@
 
 	<servlet-mapping>
 		<servlet-name>RestaurantServlet</servlet-name>
-		<url-pattern>/restaurant</url-pattern>
+		<url-pattern>/restaurant/*</url-pattern>
 	</servlet-mapping>
 
 	<!-- Review-->
