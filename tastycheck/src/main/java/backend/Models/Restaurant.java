@@ -51,7 +51,11 @@ public class Restaurant {
 	
 	private Double rating;
 	
-	private String image;
+	private String coverImage;
+
+	private Set<String> menuImages;
+
+	private Set<String> foodImages;
 
 	private Set<Review> reviews;
 	
@@ -105,15 +109,31 @@ public class Restaurant {
 	public Double getRating() {
 		return rating;
 	}
-	
-	public void setImage(String value) {
-		this.image = value;
+
+	public String getCoverImage() {
+		return coverImage;
 	}
-	
-	public String getImage() {
-		return image;
+
+	public void setCoverImage(String coverImage) {
+		this.coverImage = coverImage;
 	}
-	
+
+	public Set<String> getMenuImages() {
+		return menuImages;
+	}
+
+	public void setMenuImages(Set<String> menuImages) {
+		this.menuImages = menuImages;
+	}
+
+	public Set<String> getFoodImages() {
+		return foodImages;
+	}
+
+	public void setFoodImages(Set<String> foodImages) {
+		this.foodImages = foodImages;
+	}
+
 	public void getAttribute() {
 		//TODO: Implement Method
 		throw new UnsupportedOperationException();
