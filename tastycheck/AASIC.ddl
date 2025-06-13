@@ -39,5 +39,6 @@ CREATE TABLE users (
     Password varchar(255),
     Email varchar(255),
     Discriminator varchar(255) NOT NULL,
+    Avatar varchar(512),
     PRIMARY KEY (Id)
 );

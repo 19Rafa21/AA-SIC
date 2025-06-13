@@ -55,7 +55,11 @@ public class User {
 	
 	private String email;
 
+	private String avatar;
+
 	private Set<Review> reviews;
+
+	private Set<Restaurant> restaurantsFav;
 	
 	public void setId(String value) {
 		this.id = value;
@@ -64,11 +68,7 @@ public class User {
 	public String getId() {
 		return id;
 	}
-	
-	public String getORMID() {
-		return getId();
-	}
-	
+
 	public void setUsername(String value) {
 		this.username = value;
 	}
@@ -99,12 +99,28 @@ public class User {
 		else return "User";
 	}
 
+	public String getAvatar() {
+		return avatar;
+	}
+
+	public void setAvatar(String avatar) {
+		this.avatar = avatar;
+	}
+
 	public Set<Review> getReviews() {
 		return reviews;
 	}
 
 	public void setReviews(Set<Review> reviews) {
 		this.reviews = reviews;
+	}
+
+	public Set<Restaurant> getRestaurantsFav() {
+		return restaurantsFav;
+	}
+
+	public void setRestaurantsFav(Set<Restaurant> restaurantsFav) {
+		this.restaurantsFav = restaurantsFav;
 	}
 
 	public String toString() {

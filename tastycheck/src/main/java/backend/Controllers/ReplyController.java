@@ -134,7 +134,6 @@ public class ReplyController extends HttpServlet {
         }
     }
 
-    // DELETE: /api/replies/{replyId}
     @Override
     protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String pathInfo = request.getPathInfo();
