@@ -1,45 +1,44 @@
 package backend.Controllers;
 
+import backend.DTOs.Reply.ReplyDTO;
 import backend.DTOs.Restaurant.RestaurantDTO;
 import backend.DTOs.Review.RegisterReviewDTO;
 import backend.DTOs.Review.ReviewDTO;
 import backend.DTOs.Review.UpdateReviewDTO;
 import backend.DTOs.UserDTO;
 import backend.Exceptions.UserException;
-import backend.Models.Restaurant;
 import backend.Models.Review;
-import backend.Models.User;
-import backend.Services.RestaurantService;
 import backend.Services.ReviewService;
-import backend.Services.UserService;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.List;
 
+import backend.Utils.HttpRequestUtils;
 import com.google.gson.Gson;
 import org.orm.PersistentException;
 
 public class ReviewController extends HttpServlet {
 
 	private ReviewService reviewService;
+	private Gson gson;
 
 	@Override
 	public void init() throws ServletException {
 		reviewService = new ReviewService();
+		this.gson = new Gson();
 	}
 
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		String pathInfo = request.getPathInfo();
-		//System.out.println("PathInfo: " + pathInfo);
 
-		response.setContentType("application/json");
+		response.setCharacterEncoding("UTF-8");
+		response.setContentType("application/json; charset=UTF-8");
 
 		try {
 			if (pathInfo == null || pathInfo.equals("/")) {
@@ -47,7 +46,6 @@ public class ReviewController extends HttpServlet {
 				List<ReviewDTO> dtos = reviews.stream()
 						.map(ReviewDTO::new)
 						.toList();
-				Gson gson = new Gson();
 				response.getWriter().println(gson.toJson(dtos));
 
 			} else {
@@ -62,12 +60,10 @@ public class ReviewController extends HttpServlet {
 					}
 
 					if (parts.length == 2) {
-						Gson gson = new Gson();
 						ReviewDTO reviewDTO = new ReviewDTO(review);
 						response.getWriter().println(gson.toJson(reviewDTO));
 					} else if (parts.length == 3) {
 						String subResource = parts[2];
-						Gson gson = new Gson();
 
 						if ("restaurant".equals(subResource)) {
 							RestaurantDTO restaurantDTO = new RestaurantDTO(review.getRestaurant());
@@ -75,6 +71,12 @@ public class ReviewController extends HttpServlet {
 						} else if ("author".equals(subResource)) {
 							UserDTO userDTO = new UserDTO(review.getAuthor());
 							response.getWriter().println(gson.toJson(userDTO));
+						} else if ("replies".equals(subResource)) {
+							List<ReplyDTO> replyDTOs = review.getReplies().stream()
+									.map(ReplyDTO::new)
+									.toList();
+
+							response.getWriter().println(gson.toJson(replyDTOs));
 						} else {
 							response.sendError(HttpServletResponse.SC_NOT_FOUND, "Sub-recurso não encontrado.");
 						}
@@ -94,12 +96,12 @@ public class ReviewController extends HttpServlet {
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		try {
-			Gson gson = new Gson();
-			RegisterReviewDTO reviewDTO = gson.fromJson(readBodyJson(request), RegisterReviewDTO.class);
+			RegisterReviewDTO reviewDTO = gson.fromJson(HttpRequestUtils.readBodyJson(request), RegisterReviewDTO.class);
 
 			boolean saved = reviewService.registerReview(reviewDTO);
 			if (saved) {
-				response.setContentType("application/json");
+				response.setCharacterEncoding("UTF-8");
+				response.setContentType("application/json; charset=UTF-8");
 				response.getWriter().println("{\"status\": \"review registado com sucesso\"}");
 			}
 
@@ -123,8 +125,7 @@ public class ReviewController extends HttpServlet {
 		String id = pathInfo.substring(1);
 
 		try {
-			Gson gson = new Gson();
-			UpdateReviewDTO updateDTO = gson.fromJson(readBodyJson(request), UpdateReviewDTO.class);
+			UpdateReviewDTO updateDTO = gson.fromJson(HttpRequestUtils.readBodyJson(request), UpdateReviewDTO.class);
 
 			if ((updateDTO.getText() == null || updateDTO.getText().isEmpty()) && updateDTO.getRating() == null) {
 				response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Nenhum campo fornecido para atualizar.");
@@ -133,7 +134,8 @@ public class ReviewController extends HttpServlet {
 
 			reviewService.updateReview(id, updateDTO);
 
-			response.setContentType("application/json");
+			response.setCharacterEncoding("UTF-8");
+			response.setContentType("application/json; charset=UTF-8");
 			response.getWriter().println("{\"status\": \"Review atualizada com sucesso.\"}");
 
 		} catch (Exception e) {
@@ -162,10 +164,12 @@ public class ReviewController extends HttpServlet {
 
 			boolean deleted = reviewService.deleteReview(review);
 			if (deleted) {
-				response.setContentType("application/json");
+				response.setCharacterEncoding("UTF-8");
+				response.setContentType("application/json; charset=UTF-8");
 				response.getWriter().println("{\"status\": \"review removida com sucesso\"}");
 			} else {
-				response.setContentType("application/json");
+				response.setCharacterEncoding("UTF-8");
+				response.setContentType("application/json; charset=UTF-8");
 				response.getWriter().println("{\"status\": \"Erro ao remover a review\"}");
 			}
 
@@ -173,15 +177,5 @@ public class ReviewController extends HttpServlet {
 			e.printStackTrace();
 			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Erro interno: " + e.getMessage());
 		}
-	}
-
-	private String readBodyJson(HttpServletRequest req) throws IOException {
-		BufferedReader reader = req.getReader();
-		StringBuilder sb = new StringBuilder();
-		String line;
-		while ((line = reader.readLine()) != null) {
-			sb.append(line);
-		}
-		return sb.toString();
 	}
 }

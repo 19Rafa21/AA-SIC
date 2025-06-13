@@ -1,17 +1,19 @@
 package backend.Controllers;
 
+import backend.DTOs.Reply.RegisterReplyDTO;
+import backend.DTOs.Reply.ReplyDTO;
+import backend.DTOs.Reply.UpdateReplyDTO;
+import backend.DTOs.UserDTO;
 import backend.Models.Reply;
-import backend.Models.User;
+import backend.Utils.HttpRequestUtils;
 import com.google.gson.Gson;
-import backend.DTOs.ReplyDTO;
 import backend.Services.ReplyService;
 import backend.Services.UserService;
+import com.google.gson.JsonSyntaxException;
 import org.orm.PersistentException;
 
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.*;
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.List;
 
@@ -31,133 +33,139 @@ public class ReplyController extends HttpServlet {
     // GET: /api/replies/review/{reviewId}
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String path = request.getPathInfo(); // /review/123
 
-        if (path != null && path.startsWith("/review/")) {
-            try {
-                String reviewId = path.replace("/review/", "");
-                List<Reply> replies = replyService.getRepliesByReviewId(reviewId);
+        String pathInfo = request.getPathInfo();
 
-                String json = gson.toJson(replies);
-                response.setContentType("application/json");
-                response.setStatus(HttpServletResponse.SC_OK);
-                response.getWriter().write(json);
-            } catch (NumberFormatException | PersistentException e) {
-                response.sendError(HttpServletResponse.SC_BAD_REQUEST, "ID inválido");
+        response.setCharacterEncoding("UTF-8");
+        response.setContentType("application/json; charset=UTF-8");
+
+        try {
+            if (pathInfo == null || pathInfo.equals("/")) {
+                List<Reply> replies = replyService.getAllReplies();
+                List<ReplyDTO> dtos = replies.stream()
+                        .map(ReplyDTO::new)
+                        .toList();
+                response.getWriter().println(gson.toJson(dtos));
+            } else {
+                String[] parts = pathInfo.split("/");
+                if (parts.length >= 2) {
+                    String replyId = parts[1];
+
+                    Reply reply = replyService.getReplyById(replyId);
+                    if (reply == null) {
+                        response.sendError(HttpServletResponse.SC_NOT_FOUND, "Reply não encontrada.");
+                        return;
+                    }
+
+                    if (parts.length == 2) {
+                        ReplyDTO replyDTO = new ReplyDTO(reply);
+                        response.getWriter().println(gson.toJson(replyDTO));
+                    } else if (parts.length == 3) {
+                        String subResource = parts[2];
+
+                        if ("author".equals(subResource)) {
+                            UserDTO userDTO = new UserDTO(reply.getAuthor());
+                            response.getWriter().println(gson.toJson(userDTO));
+                        } else {
+                            response.sendError(HttpServletResponse.SC_NOT_FOUND, "sub-recurso não encontrado.");
+                        }
+                    } else {
+                        response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Formato de URL inválido.");
+                    }
+                } else {
+                    response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Formato de URL inválido.");
+                }
             }
-        } else {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Caminho inválido");
+        } catch (Exception e) {
+	        e.printStackTrace();
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Erro interno: " + e.getMessage());
         }
     }
-/*
-    // POST: /api/replies/review/{reviewId}
+
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String path = request.getPathInfo(); // /review/123
+        try {
+            RegisterReplyDTO replyDTO = gson.fromJson(HttpRequestUtils.readBodyJson(request), RegisterReplyDTO.class);
 
-        if (path != null && path.startsWith("/review/")) {
-            try {
-                Long reviewId = Long.parseLong(path.replace("/review/", ""));
-
-                // 1️⃣ Lê o body
-                String jsonPayload = lerJsonDoBody(request);
-
-                // 2️⃣ Converte para DTO
-                ReplyDTO dto = gson.fromJson(jsonPayload, ReplyDTO.class);
-
-                // 3️⃣ Vai buscar o User
-                User author = userService.findById(dto.getUserId());
-                if (author == null) {
-                    response.sendError(HttpServletResponse.SC_NOT_FOUND, "Utilizador não encontrado");
-                    return;
-                }
-
-                // 4️⃣ Cria a reply
-                Reply reply = new Reply();
-                reply.setText(dto.getText());
-                reply.setAuthor(author);
-
-                Reply created = replyService.createReply(reviewId, reply);
-
-                response.setContentType("application/json");
-                response.setStatus(HttpServletResponse.SC_OK);
-                response.getWriter().write(gson.toJson(created));
-
-            } catch (Exception e) {
-                response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Erro ao criar resposta: " + e.getMessage());
+            boolean saved = replyService.registerReply(replyDTO);
+            if (saved) {
+                response.setCharacterEncoding("UTF-8");
+                response.setContentType("application/json; charset=UTF-8");
+                response.getWriter().println("{\"status\": \"reply registada com sucesso\"}");
             }
-        } else {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Caminho inválido");
+
+        } catch (JsonSyntaxException e) {
+	        throw new RuntimeException(e);
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Erro interno: " + e.getMessage());
         }
     }
 
     // PUT: /api/replies/{replyId}
     @Override
     protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String path = request.getPathInfo(); // /15
+        String pathInfo = request.getPathInfo();
 
-        if (path != null && path.length() > 1) {
-            try {
-                Long replyId = Long.parseLong(path.substring(1));
+        if (pathInfo == null || pathInfo.equals("/")) {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "ID da reply é obrigatório na URL.");
+            return;
+        }
 
-                // 1️⃣ Lê o body
-                String jsonPayload = lerJsonDoBody(request);
+        String id = pathInfo.substring(1);
 
-                // 2️⃣ Converte para DTO
-                ReplyDTO dto = gson.fromJson(jsonPayload, ReplyDTO.class);
+        try {
+            UpdateReplyDTO updateDTO = gson.fromJson(HttpRequestUtils.readBodyJson(request), UpdateReplyDTO.class);
 
-                // 3️⃣ Vai buscar o User
-                User author = userService.findById(dto.getUserId());
-                if (author == null) {
-                    response.sendError(HttpServletResponse.SC_NOT_FOUND, "Utilizador não encontrado");
-                    return;
-                }
-
-                // 4️⃣ Atualiza a reply
-                Reply updated = new Reply();
-                updated.setText(dto.getText());
-                updated.setAuthor(author);
-
-                Reply result = replyService.updateReply(replyId, updated);
-
-                response.setContentType("application/json");
-                response.setStatus(HttpServletResponse.SC_OK);
-                response.getWriter().write(gson.toJson(result));
-
-            } catch (Exception e) {
-                response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Erro ao atualizar resposta: " + e.getMessage());
+            if (updateDTO.getText() == null || updateDTO.getText().isEmpty()) {
+                response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Nenhum campo fornecido para atualizar.");
+                return;
             }
-        } else {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "ID inválido");
+
+            replyService.updateReply(id, updateDTO);
+
+            response.setCharacterEncoding("UTF-8");
+            response.setContentType("application/json; charset=UTF-8");
+            response.getWriter().println("{\"status\": \"Reply atualizada com sucesso.\"}");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Erro interno: " + e.getMessage());
         }
     }
 
     // DELETE: /api/replies/{replyId}
     @Override
     protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String path = request.getPathInfo(); // /15
+        String pathInfo = request.getPathInfo();
 
-        if (path != null && path.length() > 1) {
-            try {
-                Long replyId = Long.parseLong(path.substring(1));
-                replyService.deleteReply(replyId);
-                response.setStatus(HttpServletResponse.SC_NO_CONTENT);
-            } catch (NumberFormatException e) {
-                response.sendError(HttpServletResponse.SC_BAD_REQUEST, "ID inválido");
+        try {
+            if (pathInfo == null || pathInfo.equals("/") || pathInfo.split("/").length < 2) {
+                response.sendError(HttpServletResponse.SC_BAD_REQUEST, "ID da review não especificado.");
+                return;
             }
-        } else {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "ID não especificado");
+
+            String replyId = pathInfo.split("/")[1];
+
+            Reply reply = replyService.getReplyById(replyId);
+            if (reply == null) {
+                response.sendError(HttpServletResponse.SC_NOT_FOUND, "Reply não encontrada.");
+                return;
+            }
+
+            boolean deleted = replyService.deleteReply(reply);
+            if (deleted) {
+                response.setCharacterEncoding("UTF-8");
+                response.setContentType("application/json; charset=UTF-8");
+                response.getWriter().println("{\"status\": \"reply removida com sucesso\"}");
+            } else {
+                response.setCharacterEncoding("UTF-8");
+                response.setContentType("application/json; charset=UTF-8");
+                response.getWriter().println("{\"status\": \"Erro ao remover a reply\"}");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Erro interno: " + e.getMessage());
         }
     }
-
-    // 🔁 Método auxiliar para ler o JSON do body
-    private String lerJsonDoBody(HttpServletRequest request) throws IOException {
-        BufferedReader reader = request.getReader();
-        StringBuilder sb = new StringBuilder();
-        String line;
-        while ((line = reader.readLine()) != null) {
-            sb.append(line);
-        }
-        return sb.toString();
-    }*/
 }
