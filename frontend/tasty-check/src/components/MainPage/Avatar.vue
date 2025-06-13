@@ -143,7 +143,6 @@ const closeDropdown = () => {
 
 const logout = () => {
   localStorage.removeItem('isLoggedIn')
-  localStorage.removeItem('user')
   closeDropdown()
   isLoggedIn.value = false
   router.push('/')
