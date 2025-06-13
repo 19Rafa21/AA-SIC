@@ -9,7 +9,7 @@ import { RestaurantDTO } from '../dto/restaurant.dto.js';
 export class RestaurantService {
     constructor() {
         this.baseUrl = API_CONFIG.baseUrl;
-        this.endpoint = 'restaurants';
+        this.endpoint = 'restaurant';
     }
 
     /**
@@ -126,6 +126,38 @@ export class RestaurantService {
             return true;
         } catch (error) {
             console.error(`Error deleting restaurant with id ${id}:`, error);
+            throw error;
+        }
+    }
+
+
+    /**^
+     * Put method that gets restaurants with filter
+
+     */
+    async getRestaurantsWithFilter(name, location, cuisineType, rating) {
+        try {
+            const response = await fetch(`${this.baseUrl}${this.endpoint}/filters`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    name: name || '',
+                    location: location || '',
+                    cuisineType: cuisineType || '',
+                    rating: rating || 0.0
+                })
+            });
+
+            if (!response.ok) {
+                throw new Error(`Failed to fetch restaurants with filter: ${response.status}`);
+            }
+
+            const data = await response.json();
+            return data.map(restaurant => RestaurantDTO.fromAPI(restaurant));
+        } catch (error) {
+            console.error('Error fetching restaurants with filter:', error);
             throw error;
         }
     }

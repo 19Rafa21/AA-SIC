@@ -9,20 +9,27 @@ import RestaurantCarousel from "./RestaurantBlock/RestauranteCarousel.vue";
 import RestaurantMap from "./Maps/RestaurantMap.vue";
 import Footer from "./Footer.vue";
 import restaurantesData from '../dataTesting/restaurantes.json';
+import Spinner  from './utils/Spinner.vue';
+import { RestaurantService } from '../services';
 
+const restaurantService = new RestaurantService();
 const headerBgImage = '/img/header-bg.webp';
-// Adaptando os restaurantes para o formato compatível com o componente
-const restaurants = computed(() => {
-  return restaurantesData.slice(0, 5).map(r => ({
-    ...r,
-    category: r.cuisineType // Mapeando cuisineType para category para manter compatibilidade
-  }));
-});
+
+const restaurants = ref([]);
+
+// Carregar restaurantes com rating >= 4.0
+async function loadFilteredRestaurants() {
+  try {
+    await restaurantService.getRestaurantsWithFilter(null, null, null, 4.0);
+  } catch (error) {
+    console.error('Error loading filtered restaurants:', error);
+  }
+}
 
 const NearbyRestaurants = computed(() => {
   return restaurantesData.slice(restaurantesData.length - 7).map(r => ({
     ...r,
-    category: r.cuisineType 
+    cuisineType: r.cuisineType 
   }));
 });
 const body = document.getElementsByTagName("body")[0];
@@ -78,7 +85,7 @@ async function loadRestaurantsCoords() {
           lat: coords.lat, 
           lng: coords.lng,
           // Garantindo compatibilidade com qualquer versão do JSON
-          category: r.cuisineType || r.category 
+          cuisineType: r.cuisineType 
         }
       : null
   })
@@ -90,6 +97,7 @@ async function loadRestaurantsCoords() {
 onMounted(async () => {
   document.body.classList.add('presentation-page', 'bg-gray-200')
   loadUserLocation()
+  await loadFilteredRestaurants() // Carrega restaurantes com rating 4.0
   await loadRestaurantsCoords()
 })
 onUnmounted(() => {
@@ -129,7 +137,11 @@ onUnmounted(() => {
   </HeaderComponent>
   <PresentationCounter />
   
-  <RestaurantCarousel :title="'Melhores Sugestões'" :restaurants="restaurants" :visibleCount="4"/>
+  <div v-if="restaurants.length === 0" class="text-center py-8">
+    <Spinner class="mx-auto mt-4 mb-1"/>    
+    <span class="text-emerald-500 text-lg">Loading...</span>
+  </div>
+  <RestaurantCarousel v-else :title="'Melhores Sugestões'" :restaurants="restaurants" :visibleCount="4"/>
  
   <div class="relative bg-[#08342c] rounded-lg w-full max-w-[1200px] mx-auto my-8 flex justify-between items-center text-white h-[220px] overflow-hidden px-4">
     <div class="flex flex-col justify-center pr-6 space-y-2 max-w-md">
