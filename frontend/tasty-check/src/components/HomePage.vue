@@ -105,23 +105,26 @@ onUnmounted(() => {
          :style="`background-image: url(${headerBgImage})`"
          loading="lazy">
 
-        <div class="container h-100 flex flex-col justify-center items-center">
+        <div class="container h-100 flex flex-col justify-center items-center bg-gradient-to-b from-white/40 to-white/10 backdrop-blur-sm z-0 w-40 rounded-lg">
+          <div class="flex flex-col items-center ">
+            
             <div class="hero-brand flex items-center justify-center">
-                <h1 class="text-3xl font-bold flex items-center">
-                <span class="text-white">Tasty</span>
-                <span class="flex items-center">
-                    <span class="text-[#095243]">Check</span>
-                    <img src="../../public/img/logo.png" alt="Logo" class="w-[100px] h-[100px] hero-logo ms-2" />
-                </span>
-                </h1>
-            </div>
+                  <h1 class="text-3xl font-bold flex items-center">
+                  <span class="text-white">Tasty</span>
+                  <span class="flex items-center">
+                      <span class="text-[#095243]">Check</span>
+                      <img src="../../public/img/logo.png" alt="Logo" class="w-[100px] h-[100px] hero-logo ms-2" />
+                  </span>
+                  </h1>
+              </div>
 
-            <p class="lead text-white px-5 mt-3" :style="{ fontWeight: '500' }">
-                Sabores incríveis, momentos inesquecíveis.
-            </p>
+              <div class="lead text-white px-5 -mt-3 mb-5" :style="{ fontWeight: '800' }">
+                  Sabores incríveis, momentos inesquecíveis.
+              </div>
+          </div>
 
-            <SearchBar class="mt-4"/>
-        </div>
+            <SearchBar class="mt-4 mb-4"/>
+          </div>
     </div>
   </HeaderComponent>
   <PresentationCounter />

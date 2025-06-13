@@ -26,7 +26,7 @@ const closeModal = () => (showModal.value = false)
   <div class="profile-wrapper">
     <TopNav />
 
-    <div class="container mx-auto max-w-6xl px-6" v-if="user">
+    <div class="container mx-auto max-w-6xl px-6 mt-6" v-if="user">
       <ProfileHeader @edit="openModal" />
       <ProfileInfo />
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
