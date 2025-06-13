@@ -104,7 +104,7 @@
   <router-link
     v-else
     to="/login"
-    class="login-button fixed top-3 right-4 z-[9999]"
+    class="login-button fixed top-2 right-4 z-[9999]"
   >
     Iniciar Sessão
   </router-link>
@@ -220,8 +220,8 @@ watch(() => props.editable, (isEditing) => {
 
 /* Avatar melhorado */
 .user-avatar {
-  width: 44px;
-  height: 44px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   border: 3px solid #ffffff;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);

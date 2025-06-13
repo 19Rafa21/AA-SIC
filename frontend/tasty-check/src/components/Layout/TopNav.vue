@@ -16,7 +16,7 @@
       </div>
 
       <!-- Direita: links e avatar -->
-        <Avatar />
+        <Avatar class="mt-[-10px]"/>
     </div>
   </nav>
 </template>
@@ -29,11 +29,11 @@ import Avatar from '../MainPage/Avatar.vue';
 <style scoped>
 .top-nav {
   background-color: #095243;
-  height: 64px;
+  height: 55px;
   display: flex;
   align-items: center;
   padding: 0 2rem;
-  position: sticky;
+  position: fixed;
   top: 0;
   z-index: 50;
   width: 100%;

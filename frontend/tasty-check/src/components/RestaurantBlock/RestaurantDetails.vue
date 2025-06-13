@@ -10,7 +10,7 @@
     <div v-else>
         <TopNav />
         <!-- Imagem em cima -->
-        <div class="m-4 pl-16 pr-16 rounded-3xl">
+        <div class="m-4 pl-16 pr-16 rounded-3xl mt-7">
             <img :src="restaurant.image" :alt="restaurant.name" class="w-full h-64 object-cover rounded-3xl" />
         </div>
 
