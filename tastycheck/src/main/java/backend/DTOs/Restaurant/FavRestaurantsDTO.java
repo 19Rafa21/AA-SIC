@@ -1,21 +1,20 @@
 package backend.DTOs.Restaurant;
 
-
 import backend.Models.Restaurant;
 
-public class RestaurantDTO {
+public class FavRestaurantsDTO {
 
 	private String id;
 	private String name;
-	private String ownerId;
-	private String location;
+	private Double rating;
+	private String image;
 	private String cuisineType;
 
-	public RestaurantDTO(Restaurant restaurant){
+	public FavRestaurantsDTO(Restaurant restaurant){
 		this.id = restaurant.getId();
 		this.name = restaurant.getName();
-		this.ownerId = restaurant.getOwner().getId();
-		this.location = restaurant.getLocation();
+		this.rating = restaurant.getRating();
+		this.image = restaurant.getCoverImage() != null ? restaurant.getCoverImage() : null;
 		this.cuisineType = restaurant.getCuisineType();
 	}
 
@@ -35,14 +34,6 @@ public class RestaurantDTO {
 		this.name = name;
 	}
 
-	public String getLocation() {
-		return location;
-	}
-
-	public void setLocation(String location) {
-		this.location = location;
-	}
-
 	public String getCuisineType() {
 		return cuisineType;
 	}
@@ -51,14 +42,19 @@ public class RestaurantDTO {
 		this.cuisineType = cuisine;
 	}
 
-
-	public String getOwnerId() {
-		return ownerId;
+	public Double getRating() {
+		return rating;
 	}
 
-	public void setOwnerId(String ownerId) {
-		this.ownerId = ownerId;
+	public void setRating(Double rating) {
+		this.rating = rating;
 	}
 
+	public String getImage() {
+		return image;
+	}
+
+	public void setImage(String image) {
+		this.image = image;
+	}
 }
-

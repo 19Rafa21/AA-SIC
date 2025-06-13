@@ -14,9 +14,9 @@ License Type: Academic
 		<property name="username" column="Username" type="string" length="255" not-null="false" lazy="false"/>
 		<property name="password" column="Password" type="string" length="255" not-null="false" lazy="false"/>
 		<property name="email" column="Email" type="string" length="255" not-null="false" lazy="false"/>
-		<set name="reviews" inverse="true" cascade="all-delete-orphan">
-			<key column="Author"/>
-			<one-to-many class="backend.Models.Review"/>
+		<set name="restaurantsFav" table="user_favorites" cascade="none">
+			<key column="UserId"/>
+			<many-to-many class="backend.Models.Restaurant" column="RestaurantId"/>
 		</set>
 
 		<!--<subclass name="backend.Models.Client" discriminator-value="Client" lazy="false">

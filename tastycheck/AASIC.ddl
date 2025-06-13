@@ -42,3 +42,11 @@ CREATE TABLE users (
     Avatar varchar(512),
     PRIMARY KEY (Id)
 );
+
+CREATE TABLE user_favorites (
+    UserId VARCHAR(255) NOT NULL,
+    RestaurantId VARCHAR(255) NOT NULL,
+    PRIMARY KEY (UserId, RestaurantId),
+    FOREIGN KEY (UserId) REFERENCES users(Id),
+    FOREIGN KEY (RestaurantId) REFERENCES restaurant(Id)
+);
