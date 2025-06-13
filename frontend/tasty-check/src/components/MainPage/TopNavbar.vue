@@ -1,66 +1,66 @@
 <template>
-  <nav class="top-navbar">
-    <div class="navbar-content">
-     <div
-       v-if="isLoggedIn"
-       class="fixed top-1 right-4 z-50"
-       @mouseenter="showDropdown = true"
-       @mouseleave="showDropdown = false"
-     >
-       <!-- Avatar -->
-       <img
-         src="/img/avatar.jpg"
-         alt="Avatar"
-         class="user-avatar"
-       />
-
-    <!-- Dropdown -->
-    <div
-      v-show="showDropdown"
-      class="absolute right-0 mt-2 w-48 bg-white border rounded-lg shadow-lg z-50"
-    >
-      <!-- Seta -->
-      <div class="absolute top-[-8px] right-4 w-0 h-0 border-l-8 border-r-8 border-b-8 border-transparent border-b-white"></div>
-
-      <ul class="py-2">
-        <li>
-          <router-link
-            to="/profile"
-            class="block px-4 py-2 hover:bg-gray-100 text-gray-700"
-            @click="closeDropdown"
-          >
-            Ver Perfil
-          </router-link>
-        </li>
-        <li>
-          <button
-            class="block w-full text-left px-4 py-2 hover:bg-gray-100 text-gray-700"
-            @click="logout"
-          >
-            Terminar Sessão
-          </button>
-        </li>
-      </ul>
-    </div>
-  </div>
-      <router-link
-        v-else
-        to="/login"
-        class="login-button"
+    <nav class="top-navbar">
+      <div class="navbar-content">
+      <div
+        v-if="isLoggedIn"
+        class="fixed top-1 right-4 z-50"
+        @mouseenter="showDropdown = true"
+        @mouseleave="showDropdown = false"
       >
-        Iniciar Sessão
-      </router-link>
+        <!-- Avatar -->
+        <img
+          src="/img/avatar.jpg"
+          alt="Avatar"
+          class="user-avatar"
+        />
+
+      <!-- Dropdown -->
+      <div
+        v-show="showDropdown"
+        class="absolute right-0 mt-2 w-48 bg-white border rounded-lg shadow-lg z-50"
+      >
+        <!-- Seta -->
+        <div class="absolute top-[-8px] right-4 w-0 h-0 border-l-8 border-r-8 border-b-8 border-transparent border-b-white"></div>
+
+        <ul class="py-2">
+          <li>
+            <router-link
+              to="/profile"
+              class="block px-4 py-2 hover:bg-gray-100 text-gray-700"
+              @click="closeDropdown"
+            >
+              Ver Perfil
+            </router-link>
+          </li>
+          <li>
+            <button
+              class="block w-full text-left px-4 py-2 hover:bg-gray-100 text-gray-700"
+              @click="logout"
+            >
+              Terminar Sessão
+            </button>
+          </li>
+        </ul>
+      </div>
     </div>
-  </nav>
+        <router-link
+          v-else
+          to="/login"
+          class="login-button"
+        >
+          Iniciar Sessão
+        </router-link>
+      </div>
+    </nav>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, onBeforeUnmount } from 'vue'
 import { useRouter } from 'vue-router'
 
 const isLoggedIn = ref(false)
-const router = useRouter()
 const showDropdown = ref(false)
+const router = useRouter()
 
 const toggleDropdown = () => {
   showDropdown.value = !showDropdown.value
@@ -74,11 +74,24 @@ const logout = () => {
   localStorage.removeItem('isLoggedIn')
   localStorage.removeItem('user')
   closeDropdown()
-  router.push('/login')
+  router.push('/')
+}
+
+// Fecha dropdown se clicar fora
+const handleClickOutside = (event) => {
+  const dropdown = document.getElementById('user-dropdown')
+  if (dropdown && !dropdown.contains(event.target)) {
+    showDropdown.value = false
+  }
 }
 
 onMounted(() => {
   isLoggedIn.value = localStorage.getItem('isLoggedIn') === 'true'
+  document.addEventListener('click', handleClickOutside)
+})
+
+onBeforeUnmount(() => {
+  document.removeEventListener('click', handleClickOutside)
 })
 </script>
 

@@ -22,9 +22,8 @@
 </template>
 
 <script setup>
-import router from '@/router';
 import SearchBar from './SearchBar.vue'
-import Avatar from '../MainPage/TopNavbar.vue';  
+import Avatar from '../MainPage/Avatar.vue';  
 </script>
 
 <style scoped>

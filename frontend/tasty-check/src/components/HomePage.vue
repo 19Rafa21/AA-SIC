@@ -2,7 +2,7 @@
 
 import { onMounted, onUnmounted, ref, watch, computed } from "vue";
 import HeaderComponent from './MainPage/HeaderComponent.vue';
-import TopNavbar from './MainPage/TopNavbar.vue';
+import Avatar from './MainPage/Avatar.vue';
 import SearchBar from './MainPage/SearchBar.vue';
 import PresentationCounter from "./MainPage/PresentationCounter.vue";
 import RestaurantCarousel from "./RestaurantBlock/RestauranteCarousel.vue";
@@ -99,7 +99,7 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <TopNavbar/>
+  <Avatar/>
   <HeaderComponent>
     <div class="page-header min-vh-100"
          :style="`background-image: url(${headerBgImage})`"

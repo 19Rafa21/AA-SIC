@@ -52,7 +52,7 @@ const login = () => {
 >
   <div class="w-100" style="max-width: 400px;">
     <div class="card z-index-0 fadeIn3 fadeInBottom">
-      <div class="card-header p-0 position-relative mt-2 mx-3 z-index-2 tasty-header">
+      <router-link to="/" class="card-header p-0 position-relative mt-2 mx-3 z-index-2 tasty-header">
         <h1 class="hero-title">
           <span class="tasty-text">Tasty</span>
           <span class="check-group">
@@ -60,7 +60,7 @@ const login = () => {
             <img src="/img/logo.png" alt="Logo" class="hero-logo" />
           </span>
         </h1>
-      </div>
+      </router-link>
 
       <div class="card-body">
         <form role="form" class="text-start">

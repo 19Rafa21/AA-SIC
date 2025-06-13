@@ -8,7 +8,7 @@
             inicial</button>
     </div>
     <div v-else>
-
+        <TopNav />
         <!-- Imagem em cima -->
         <div class="m-4 pl-16 pr-16 rounded-3xl">
             <img :src="restaurant.image" :alt="restaurant.name" class="w-full h-64 object-cover rounded-3xl" />
@@ -164,6 +164,7 @@ import FrequencyBar from '../utils/FrequencyBar.vue';
 import StarRating from '../utils/Stars.vue';
 import ReviewModal from './ReviewModal.vue';
 import RestaurantGoogleMap from '../Maps/RestaurantGoogleMap.vue';
+import TopNav from '../Layout/TopNav.vue';
 import { ref } from 'vue';
 
 export default {
@@ -173,7 +174,8 @@ export default {
         ReviewModal,
         FrequencyBar,
         Footer,
-        RestaurantGoogleMap
+        RestaurantGoogleMap,
+        TopNav
     },
     props: {
         name: {
