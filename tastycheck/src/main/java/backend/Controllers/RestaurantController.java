@@ -121,7 +121,7 @@ public class RestaurantController extends HttpServlet {
                             .append("\"name\":\"").append(r.getName()).append("\",")
                             .append("\"location\":\"").append(r.getLocation()).append("\",")
                             .append("\"cuisineType\":\"").append(r.getCuisineType()).append("\",")
-                            .append("\"rating\":").append(r.getRating())
+                            .append("\"rating\":").append(r.getRating()).append("\",")
                             .append("\"image\":").append(r.getCoverImage())
                             .append("}");
                     if (i < results.size() - 1) json.append(",");
