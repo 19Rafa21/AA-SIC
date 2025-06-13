@@ -60,10 +60,7 @@ public class JwtService {
 		final Claims claims = extractAllClaims(token);
 		return claimsResolver.apply(claims);
 	}
-
-	public String generateToken(User user) {
-
-	}
+	
 
 	// Valida token (verifica se subject corresponde e não expirou)
 	public boolean validateToken(String token, String username) {
