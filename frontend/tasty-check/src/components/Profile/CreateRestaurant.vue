@@ -125,39 +125,65 @@ const onFoodImages = (e) => {
   })
 }
 
-const submitForm = () => {
+import RestaurantService from '../../services/restaurant.service';
+import { RestaurantDTO } from '../../dto/restaurant.dto.js';
+
+const service = new RestaurantService();
+
+const submitForm = async () => {
   if (!coverImage.value) {
-    alert('Imagem de capa é obrigatória!')
-    return
+    alert('Imagem de capa é obrigatória!');
+    return;
   }
 
-  const user = JSON.parse(localStorage.getItem('user') || '{}')
+  const user = JSON.parse(localStorage.getItem('user') || '{}');
 
-  const formData = new FormData()
-  formData.append('owner', user.id || 'anon')
-  formData.append('name', name.value)
-  formData.append('location', location.value)
-  formData.append('cuisineType', cuisineType.value)
-  formData.append('schedule', schedule.value)
-  formData.append('rating', 0)
-  formData.append('coverImage', coverImage.value)
+  // Converter a imagem de capa para base64
+  const coverBase64 = await fileToBase64(coverImage.value);
 
-  menuImages.value.forEach((file, i) => {
-    formData.append(`menuImages[${i}]`, file)
-  })
+  // Converter todas as imagens do menu para base64
+  const menuBase64 = await Promise.all(
+    menuImages.value.map(file => fileToBase64(file))
+  );
 
-  foodImages.value.forEach((file, i) => {
-    formData.append(`foodImages[${i}]`, file)
-  })
+  // Converter todas as imagens da comida para base64
+  const foodBase64 = await Promise.all(
+    foodImages.value.map(file => fileToBase64(file))
+  );
 
-  console.log('📦 FormData pronto para envio:')
-  for (let pair of formData.entries()) {
-    console.log(pair[0], pair[1])
+  // Criar o objeto DTO (assumindo que o constructor aceita os campos diretamente)
+  const restaurantDTO = new RestaurantDTO({
+    name: name.value,
+    location: location.value,
+    cuisineType: cuisineType.value,
+    schedule: schedule.value,
+    rating: 0,
+    image: coverBase64,             // campo image base64
+    menuImages: menuBase64,        // array de strings base64
+    foodImages: foodBase64,        // array de strings base64
+    owner: user.id || 'anon'
+  });
+
+  try {
+    await service.createRestaurant(restaurantDTO);
+    alert('✅ Restaurante criado com sucesso!');
+    router.push('/profile');
+  } catch (error) {
+    console.error('❌ Erro ao criar restaurante:', error);
+    alert('Erro ao criar restaurante');
   }
+};
 
-  alert('Restaurante criado (simulado)!')
-  router.push('/profile')  // ou o path correto para o teu perfil
+function fileToBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result); // base64
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
 }
+
+
 
 
 const guardarNoLocalStorageTeste = () => {

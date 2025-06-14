@@ -1,5 +1,7 @@
 <script setup>
 import { ref } from 'vue'
+import RestaurantService from '../../services/restaurant.service';
+import { RestaurantDTO } from '../../dto/restaurant.dto.js';
 
 const props = defineProps({
   restaurante: Object
@@ -23,35 +25,45 @@ const onImagemChange = (e) => {
   }
 }
 
-const guardar = () => {
-  const restauranteEditado = {
-    ...props.restaurante,
-    id: props.restaurante.id, // mantém o id intacto
-    name: nome.value,
-    location: localizacao.value,
-    cuisineType: tipo.value,
-    schedule: horario.value,
-    image: imagem.value
-  }
-
-  // ⚡ Atualiza no localStorage
-  const stored = localStorage.getItem('restaurants')
-  if (stored) {
-    try {
-      const lista = JSON.parse(stored)
-      const index = lista.findIndex(r => r.name === restauranteEditado.name)
-      if (index !== -1) {
-        lista[index] = restauranteEditado
-        localStorage.setItem('restaurants', JSON.stringify(lista))
-      }
-    } catch (e) {
-      console.error('Erro ao guardar no localStorage:', e)
+function toBase64(fileOrUrl) {
+  return new Promise((resolve, reject) => {
+    if (typeof fileOrUrl === 'string') {
+      return resolve(fileOrUrl) // já é URL ou base64
     }
-  }
-
-  emit('save', restauranteEditado)
-  emit('close')
+    const reader = new FileReader()
+    reader.onload = () => resolve(reader.result)
+    reader.onerror = reject
+    reader.readAsDataURL(fileOrUrl)
+  })
 }
+
+
+const guardar = async () => {
+  try {
+    const imagemBase64 = await toBase64(imagem.value)
+
+    const dto = new RestaurantDTO({
+      id: props.restaurante.id,
+      name: nome.value,
+      location: localizacao.value,
+      cuisineType: tipo.value,
+      schedule: horario.value,
+      image: imagemBase64,
+      rating: props.restaurante.rating || 0,
+      menuImages: props.restaurante.menuImages || [],
+      foodImages: props.restaurante.foodImages || [],
+      owner: props.restaurante.owner
+    })
+
+    await service.updateRestaurant(props.restaurante.id, dto)
+    emit('save', dto)
+    emit('close')
+  } catch (err) {
+    console.error('Erro ao guardar alterações:', err)
+    alert('Erro ao guardar alterações no restaurante.')
+  }
+}
+
 
 
 const cancelar = () => emit('close')
