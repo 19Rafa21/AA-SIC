@@ -14,6 +14,7 @@ License Type: Academic
 		<property name="username" column="Username" type="string" length="255" not-null="false" lazy="false"/>
 		<property name="password" column="Password" type="string" length="255" not-null="false" lazy="false"/>
 		<property name="email" column="Email" type="string" length="255" not-null="false" lazy="false"/>
+		<property name="profilePicture" column="ProfilePicture" length="255" not-null="false" lazy="false"/>
 		<set name="restaurantsFav" table="user_favorites" cascade="none">
 			<key column="UserId"/>
 			<many-to-many class="backend.Models.Restaurant" column="RestaurantId"/>

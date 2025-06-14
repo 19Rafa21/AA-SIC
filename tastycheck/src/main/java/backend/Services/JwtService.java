@@ -50,6 +50,11 @@ public class JwtService {
 		return claims.get("profilePicture", String.class);
 	}
 
+	public String extractUserRole(String token) {
+		final Claims claims = extractAllClaims(token);
+		return claims.get("role", String.class);
+	}
+
 	public String extractName(String token) {
 		final Claims claims = extractAllClaims(token);
 		return claims.get("username", String.class);
