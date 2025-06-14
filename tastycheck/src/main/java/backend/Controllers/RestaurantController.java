@@ -112,6 +112,9 @@ public class RestaurantController extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String pathInfo = req.getPathInfo();
 
+        resp.setCharacterEncoding("UTF-8");
+        resp.setContentType("application/json; charset=UTF-8");
+
         try {
             if (pathInfo == null || pathInfo.equals("/")) {
                 List<Restaurant> results = restaurantService.searchWithAllFilters("","", "", 0.0);
@@ -136,7 +139,6 @@ public class RestaurantController extends HttpServlet {
                 json.append("]");
 
                 //Responde com os resultados
-                resp.setContentType("application/json; charset=UTF-8");
                 resp.setStatus(HttpServletResponse.SC_OK);
                 resp.getWriter().write(json.toString());
 
@@ -186,7 +188,6 @@ public class RestaurantController extends HttpServlet {
 
                         json.append("}");
 
-                        resp.setContentType("application/json; charset=UTF-8");
                         resp.setStatus(HttpServletResponse.SC_OK);
                         resp.getWriter().write(json.toString());
                     } else if (parts.length == 3) {
