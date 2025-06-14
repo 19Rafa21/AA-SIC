@@ -11,7 +11,7 @@ License Type: Academic
    	<!-- properties -->
 		<property name="dialect">org.hibernate.dialect.PostgreSQLDialect</property>
 		<property name="connection.driver_class">org.postgresql.Driver</property>
-		<property name="connection.url">jdbc:postgresql://35.223.193.37:5432/tastycheck</property>
+		<property name="connection.url">jdbc:postgresql://34.10.28.162:5432/tastycheck</property>
 		<property name="connection.username">admin</property>
 		<property name="connection.password">admin</property>
 		<property name="show_sql">false</property>
@@ -22,6 +22,7 @@ License Type: Academic
 		<mapping resource="ormmapping/backend/Review.hbm.xml" />
 		<mapping resource="ormmapping/backend/User.hbm.xml" />
 		<mapping resource="ormmapping/backend/Image.hbm.xml" />
+		<mapping resource="ormmapping/backend/Dish.hbm.xml" />
 
 	</session-factory>
 </hibernate-configuration>

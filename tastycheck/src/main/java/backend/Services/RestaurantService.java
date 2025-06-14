@@ -54,32 +54,26 @@ public class RestaurantService {
         }
     }
 
-    public boolean updateRestaurant(RestaurantDetailsDTO dto) {
+    public boolean updateRestaurant(String id, RestaurantDetailsDTO dto) {
         try {
-            Restaurant r2 = getRestaurantByOrmID(dto.getId());
+            Restaurant r2 = getRestaurantByOrmID(id);
 
-            r2 = toRestaurantEdit(r2,dto);
+            r2 = toRestaurantEdit(r2, dto);
 
             restaurantDAO.save(r2);
 
-            // Criar e guardar imagens (menu)
-            for (String url : dto.getMenuImages()) {
-                Image img = new Image();
-                img.setId(UUID.randomUUID().toString());
-                img.setRestaurantId(r2.getId());
-                img.setUrl(url);
-                img.setType("menu");
-                ImageDAO.save(img);
+            if (dto.getMenuImages() != null) {
+                for (String url : dto.getMenuImages()) {
+                    Image img = new Image(UUID.randomUUID().toString(), id, url, "menu");
+                    ImageDAO.save(img);
+                }
             }
 
-            // Criar e guardar imagens (food)
-            for (String url : dto.getFoodImages()) {
-                Image img = new Image();
-                img.setId(UUID.randomUUID().toString());
-                img.setRestaurantId(r2.getId());
-                img.setUrl(url);
-                img.setType("food");
-                ImageDAO.save(img);
+            if (dto.getFoodImages() != null) {
+                for (String url : dto.getFoodImages()) {
+                    Image img = new Image(UUID.randomUUID().toString(), id, url, "food");
+                    ImageDAO.save(img);
+                }
             }
 
             return true;
@@ -88,6 +82,7 @@ public class RestaurantService {
             return false;
         }
     }
+
 
     public boolean removeRestaurant(String id) {
         try {
@@ -186,19 +181,31 @@ public class RestaurantService {
         return toDetailsDTO(restaurant);
     }
 
-    public Restaurant toRestaurantEdit(Restaurant restaurant, RestaurantDetailsDTO dto) throws PersistentException {
+    public Restaurant toRestaurantEdit(Restaurant restaurant, RestaurantDetailsDTO dto) {
+        if (dto.getName() != null)
+            restaurant.setName(dto.getName());
 
-        restaurant.setId(dto.getId());
-        restaurant.setName(dto.getName());
-        restaurant.setLocation(dto.getLocation());
-        restaurant.setCuisineType(dto.getCuisineType());
-        restaurant.setRating(dto.getRating());
-        restaurant.setCoverImage(dto.getImage());
-        restaurant.setMenuImages(dto.getMenuImages());
-        restaurant.setFoodImages(dto.getFoodImages());
+        if (dto.getLocation() != null)
+            restaurant.setLocation(dto.getLocation());
+
+        if (dto.getCuisineType() != null)
+            restaurant.setCuisineType(dto.getCuisineType());
+
+        if (dto.getRating() != null)
+            restaurant.setRating(dto.getRating());
+
+        if (dto.getImage() != null)
+            restaurant.setCoverImage(dto.getImage());
+
+        if (dto.getMenuImages() != null)
+            restaurant.setMenuImages(dto.getMenuImages());
+
+        if (dto.getFoodImages() != null)
+            restaurant.setFoodImages(dto.getFoodImages());
 
         return restaurant;
     }
+
 
     private RestaurantDetailsDTO toDetailsDTO(Restaurant r) {
         RestaurantDetailsDTO dto = new RestaurantDetailsDTO();
