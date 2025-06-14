@@ -159,8 +159,13 @@
             </div>
         </div>
 
+        <div class="flex justify-center items-center mt-6 mb-6">            
+            <button @click="openReplyModal" class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700">
+              Comentar
+            </button>
+        </div>
 
-         <Footer />
+        <Footer />
             
         </div>
 
@@ -171,6 +176,15 @@
             @close="closeModal" 
             @review-submitted="handleReviewSubmitted" 
         />
+
+        <!-- Reply Modal -->
+        <ReplyModal 
+            v-if="showReplyModal" 
+            :restaurantId="String(restaurant?.id)" 
+            @close="closeReplyModal" 
+            @reply-submitted="handleReplySubmitted"
+        />
+
 </template>
 
 <script>
@@ -180,13 +194,14 @@ import StarRating from '../utils/Stars.vue';
 import ReviewModal from './ReviewModal.vue';
 import RestaurantGoogleMap from '../Maps/RestaurantGoogleMap.vue';
 import TopNav from '../Layout/TopNav.vue';
-import { ref } from 'vue';
+import ReplyModal from './ReplyModal.vue';
 
 export default {
     name: 'RestaurantDetails',
     components: {
         StarRating,
         ReviewModal,
+        ReplyModal,
         FrequencyBar,
         Footer,
         RestaurantGoogleMap,
@@ -201,6 +216,7 @@ export default {
     data() {
         return {
             showModal: false,
+            showReplyModal: false,
             restaurant: null,
             photos: [
                 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80',
@@ -287,6 +303,15 @@ export default {
         handleReviewSubmitted(review) {
             alert("Avaliação recebida com sucesso!");
         },
+        openReplyModal() {
+            this.showReplyModal = true;
+        },
+        closeReplyModal() {
+            this.showReplyModal = false;
+        },
+        handleReplySubmitted(reply) {
+            alert("Comentário enviado com sucesso!");
+        }
     },
 };
 </script>

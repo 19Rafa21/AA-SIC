@@ -3,6 +3,7 @@
  * Handles all API requests for reviews
  */
 
+import axios from 'axios';
 import { API_CONFIG } from '../config/api.config.js';
 import { ReviewDTO } from '../dto/review.dto.js';
 
@@ -10,6 +11,12 @@ export class ReviewService {
     constructor() {
         this.baseUrl = API_CONFIG.baseUrl;
         this.endpoint = 'review';
+        this.axiosInstance = axios.create({
+            baseURL: this.baseUrl,
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
     }
 
     /**
@@ -18,14 +25,8 @@ export class ReviewService {
      */
     async getAllReviews() {
         try {
-            const response = await fetch(`${this.baseUrl}${this.endpoint}`);
-            
-            if (!response.ok) {
-                throw new Error(`Failed to fetch reviews: ${response.status}`);
-            }
-            
-            const data = await response.json();
-            return data.map(review => ReviewDTO.fromAPI(review));
+            const response = await this.axiosInstance.get(`${this.endpoint}`);
+            return response.data.map(review => ReviewDTO.fromAPI(review));
         } catch (error) {
             console.error('Error fetching reviews:', error);
             throw error;
@@ -39,14 +40,8 @@ export class ReviewService {
      */
     async getReviewById(id) {
         try {
-            const response = await fetch(`${this.baseUrl}${this.endpoint}/${id}`);
-            
-            if (!response.ok) {
-                throw new Error(`Failed to fetch review: ${response.status}`);
-            }
-            
-            const data = await response.json();
-            return ReviewDTO.fromAPI(data);
+            const response = await this.axiosInstance.get(`${this.endpoint}/${id}`);
+            return ReviewDTO.fromAPI(response.data);
         } catch (error) {
             console.error(`Error fetching review with id ${id}:`, error);
             throw error;
@@ -60,14 +55,8 @@ export class ReviewService {
      */
     async getReviewsByRestaurant(restaurantId) {
         try {
-            const response = await fetch(`${this.baseUrl}${this.endpoint}/${restaurantId}/restaurant`);
-            
-            if (!response.ok) {
-                throw new Error(`Failed to fetch reviews for restaurant: ${response.status}`);
-            }
-            
-            const data = await response.json();
-            return data.map(review => ReviewDTO.fromAPI(review));
+            const response = await this.axiosInstance.get(`${this.endpoint}/${restaurantId}/restaurant`);
+            return response.data.map(review => ReviewDTO.fromAPI(review));
         } catch (error) {
             console.error(`Error fetching reviews for restaurant ${restaurantId}:`, error);
             throw error;
@@ -81,14 +70,8 @@ export class ReviewService {
      */
     async getReviewsByAuthor(authorId) {
         try {
-            const response = await fetch(`${this.baseUrl}${this.endpoint}/${authorId}/author`);
-            
-            if (!response.ok) {
-                throw new Error(`Failed to fetch reviews by author: ${response.status}`);
-            }
-            
-            const data = await response.json();
-            return data.map(review => ReviewDTO.fromAPI(review));
+            const response = await this.axiosInstance.get(`${this.endpoint}/${authorId}/author`);
+            return response.data.map(review => ReviewDTO.fromAPI(review));
         } catch (error) {
             console.error(`Error fetching reviews by author ${authorId}:`, error);
             throw error;
@@ -102,20 +85,8 @@ export class ReviewService {
      */
     async createReview(reviewDTO) {
         try {
-            const response = await fetch(`${this.baseUrl}${this.endpoint}`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(reviewDTO.toCreateRequest())
-            });
-
-            if (!response.ok) {
-                throw new Error(`Failed to create review: ${response.status}`);
-            }
-
-            const data = await response.json();
-            return ReviewDTO.fromAPI(data);
+            const response = await this.axiosInstance.post(`${this.endpoint}`, reviewDTO.toCreateRequest());
+            return ReviewDTO.fromAPI(response.data);
         } catch (error) {
             console.error('Error creating review:', error);
             throw error;
@@ -130,20 +101,8 @@ export class ReviewService {
      */
     async updateReview(id, reviewDTO) {
         try {
-            const response = await fetch(`${this.baseUrl}${this.endpoint}/${id}`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(reviewDTO.toUpdateRequest())
-            });
-
-            if (!response.ok) {
-                throw new Error(`Failed to update review: ${response.status}`);
-            }
-
-            const data = await response.json();
-            return ReviewDTO.fromAPI(data);
+            const response = await this.axiosInstance.put(`${this.endpoint}/${id}`, reviewDTO.toUpdateRequest());
+            return ReviewDTO.fromAPI(response.data);
         } catch (error) {
             console.error(`Error updating review with id ${id}:`, error);
             throw error;
@@ -157,14 +116,7 @@ export class ReviewService {
      */
     async deleteReview(id) {
         try {
-            const response = await fetch(`${this.baseUrl}${this.endpoint}/${id}`, {
-                method: 'DELETE'
-            });
-
-            if (!response.ok) {
-                throw new Error(`Failed to delete review: ${response.status}`);
-            }
-
+            await this.axiosInstance.delete(`${this.endpoint}/${id}`);
             return true;
         } catch (error) {
             console.error(`Error deleting review with id ${id}:`, error);

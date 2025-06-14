@@ -3,6 +3,7 @@
  * Handles all API requests for restaurants
  */
 
+import axios from 'axios';
 import { API_CONFIG } from '../config/api.config.js';
 import { RestaurantDTO } from '../dto/restaurant.dto.js';
 
@@ -10,6 +11,12 @@ export class RestaurantService {
     constructor() {
         this.baseUrl = API_CONFIG.baseUrl;
         this.endpoint = 'restaurant';
+        this.axiosInstance = axios.create({
+            baseURL: this.baseUrl,
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
     }
 
     /**
@@ -18,14 +25,8 @@ export class RestaurantService {
      */
     async getAllRestaurants() {
         try {
-            const response = await fetch(`${this.baseUrl}${this.endpoint}`);
-            
-            if (!response.ok) {
-                throw new Error(`Failed to fetch restaurants: ${response.status}`);
-            }
-            
-            const data = await response.json();
-            return data.map(restaurant => RestaurantDTO.fromAPI(restaurant));
+            const response = await this.axiosInstance.get(`${this.endpoint}`);
+            return response.data.map(restaurant => RestaurantDTO.fromAPI(restaurant));
         } catch (error) {
             console.error('Error fetching restaurants:', error);
             throw error;
@@ -39,14 +40,8 @@ export class RestaurantService {
      */
     async getRestaurantById(id) {
         try {
-            const response = await fetch(`${this.baseUrl}${this.endpoint}/${id}`);
-            
-            if (!response.ok) {
-                throw new Error(`Failed to fetch restaurant: ${response.status}`);
-            }
-            
-            const data = await response.json();
-            return RestaurantDTO.fromAPI(data);
+            const response = await this.axiosInstance.get(`${this.endpoint}/${id}`);
+            return RestaurantDTO.fromAPI(response.data);
         } catch (error) {
             console.error(`Error fetching restaurant with id ${id}:`, error);
             throw error;
@@ -60,20 +55,11 @@ export class RestaurantService {
      */
     async createRestaurant(restaurantDTO) {
         try {
-            const response = await fetch(`${this.baseUrl}${this.endpoint}`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(restaurantDTO.toAPIRequest())
-            });
-
-            if (!response.ok) {
-                throw new Error(`Failed to create restaurant: ${response.status}`);
-            }
-
-            const data = await response.json();
-            return RestaurantDTO.fromAPI(data);
+            const response = await this.axiosInstance.post(
+                `${this.endpoint}`, 
+                restaurantDTO.toAPIRequest()
+            );
+            return RestaurantDTO.fromAPI(response.data);
         } catch (error) {
             console.error('Error creating restaurant:', error);
             throw error;
@@ -88,20 +74,11 @@ export class RestaurantService {
      */
     async updateRestaurant(id, restaurantDTO) {
         try {
-            const response = await fetch(`${this.baseUrl}${this.endpoint}/${id}`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(restaurantDTO.toAPIRequest())
-            });
-
-            if (!response.ok) {
-                throw new Error(`Failed to update restaurant: ${response.status}`);
-            }
-
-            const data = await response.json();
-            return RestaurantDTO.fromAPI(data);
+            const response = await this.axiosInstance.put(
+                `${this.endpoint}/${id}`, 
+                restaurantDTO.toAPIRequest()
+            );
+            return RestaurantDTO.fromAPI(response.data);
         } catch (error) {
             console.error(`Error updating restaurant with id ${id}:`, error);
             throw error;
@@ -115,14 +92,7 @@ export class RestaurantService {
      */
     async deleteRestaurant(id) {
         try {
-            const response = await fetch(`${this.baseUrl}${this.endpoint}/${id}`, {
-                method: 'DELETE'
-            });
-
-            if (!response.ok) {
-                throw new Error(`Failed to delete restaurant: ${response.status}`);
-            }
-
+            await this.axiosInstance.delete(`${this.endpoint}/${id}`);
             return true;
         } catch (error) {
             console.error(`Error deleting restaurant with id ${id}:`, error);
@@ -131,31 +101,45 @@ export class RestaurantService {
     }
 
 
-    /**^
-     * Put method that gets restaurants with filter
-
+    /**
+     * Post method that gets restaurants with filter
+     * @param {string} name - Restaurant name filter
+     * @param {string} location - Location filter
+     * @param {string} cuisineType - Cuisine type filter
+     * @param {number} rating - Minimum rating filter
+     * @returns {Promise<RestaurantDTO[]>} Filtered restaurants
      */
     async getRestaurantsWithFilter(name, location, cuisineType, rating) {
         try {
-            const response = await fetch(`${this.baseUrl}${this.endpoint}/filters`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    name: name || '',
-                    location: location || '',
-                    cuisineType: cuisineType || '',
-                    rating: rating || 0.0
-                })
+            const response = await this.axiosInstance.post(`${this.endpoint}/filters`, {
+                name: name || '',
+                location: location || '',
+                cuisineType: cuisineType || '',
+                rating: rating || 0.0
             });
-
-            if (!response.ok) {
-                throw new Error(`Failed to fetch restaurants with filter: ${response.status}`);
+            
+            console.log('Filter response:', response);
+            console.log('Filter response.data type:', typeof response.data);
+            console.log('Filter response.data:', response.data);
+            
+            // Handle case where response.data is a string
+            let restaurantsData = response.data;
+            if (typeof response.data === 'string') {
+                try {
+                    restaurantsData = JSON.parse(response.data);
+                } catch (parseError) {
+                    console.error('Error parsing response data:', parseError);
+                    return [];
+                }
             }
-
-            const data = await response.json();
-            return data.map(restaurant => RestaurantDTO.fromAPI(restaurant));
+            
+            // Now check if we have an array
+            if (Array.isArray(restaurantsData)) {
+                return restaurantsData.map(restaurant => RestaurantDTO.fromAPI(restaurant));
+            } else {
+                console.error('Parsed data is not an array:', restaurantsData);
+                return [];
+            }
         } catch (error) {
             console.error('Error fetching restaurants with filter:', error);
             throw error;
