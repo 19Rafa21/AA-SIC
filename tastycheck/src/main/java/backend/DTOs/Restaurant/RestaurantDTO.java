@@ -10,6 +10,7 @@ public class RestaurantDTO {
 	private String ownerId;
 	private String location;
 	private String cuisineType;
+	private String image;
 
 	public RestaurantDTO(Restaurant restaurant){
 		this.id = restaurant.getId();
@@ -17,6 +18,7 @@ public class RestaurantDTO {
 		this.ownerId = restaurant.getOwner().getId();
 		this.location = restaurant.getLocation();
 		this.cuisineType = restaurant.getCuisineType();
+		this.image = restaurant.getCoverImage();
 	}
 
 	public String getId() {
@@ -58,6 +60,14 @@ public class RestaurantDTO {
 
 	public void setOwnerId(String ownerId) {
 		this.ownerId = ownerId;
+	}
+
+	public String getImage() {
+		return image;
+	}
+
+	public void setImage(String image) {
+		this.image = image;
 	}
 
 }

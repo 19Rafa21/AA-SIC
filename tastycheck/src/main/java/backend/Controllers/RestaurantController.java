@@ -7,6 +7,7 @@ import backend.Models.Restaurant;
 import backend.Services.RestaurantService;
 import backend.Services.UserService;
 import backend.Utils.HttpRequestUtils;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import org.orm.PersistentException;
@@ -40,11 +41,7 @@ public class RestaurantController extends HttpServlet {
         try {
             if (pathInfo == null || pathInfo.equals("/")) {
                 RestaurantDetailsDTO dto = null;
-                try {
-                    dto = parseRestaurantDetailsDTO(req);
-                } catch (PersistentException | UserException e) {
-                    throw new RuntimeException(e);
-                }
+                dto = parseRestaurantDetailsDTO(req);
                 restaurantService.createRestaurant(dto);
                 resp.setContentType("application/json; charset=UTF-8");
                 resp.setStatus(HttpServletResponse.SC_OK);
@@ -194,44 +191,55 @@ public class RestaurantController extends HttpServlet {
 
 
     @Override
-    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 
-        RestaurantDetailsDTO dto = null;
-        try {
-            dto = parseRestaurantDetailsDTO(req);
-        } catch (PersistentException | UserException e) {
-            resp.setContentType("application/json; charset=UTF-8");
+        resp.setContentType("application/json; charset=UTF-8");
+
+        // 1. Obter o ID da URL (ex: /restaurant/id12 → id12)
+        String pathInfo = req.getPathInfo(); // ex: /id12
+        if (pathInfo == null || pathInfo.length() <= 1) {
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            resp.getWriter().write("{\"error\": \"Erro ao processar o restaurante\"}");
+            resp.getWriter().write("{\"error\": \"ID do restaurante em falta na URL\"}");
             return;
         }
+        String restaurantId = pathInfo.substring(1); // remove a barra inicial
 
-        // Verifica se o restaurante existe
+        // 2. Verificar se o restaurante existe
         Restaurant existing;
         try {
-            existing = restaurantService.getRestaurantByOrmID(dto.getId());
+            existing = restaurantService.getRestaurantByOrmID(restaurantId);
             if (existing == null) {
-                resp.setContentType("application/json; charset=UTF-8");
                 resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
                 resp.getWriter().write("{\"message\": \"Restaurante não encontrado\"}");
                 return;
             }
         } catch (PersistentException e) {
-            resp.setContentType("application/json; charset=UTF-8");
             resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             resp.getWriter().write("{\"error\": \"Erro ao aceder à base de dados\"}");
             return;
         }
 
-        // Tenta fazer o update
-        if (!restaurantService.updateRestaurant(dto)) {
+        // 3. Ler os dados do body (JSON → DTO)
+        RestaurantDetailsDTO dto;
+        try {
+            dto = parseRestaurantDetailsDTO(req); // este método deve permitir campos parciais (null)
+        } catch (Exception e) {
+            resp.setContentType("application/json; charset=UTF-8");
+            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            resp.getWriter().write("{\"error\": \"Erro ao processar os dados do restaurante\"}");
+            return;
+        }
+
+        // 4. Tentar atualizar o restaurante com os dados fornecidos
+        boolean success = restaurantService.updateRestaurant(restaurantId, dto);
+        if (!success) {
             resp.setContentType("application/json; charset=UTF-8");
             resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             resp.getWriter().write("{\"message\": \"Erro ao atualizar o restaurante\"}");
             return;
         }
 
-        // Sucesso
+        // 5. Sucesso!
         resp.setContentType("application/json; charset=UTF-8");
         resp.setStatus(HttpServletResponse.SC_OK);
         resp.getWriter().write("{\"message\": \"Restaurante atualizado com sucesso\"}");
@@ -286,20 +294,10 @@ public class RestaurantController extends HttpServlet {
         return dto;
     }
 
-    private RestaurantDetailsDTO parseRestaurantDetailsDTO(HttpServletRequest req) throws IOException, PersistentException, UserException {
-        //Lê o body do POST → jsonPayload
-        BufferedReader reader = req.getReader();
-        StringBuilder sb = new StringBuilder();
-        String line;
-        while ((line = reader.readLine()) != null) {
-            sb.append(line);
-        }
-        String jsonPayload = sb.toString();
-
-        //Converte o JSON → DTO
-        Gson gson = new Gson();
-
-        return gson.fromJson(jsonPayload, RestaurantDetailsDTO.class);
+    public RestaurantDetailsDTO parseRestaurantDetailsDTO(HttpServletRequest req) throws IOException {
+        ObjectMapper mapper = new ObjectMapper();
+        return mapper.readValue(req.getInputStream(), RestaurantDetailsDTO.class);
     }
+
 
 }
