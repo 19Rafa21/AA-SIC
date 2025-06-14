@@ -1,17 +1,22 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 
 import MaterialInput from "@/material/MaterialInput.vue"
 import MaterialSwitch from "@/material/MaterialSwitch.vue"
 import MaterialButton from "@/material/MaterialButton.vue"
-import { AuthService } from "@/services"
+import { useAuthStore } from "@/stores"
 
 const router = useRouter()
+const authStore = useAuthStore()
+
 const email = ref('')
 const password = ref('')
 const errorMessage = ref('')
-const isLoading = ref(false)
+const rememberMe = ref(false)
+
+// Computed properties from the store
+const isLoading = computed(() => authStore.isLoading)
 
 const login = async () => {
   if (!email.value || !password.value) {
@@ -19,21 +24,26 @@ const login = async () => {
     return
   }
   
-  try {
-    isLoading.value = true
-    errorMessage.value = ''
-    
-    // Call the authentication service
-    const userData = await AuthService.login(email.value, password.value)
-    console.log('Login successful', userData)
-    
+  // Clear any previous error
+  authStore.clearError()
+  errorMessage.value = ''
+  console.log('Attempting to login with:', {
+    email: email.value,
+    password: password.value,
+    rememberMe: rememberMe.value
+  })
+  // Login using the auth store
+  const success = await authStore.login(
+    email.value, 
+    password.value, 
+    rememberMe.value
+  )
+  
+  if (success) {
+    console.log('Login successful', authStore.currentUser)
     router.push('/')
-    setTimeout(() => location.reload(), 100)
-  } catch (error) {
-    console.error('Erro ao fazer login:', error)
-    errorMessage.value = error.response?.data?.message || 'Email ou password incorretos.'
-  } finally {
-    isLoading.value = false
+  } else {
+    errorMessage.value = authStore.error || 'Email ou password incorretos.'
   }
 }
 
@@ -44,7 +54,7 @@ const home = () => {
 
 
 <template>
-  <DefaultNavbar transparent />
+  <!-- <DefaultNavbar transparent /> -->
   <!-- <Header> -->
     <div
   class="page-header min-vh-100 d-flex align-items-center justify-content-center px-3"
@@ -69,7 +79,6 @@ const home = () => {
       </router-link>
 
       <div class="card-body">
-        <form role="form" class="text-start">
           <MaterialInput
             id="email"
             placeholder="Email"
@@ -89,10 +98,6 @@ const home = () => {
             labelClass="mb-0 ms-3"
             checked
           >Lembrar-me</MaterialSwitch>
-          
-          <div v-if="errorMessage" class="alert alert-danger py-2 text-sm text-center">
-            {{ errorMessage }}
-          </div>
 
           <div class="text-center">
             <MaterialButton
@@ -108,7 +113,9 @@ const home = () => {
             </MaterialButton>
           </div>
 
-          <p v-if="errorMessage" class="text-danger text-center">{{ errorMessage }}</p>
+          <div v-if="errorMessage" class="alert alert-danger py-2 text-sm text-center">
+                      {{ errorMessage }}
+          </div>
 
           <p class="mt-4 text-sm text-center">
             Não tem conta?
@@ -116,7 +123,6 @@ const home = () => {
               Registar
             </router-link>
           </p>
-        </form>
       </div>
     </div>
   </div>

@@ -5,7 +5,7 @@ import App from "./App.vue";
 import router from "./router";
 import L from 'leaflet';
 import proj4 from 'proj4';
-
+import { initializeAuth } from './auth-init';
 
 
 window.L = L;
@@ -20,11 +20,18 @@ import '@fortawesome/fontawesome-free/css/all.css'
 
 import materialKit from "./material-kit";
 
+// Create Pinia instance
+const pinia = createPinia();
+
 const app = createApp(App);
 
 app.component('GoogleMap', GoogleMap)
 app.component('Marker', Marker)
-app.use(createPinia());
+app.use(pinia);
 app.use(router);
 app.use(materialKit);
+
+// Initialize authentication after Pinia is installed
+initializeAuth();
+
 app.mount("#app");

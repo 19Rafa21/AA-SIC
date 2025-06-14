@@ -1,11 +1,12 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import MaterialInput from "@/material/MaterialInput.vue"
 import MaterialButton from "@/material/MaterialButton.vue"
-import { AuthService } from "@/services"
+import { useAuthStore } from "@/stores"
 
 const router = useRouter()
+const authStore = useAuthStore()
 
 // Campos do formulário
 const name = ref('')
@@ -13,7 +14,9 @@ const email = ref('')
 const password = ref('')
 const confirmPassword = ref('')
 const errorMessage = ref('')
-const isLoading = ref(false)
+
+// Computed properties from the store
+const isLoading = computed(() => authStore.isLoading)
 
 // Role selecionado
 const role = ref('cliente')
@@ -31,27 +34,33 @@ const register = async () => {
     return
   }
 
-  try {
-    isLoading.value = true
-    errorMessage.value = ''
+  // Clear any previous error
+  authStore.clearError()
+  errorMessage.value = ''
+  
+  // Mapear o papel para o valor do discriminador
+  const discriminator = role.value === 'proprietario' ? 'Owner' : 'User'
+  
+  // Register using the auth store
+  const registerSuccess = await authStore.register(
+    email.value, 
+    password.value, 
+    name.value, 
+    discriminator
+  )
+  
+  if (registerSuccess) {
+    // After successful registration, login the user
+    const loginSuccess = await authStore.login(email.value, password.value)
     
-    // Mapear o papel para o valor do discriminador
-    const discriminator = role.value === 'proprietario' ? 'Owner' : 'User'
-    
-    // Chamar o serviço de autenticação
-    await AuthService.register(email.value, password.value, name.value, discriminator)
-    
-    // Após o registo bem-sucedido, iniciar sessão o utilizador
-    await AuthService.login(email.value, password.value)
-    
-    console.log("Conta criada com sucesso!")
-    router.push('/')
-    setTimeout(() => location.reload(), 100)
-  } catch (error) {
-    console.error('Erro ao registar:', error)
-    errorMessage.value = error.response?.data?.message || 'Ocorreu um erro ao criar a conta. Por favor, tente novamente.'
-  } finally {
-    isLoading.value = false
+    if (loginSuccess) {
+      console.log("Conta criada com sucesso!")
+      router.push('/')
+    } else {
+      errorMessage.value = authStore.error || 'Erro ao iniciar sessão. Por favor, tente fazer login manualmente.'
+    }
+  } else {
+    errorMessage.value = authStore.error || 'Ocorreu um erro ao criar a conta. Por favor, tente novamente.'
   }
 }
 
@@ -62,8 +71,8 @@ const home = () => {
 </script>
 
 <template>
-  <DefaultNavbar transparent />
-  <Header>
+  <!-- <DefaultNavbar transparent /> -->
+  <!-- <Header> -->
     <div
       class="page-header align-items-start min-vh-100"
       :style="{ backgroundImage: 'url(/img/login-bg.png)' }"
@@ -174,7 +183,7 @@ const home = () => {
         </div>
       </div>
     </div>
-  </Header>
+  <!-- </Header> -->
 </template>
 
 <style scoped>

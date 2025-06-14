@@ -35,7 +35,7 @@ const closeModal = () => (showModal.value = false)
       </div>
     </div>
 
-    <Footer />
+    <Footer class="fixed bottom-0 left-0 right-0" />
     <EditProfileModal v-if="showModal" @close="closeModal" />
   </div>
 </template>
