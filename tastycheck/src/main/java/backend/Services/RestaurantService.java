@@ -10,6 +10,7 @@ import org.orm.PersistentException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -225,10 +226,20 @@ public class RestaurantService {
         return new ArrayList<>(restaurant.getReviews());
     }
 
-    /*public boolean isOwnerOfRestaurant(String userId, String restaurantId) {
-        Restaurant restaurant = getRestaurantByOrmID()
+    public boolean isOwnerOfRestaurant(String userId, String restaurantId) {
+        try {
+            Restaurant restaurant = getRestaurantByOrmID(restaurantId);
+            if (restaurant == null || restaurant.getOwner() == null) {
+                throw new PersistentException("Restaurante não encontrado ou sem Owner!");
+            }
+
+            return Objects.equals(restaurant.getOwner().getId(), userId);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
-    */
+
 
 
 
