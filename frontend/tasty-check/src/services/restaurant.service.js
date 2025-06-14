@@ -26,7 +26,7 @@ export class RestaurantService {
     async getAllRestaurants() {
         try {
             const response = await this.axiosInstance.get(`${this.endpoint}`);
-            return response.data.map(restaurant => RestaurantDTO.fromAPI(restaurant));
+            return response.data;
         } catch (error) {
             console.error('Error fetching restaurants:', error);
             throw error;
@@ -117,10 +117,6 @@ export class RestaurantService {
                 cuisineType: cuisineType || '',
                 rating: rating || 0.0
             });
-            
-            console.log('Filter response:', response);
-            console.log('Filter response.data type:', typeof response.data);
-            console.log('Filter response.data:', response.data);
             
             // Handle case where response.data is a string
             let restaurantsData = response.data;

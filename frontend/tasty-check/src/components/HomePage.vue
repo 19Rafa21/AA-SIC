@@ -8,7 +8,6 @@ import PresentationCounter from "./MainPage/PresentationCounter.vue";
 import RestaurantCarousel from "./RestaurantBlock/RestauranteCarousel.vue";
 import RestaurantMap from "./Maps/RestaurantMap.vue";
 import Footer from "./Footer.vue";
-import restaurantesData from '../dataTesting/restaurantes.json';
 import Spinner  from './utils/Spinner.vue';
 import { RestaurantService } from '../services';
 
@@ -16,7 +15,10 @@ const restaurantService = new RestaurantService();
 const headerBgImage = '/img/header-bg.webp';
 
 const restaurants = ref([]);
+const NearbyRestaurants = ref([]);
+const allRestaurants = ref([]);
 const loadingRestaurants = ref(true);
+const loadingSuggested = ref(true);
 
 // Carregar restaurantes com rating >= 4.0
 async function loadFilteredRestaurants() {
@@ -28,17 +30,30 @@ async function loadFilteredRestaurants() {
   }
   finally{
     loadingRestaurants.value = false;
-    console.log('Filtered Restaurants:', restaurants.value);
-    console.log('Loading status:', loadingRestaurants.value);
   }
 }
 
-const NearbyRestaurants = computed(() => {
-  return restaurantesData.slice(restaurantesData.length - 7).map(r => ({
-    ...r,
-    cuisineType: r.cuisineType 
-  }));
-});
+async function loadSuggestedRestaurants() {
+  try {
+    const data = await restaurantService.getRestaurantsWithFilter(null, "Braga", null, 0.0);
+    NearbyRestaurants.value = data;
+  } catch (error) {
+    console.error('Error loading Suggested restaurants:', error);
+  }
+  finally{
+    loadingSuggested.value = false;
+  }
+}
+
+async function getAllRestaurants() {
+  try {
+    const data = await restaurantService.getAllRestaurants();
+    allRestaurants.value = data;
+  } catch (error) {
+    console.error('Error loading restaurants:', error);
+  }
+}
+
 const body = document.getElementsByTagName("body")[0];
 
 const showMapModal = ref(false)
@@ -84,7 +99,7 @@ async function geocodeAddress(address) {
 
 // 3) Geocodificar todos os restaurantes
 async function loadRestaurantsCoords() {
-  const promises = restaurantesData.slice(0, 5).map(async r => {
+  const promises = allRestaurants.slice(0, 5).map(async r => {
     const coords = await geocodeAddress(r.location)
     return coords
       ? { 
@@ -105,6 +120,8 @@ onMounted(async () => {
   document.body.classList.add('presentation-page', 'bg-gray-200')
   loadUserLocation()
   await loadFilteredRestaurants() // Carrega restaurantes com rating 4.0
+  await loadSuggestedRestaurants() // Carrega restaurantes sugeridos
+  await getAllRestaurants() // Carrega todos os restaurantes
   await loadRestaurantsCoords()
 })
 onUnmounted(() => {
@@ -144,7 +161,7 @@ onUnmounted(() => {
   </HeaderComponent>
   <PresentationCounter />
   
-    <div v-if="loadingRestaurants === true" class="text-center py-8">
+  <div v-if="loa === true" class="text-center py-8">
     <Spinner class="mx-auto mt-4 mb-1"/>    
     <span class="text-emerald-500 text-lg">Loading...</span>
   </div>
@@ -195,7 +212,18 @@ onUnmounted(() => {
     </div>
   </div>
 
- <RestaurantCarousel :title="'Perto de si'" :restaurants="NearbyRestaurants" :visibleCount="4"/>
+
+  <div v-if="loadingSuggested === true" class="text-center py-8">
+    <Spinner class="mx-auto mt-4 mb-1"/>    
+    <span class="text-emerald-500 text-lg">Loading...</span>
+  </div>
+
+  <RestaurantCarousel v-else-if="NearbyRestaurants.length !== 0 " :title="'Perto de si'" :restaurants="NearbyRestaurants" :visibleCount="4"/>
+  <div v-else class="flex justify-center items-center">
+    <span class="text-center text-lg text-gray-500 py-8">
+      Nenhum restaurante encontrado perto de si, experimente mudar de casa
+    </span>
+  </div>
 
  <Footer />
 
