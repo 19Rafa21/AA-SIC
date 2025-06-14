@@ -1,446 +1,542 @@
 [
     {
-        "id": "r1",
-        "owner": "u3",
         "name": "Trattoria Bella Vita",
-        "location": "Avenida da Liberdade 45, 1150 Lisboa",
+        "owner": "u3",
+        "location": "Avenida da Liberdade 45, 1150, Lisboa",
         "cuisineType": "Italian",
         "rating": 2.7,
         "image": "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4",
-        "reviews": [
-            {
-                "id": "rev1",
-                "rating": 4.8,
-                "text": "Comida autêntica italiana e atendimento excelente!",
-                "author": "u1",
-                "date": "2024-05-10T14:30:00Z",
-                "replies": [
-                    {
-                        "id": "rpl1",
-                        "text": "Obrigado pela sua visita! Esperamos vê-lo novamente.",
-                        "author": "u3",
-                        "date": "2024-05-11T09:15:00Z"
-                    }
-                ]
-            }
+        "menuImages": [
+            "https://images.unsplash.com/photo-1588166524941-3bf61a9c41db",
+            "https://images.unsplash.com/photo-1551183053-bf91a1d81141",
+            "https://images.unsplash.com/photo-1559925393-8be0ec4767c8"
+        ],
+        "foodImages": [
+            "https://images.unsplash.com/photo-1551183053-bf91a1d81141",
+            "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38",
+            "https://images.unsplash.com/photo-1600803907087-f56d462fd26b"
         ]
     },
     {
-        "id": "r2",
-        "owner": "u4",
         "name": "Sakura Sushi House",
-        "location": "Rua do Comércio 78, 1200 Lisboa",
+        "owner": "u4",
+        "location": "Rua do Comércio 78, 1200, Lisboa",
         "cuisineType": "Japanese",
         "rating": 4.3,
         "image": "https://images.unsplash.com/photo-1579871494447-9811cf80d66c",
-        "reviews": [
-            {
-            "id": "rev2",
-            "rating": 4.5,
-            "text": "O melhor sushi da cidade!",
-            "author": "u2",
-            "date": "2024-05-15T19:45:00Z",
-            "replies": []
-            },
-            {
-            "id": "rev3",
-            "rating": 4.1,
-            "text": "Sashimi muito fresco, recomendo!",
-            "author": "u5",
-            "date": "2024-05-18T20:30:00Z",
-            "replies": [
-                {
-                "id": "rpl2",
-                "text": "Obrigado pelo feedback positivo!",
-                "author": "u4",
-                "date": "2024-05-19T10:20:00Z"
-                }
-            ]
-            }
+        "menuImages": [
+            "https://images.unsplash.com/photo-1611143669185-af224c5e3252",
+            "https://images.unsplash.com/photo-1579584425555-c3ce17fd4351",
+            "https://images.unsplash.com/photo-1562802378-063ec186a863"
+        ],
+        "foodImages": [
+            "https://images.unsplash.com/photo-1617196034183-421b4f3f9c74",
+            "https://images.unsplash.com/photo-1583623025817-d180a2221d0a",
+            "https://images.unsplash.com/photo-1553621042-f6e147245754"
         ]
-        },
+    },
         {
-        "id": "r3",
         "owner": "u7",
         "name": "Cantinho do Alentejo",
-        "location": "Rua Augusta 112, 1100 Lisboa",
+        "location": "Rua Augusta 112, 1100, Lisboa",
         "cuisineType": "Portuguese",
         "rating": 4.8,
         "image": "https://images.unsplash.com/photo-1555396273-367ea4eb4db5",
-        "reviews": [
-            {
-            "id": "rev4",
-            "rating": 5.0,
-            "text": "Comida tradicional portuguesa no seu melhor!",
-            "author": "u8",
-            "date": "2024-05-12T13:20:00Z",
-            "replies": []
-            }
+        "menuImages": [
+            "https://images.unsplash.com/photo-1546241072-48010ad2862c",
+            "https://images.unsplash.com/photo-1569718212165-3a8278d5f624",
+            "https://images.unsplash.com/photo-1589302168068-964664d93dc0"
+        ],
+        "foodImages": [
+            "https://images.unsplash.com/photo-1539136788836-5699e78bfc75",
+            "https://images.unsplash.com/photo-1600803907087-f56d462fd26b",
+            "https://images.unsplash.com/photo-1607478900766-efe13248b125"
         ]
-        },
+    },
         {
-        "id": "r4",
         "owner": "u9",
         "name": "El Torero",
-        "location": "Praça dos Restauradores 28, 1250 Lisboa",
+        "location": "Praça dos Restauradores 28, 1250, Lisboa",
         "cuisineType": "Spanish",
         "rating": 4.5,
         "image": "https://images.unsplash.com/photo-1515669097368-22e68427d265",
-        "reviews": [
-            {
-            "id": "rev5",
-            "rating": 4.6,
-            "text": "As tapas são deliciosas e autênticas!",
-            "author": "u11",
-            "date": "2024-05-17T21:15:00Z",
-            "replies": []
-            }
+        "menuImages": [
+            "https://images.unsplash.com/photo-1562059390-a761a084768e",
+            "https://images.unsplash.com/photo-1551504734-5ee1c4a1479b",
+            "https://images.unsplash.com/photo-1576020799627-aeac74d58d0d"
+        ],
+        "foodImages": [
+            "https://images.unsplash.com/photo-1563245372-f21724e3856d",
+            "https://images.unsplash.com/photo-1565299507177-b0ac66763828",
+            "https://images.unsplash.com/photo-1515421557707-387f65c390e8"
         ]
-        },
+    },
         {
-        "id": "r5",
         "owner": "u12",
         "name": "Maharaja Palace",
-        "location": "Avenida Almirante Reis 62, 1150 Lisboa",
+        "location": "Avenida Almirante Reis 62, 1150, Lisboa",
         "cuisineType": "Indian",
         "rating": 4.4,
         "image": "https://images.unsplash.com/photo-1517244683847-7456b63c5969",
-        "reviews": [
-            {
-            "id": "rev6",
-            "rating": 4.3,
-            "text": "Curry fantástico e naan perfeito!",
-            "author": "u2",
-            "date": "2024-05-11T20:45:00Z",
-            "replies": [
-                {
-                "id": "rpl3",
-                "text": "Muito obrigado pela sua visita!",
-                "author": "u12",
-                "date": "2024-05-12T09:30:00Z"
-                }
-            ]
-            }
+        "menuImages": [
+            "https://images.unsplash.com/photo-1585937421612-70a008356fbe",
+            "https://images.unsplash.com/photo-1574484284002-952d92456975",
+            "https://images.unsplash.com/photo-1596797038530-2c107229654b"
+        ],
+        "foodImages": [
+            "https://images.unsplash.com/photo-1565557623262-b51c2513a641",
+            "https://images.unsplash.com/photo-1567337710282-00832b415979",
+            "https://images.unsplash.com/photo-1596040033128-15ef41978841"
         ]
-        },
+    },
         {
-        "id": "r6",
         "owner": "u15",
         "name": "Burger Blast",
-        "location": "Rua da Prata 221, 1100 Lisboa",
+        "location": "Rua da Prata 221, 1100, Lisboa",
         "cuisineType": "American",
         "rating": 4.2,
         "image": "https://images.unsplash.com/photo-1550547660-d9450f859349",
-        "reviews": [
-            {
-            "id": "rev7",
-            "rating": 4.0,
-            "text": "Hambúrgueres suculentos, mas as batatas fritas poderiam ser melhores.",
-            "author": "u6",
-            "date": "2024-05-14T18:30:00Z",
-            "replies": []
-            }
+        "menuImages": [
+            "https://images.unsplash.com/photo-1561758033-d89a9ad46330",
+            "https://images.unsplash.com/photo-1572802419224-296b0aeee0d9",
+            "https://images.unsplash.com/photo-1551782450-a2132b4ba21d"
+        ],
+        "foodImages": [
+            "https://images.unsplash.com/photo-1565299507177-b0ac66763828",
+            "https://images.unsplash.com/photo-1568901346375-23c9450c58cd",
+            "https://images.unsplash.com/photo-1561758033-48d52648ae8b"
         ]
-        },
+    },
         {
-        "id": "r7",
         "owner": "u18",
         "name": "Thai Spice",
-        "location": "Avenida da República 45, 1050 Lisboa",
+        "location": "Avenida da República 45, 1050, Lisboa",
         "cuisineType": "Thai",
         "rating": 4.6,
         "image": "https://images.unsplash.com/photo-1534620808146-d33bb39128b2",
-        "reviews": [
-            {
-            "id": "rev8",
-            "rating": 4.7,
-            "text": "O Pad Thai é divinal! Ambiente acolhedor.",
-            "author": "u3",
-            "date": "2024-05-19T19:15:00Z",
-            "replies": []
-            }
+        "menuImages": [
+            "https://images.unsplash.com/photo-1559847844-5315695dadae",
+            "https://images.unsplash.com/photo-1562565652-a0d8f4bc0a32",
+            "https://images.unsplash.com/photo-1557715144-0430512779a7"
+        ],
+        "foodImages": [
+            "https://images.unsplash.com/photo-1562565651-ba77f3983ccd",
+            "https://images.unsplash.com/photo-1562565652-638534fc39af",
+            "https://images.unsplash.com/photo-1569718212165-3a8278d5f624"
         ]
-        },
+    },
         {
-        "id": "r8",
         "owner": "u20",
         "name": "Coq au Vin",
-        "location": "Rua Garrett 19, 1200 Lisboa",
+        "location": "Rua Garrett 19, 1200, Lisboa",
         "cuisineType": "French",
         "rating": 4.9,
         "image": "https://images.unsplash.com/photo-1550966871-3ed3cdb5ed0c",
-        "reviews": [
-            {
-            "id": "rev9",
-            "rating": 5.0,
-            "text": "Experiência gastronómica de topo! Vale cada euro.",
-            "author": "u22",
-            "date": "2024-05-16T20:30:00Z",
-            "replies": [
-                {
-                "id": "rpl4",
-                "text": "Merci beaucoup! Esperamos vê-lo em breve.",
-                "author": "u20",
-                "date": "2024-05-17T09:45:00Z"
-                }
-            ]
-            }
+        "menuImages": [
+            "https://images.unsplash.com/photo-1485963631004-f2f00b1d6606",
+            "https://images.unsplash.com/photo-1555396273-367ea4eb4db5",
+            "https://images.unsplash.com/photo-1414235077428-338989a2e8c0"
+        ],
+        "foodImages": [
+            "https://images.unsplash.com/photo-1504674900247-0877df9cc836",
+            "https://images.unsplash.com/photo-1600335895229-6e75511892c8",
+            "https://images.unsplash.com/photo-1600626189503-0a47c9ab8d8c"
         ]
-        },
+    },
         {
-        "id": "r9",
         "owner": "u23",
         "name": "El Mariachi",
-        "location": "Rua do Ouro 124, 1100 Lisboa",
+        "location": "Rua do Ouro 124, 1100, Lisboa",
         "cuisineType": "Mexican",
         "rating": 4.3,
         "image": "https://images.unsplash.com/photo-1551504734-5ee1c4a1479b",
-        "reviews": [
-            {
-            "id": "rev10",
-            "rating": 4.4,
-            "text": "Tacos autênticos e margaritas excelentes!",
-            "author": "u1",
-            "date": "2024-05-18T21:20:00Z",
-            "replies": []
-            }
+        "menuImages": [
+            "https://images.unsplash.com/photo-1565299585323-38d6b0865b47",
+            "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38",
+            "https://images.unsplash.com/photo-1513456852971-30c0b8199d4d"
+        ],
+        "foodImages": [
+            "https://images.unsplash.com/photo-1552332386-f8dd00dc2f85",
+            "https://images.unsplash.com/photo-1599974579688-8dbdd335c77f",
+            "https://images.unsplash.com/photo-1599974579688-8dbdd335c77f"
         ]
-        },
+    },
         {
-        "id": "r10",
         "owner": "u25",
         "name": "Athena",
-        "location": "Rua da Madalena 56, 1100 Lisboa",
+        "location": "Rua da Madalena 56, 1100, Lisboa",
         "cuisineType": "Greek",
         "rating": 4.5,
         "image": "https://images.unsplash.com/photo-1523294587484-bae6cc870010",
-        "reviews": [
-            {
-            "id": "rev11",
-            "rating": 4.6,
-            "text": "O melhor souvlaki que já provei em Lisboa!",
-            "author": "u4",
-            "date": "2024-05-15T13:10:00Z",
-            "replies": []
-            }
+        "menuImages": [
+            "https://images.unsplash.com/photo-1588166524941-3bf61a9c41db",
+            "https://images.unsplash.com/photo-1567337710282-00832b415979",
+            "https://images.unsplash.com/photo-1600335895229-6e75511892c8"
+        ],
+        "foodImages": [
+            "https://images.unsplash.com/photo-1504674900247-0877df9cc836",
+            "https://images.unsplash.com/photo-1529692236671-f1f6cf9683ba",
+            "https://images.unsplash.com/photo-1595436252084-011fa688f321"
         ]
-        },
+    },
         {
-        "id": "r11",
         "owner": "u27",
         "name": "Shanghai Palace",
-        "location": "Avenida Fontes Pereira de Melo 28, 1050 Lisboa",
+        "location": "Avenida Fontes Pereira de Melo 28, 1050, Lisboa",
         "cuisineType": "Chinese",
         "rating": 4.1,
         "image": "https://images.unsplash.com/photo-1563245372-f21724e3856d",
-        "reviews": [
-            {
-            "id": "rev12",
-            "rating": 4.0,
-            "text": "Dim sum delicioso, mas o serviço foi um pouco lento.",
-            "author": "u7",
-            "date": "2024-05-13T19:50:00Z",
-            "replies": [
-                {
-                "id": "rpl5",
-                "text": "Pedimos desculpa pelo atraso. Estamos melhorando nosso serviço.",
-                "author": "u27",
-                "date": "2024-05-14T10:25:00Z"
-                }
-            ]
-            }
+        "menuImages": [
+            "https://images.unsplash.com/photo-1563245372-f21724e3856d",
+            "https://images.unsplash.com/photo-1507537297725-24a1c029d3ca",
+            "https://images.unsplash.com/photo-1569058242253-92a0c8223784"
+        ],
+        "foodImages": [
+            "https://images.unsplash.com/photo-1569058242253-92a0c8223784",
+            "https://images.unsplash.com/photo-1585032226651-759b368d7246",
+            "https://images.unsplash.com/photo-1554998171-706e730d721d"
         ]
-        },
+    },
         {
-        "id": "r12",
         "owner": "u30",
         "name": "Bacalhau com Todos",
-        "location": "Rua das Portas de Santo Antão 35, 1150 Lisboa",
+        "location": "Rua das Portas de Santo Antão 35, 1150, Lisboa",
         "cuisineType": "Portuguese",
         "rating": 4.7,
         "image": "https://images.unsplash.com/photo-1512621776951-a57141f2eefd",
-        "reviews": [
-            {
-            "id": "rev13",
-            "rating": 4.9,
-            "text": "O melhor bacalhau da cidade! Sabores tradicionais portugueses.",
-            "author": "u5",
-            "date": "2024-05-17T14:40:00Z",
-            "replies": []
-            }
+        "menuImages": [
+            "https://images.unsplash.com/photo-1551504734-5ee1c4a1479b",
+            "https://images.unsplash.com/photo-1561758033-d89a9ad46330",
+            "https://images.unsplash.com/photo-1569058242253-92a0c8223784"
+        ],
+        "foodImages": [
+            "https://images.unsplash.com/photo-1559847844-5315695dadae",
+            "https://images.unsplash.com/photo-1565299507177-b0ac66763828",
+            "https://images.unsplash.com/photo-1565557623262-b51c2513a641"
         ]
-        },
+    },
         {
-        "id": "r13",
         "owner": "u32",
         "name": "Istanbul Kebab",
-        "location": "Rua do Carmo 47, 1200 Lisboa",
+        "location": "Rua do Carmo 47, 1200,Lisboa",
         "cuisineType": "Turkish",
         "rating": 4.2,
         "image": "https://images.unsplash.com/photo-1561651823-34feb02250e4",
-        "reviews": [
-            {
-            "id": "rev14",
-            "rating": 4.3,
-            "text": "Kebabs suculentos e baklava incrível!",
-            "author": "u8",
-            "date": "2024-05-14T22:10:00Z",
-            "replies": []
-            }
+        "menuImages": [
+            "https://images.unsplash.com/photo-1561651823-34feb02250e4",
+            "https://images.unsplash.com/photo-1559847844-5315695dadae",
+            "https://images.unsplash.com/photo-1555939594-58d7cb561ad1"
+        ],
+        "foodImages": [
+            "https://images.unsplash.com/photo-1572802419224-296b0aeee0d9",
+            "https://images.unsplash.com/photo-1504674900247-0877df9cc836",
+            "https://images.unsplash.com/photo-1561758033-d89a9ad46330"
         ]
-        },
+    },
         {
-        "id": "r14",
         "owner": "u35",
         "name": "Vesuvio",
-        "location": "Avenida António Augusto Aguiar 98, 1050 Lisboa",
+        "location": "Avenida António Augusto Aguiar 98, 1050, Lisboa",
         "cuisineType": "Italian",
         "rating": 4.6,
         "image": "https://images.unsplash.com/photo-1555396273-367ea4eb4db5",
-        "reviews": [
-            {
-            "id": "rev15",
-            "rating": 4.7,
-            "text": "Pizza napolitana autêntica, massa perfeita!",
-            "author": "u10",
-            "date": "2024-05-19T20:15:00Z",
-            "replies": [
-                {
-                "id": "rpl6",
-                "text": "Grazie mille pelo seu comentário maravilhoso!",
-                "author": "u35",
-                "date": "2024-05-20T09:05:00Z"
-                }
-            ]
-            }
+        "menuImages": [
+            "https://images.unsplash.com/photo-1555396273-367ea4eb4db5",
+            "https://images.unsplash.com/photo-1589302168068-964664d93dc0",
+            "https://images.unsplash.com/photo-1569718212165-3a8278d5f624"
+        ],
+        "foodImages": [
+            "https://images.unsplash.com/photo-1589302168068-964664d93dc0",
+            "https://images.unsplash.com/photo-1579684947550-22e945225d9a",
+            "https://images.unsplash.com/photo-1576020799627-aeac74d58d0d"
         ]
-        },
+    },
         {
-        "id": "r15",
         "owner": "u37",
         "name": "Seoul Garden",
-        "location": "Praça da Figueira 15, 1100 Lisboa",
+        "location": "Praça da Figueira 15, 1100, Lisboa",
         "cuisineType": "Korean",
         "rating": 4.4,
         "image": "https://images.unsplash.com/photo-1590330813083-fc22d4b6a48c",
-        "reviews": [
-            {
-            "id": "rev16",
-            "rating": 4.5,
-            "text": "O melhor bibimbap que já comi! Kimchi caseiro excelente.",
-            "author": "u9",
-            "date": "2024-05-16T19:30:00Z",
-            "replies": []
-            }
+        "menuImages": [
+            "https://images.unsplash.com/photo-1590330813083-fc22d4b6a48c",
+            "https://images.unsplash.com/photo-1565538810643-b5bdb714032a",
+            "https://images.unsplash.com/photo-1547573854-74d2a71d0826"
+        ],
+        "foodImages": [
+            "https://images.unsplash.com/photo-1567337710282-00832b415979",
+            "https://images.unsplash.com/photo-1498654896293-37aacf113fd9",
+            "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38"
         ]
-        },
+    },
         {
-        "id": "r16",
         "owner": "u40",
         "name": "Veggie Paradise",
-        "location": "Rua da Escola Politécnica 42, 1250 Lisboa",
+        "location": "Rua da Escola Politécnica 42, 1250, Lisboa",
         "cuisineType": "Vegetarian",
         "rating": 4.3,
         "image": "https://images.unsplash.com/photo-1543339308-43e59d6b73a6",
-        "reviews": [
-            {
-            "id": "rev17",
-            "rating": 4.4,
-            "text": "Opções vegetarianas criativas e saborosas!",
-            "author": "u12",
-            "date": "2024-05-18T13:25:00Z",
-            "replies": []
-            }
+        "menuImages": [
+            "https://images.unsplash.com/photo-1543339308-43e59d6b73a6",
+            "https://images.unsplash.com/photo-1512621776951-a57141f2eefd",
+            "https://images.unsplash.com/photo-1530062845289-9109b2c9c868"
+        ],
+        "foodImages": [
+            "https://images.unsplash.com/photo-1540420773420-3366772f473a",
+            "https://images.unsplash.com/photo-1600335895229-6e75511892c8",
+            "https://images.unsplash.com/photo-1562059390-a761a084768e"
         ]
-        },
+    },
         {
-        "id": "r17",
         "owner": "u42",
         "name": "Beirut Palace",
-        "location": "Avenida Duque de Loulé 73, 1050 Lisboa",
+        "location": "Avenida Duque de Loulé 73, 1050, Lisboa",
         "cuisineType": "Lebanese",
         "rating": 4.6,
         "image": "https://images.unsplash.com/photo-1565299507177-b0ac66763828",
-        "reviews": [
-            {
-            "id": "rev18",
-            "rating": 4.8,
-            "text": "Hummus divino e shawarma perfeito! Ambiente acolhedor.",
-            "author": "u15",
-            "date": "2024-05-12T20:55:00Z",
-            "replies": [
-                {
-                "id": "rpl7",
-                "text": "Shukran! Volte sempre.",
-                "author": "u42",
-                "date": "2024-05-13T11:10:00Z"
-                }
-            ]
-            }
+        "menuImages": [
+            "https://images.unsplash.com/photo-1565299507177-b0ac66763828",
+            "https://images.unsplash.com/photo-1512621776951-a57141f2eefd",
+            "https://images.unsplash.com/photo-1560180474-e8563fd75bab"
+        ],
+        "foodImages": [
+            "https://images.unsplash.com/photo-1585937421612-70a008356fbe",
+            "https://images.unsplash.com/photo-1606663889134-b1dedb5ed8b7",
+            "https://images.unsplash.com/photo-1561651823-34feb02250e4"
         ]
-        },
+    },
         {
-        "id": "r18",
         "owner": "u45",
         "name": "Tapas & Vinhos",
-        "location": "Rua do Alecrim 35, 1200 Lisboa",
+        "location": "Rua do Alecrim 35, 1200, Lisboa",
         "cuisineType": "Spanish",
         "rating": 4.7,
         "image": "https://images.unsplash.com/photo-1560180474-e8563fd75bab",
-        "reviews": [
-            {
-            "id": "rev19",
-            "rating": 4.9,
-            "text": "Excelente seleção de vinhos e tapas autênticas!",
-            "author": "u20",
-            "date": "2024-05-19T21:40:00Z",
-            "replies": []
-            }
+        "menuImages": [
+            "https://images.unsplash.com/photo-1560180474-e8563fd75bab",
+            "https://images.unsplash.com/photo-1515669097368-22e68427d265",
+            "https://images.unsplash.com/photo-1555939594-58d7cb561ad1"
+        ],
+        "foodImages": [
+            "https://images.unsplash.com/photo-1513456852971-30c0b8199d4d",
+            "https://images.unsplash.com/photo-1563245372-f21724e3856d",
+            "https://images.unsplash.com/photo-1555939594-58d7cb561ad1"
         ]
-        },
+    },
         {
-        "id": "r19",
         "owner": "u48",
         "name": "Saigon Express",
-        "location": "Rua da Prata 169, 1100 Lisboa",
+        "location": "Rua da Prata 169, 1100, Lisboa",
         "cuisineType": "Vietnamese",
         "rating": 4.2,
         "image": "https://images.unsplash.com/photo-1582878826629-29b7ad1cdc43",
-        "reviews": [
-            {
-            "id": "rev20",
-            "rating": 4.0,
-            "text": "Pho saboroso e rolos primavera frescos!",
-            "author": "u25",
-            "date": "2024-05-15T18:05:00Z",
-            "replies": []
-            }
+        "menuImages": [
+            "https://images.unsplash.com/photo-1582878826629-29b7ad1cdc43",
+            "https://images.unsplash.com/photo-1555939594-58d7cb561ad1",
+            "https://images.unsplash.com/photo-1534620808146-d33bb39128b2"
+        ],
+        "foodImages": [
+            "https://images.unsplash.com/photo-1551504734-5ee1c4a1479b",
+            "https://images.unsplash.com/photo-1509722747041-616f39b57569",
+            "https://images.unsplash.com/photo-1555939594-58d7cb561ad1"
         ]
-        },
+    },
         {
-        "id": "r20",
         "owner": "u50",
         "name": "Brasileiro Grill",
-        "location": "Avenida da Liberdade 185, 1250 Lisboa",
+        "location": "Avenida da Liberdade 185, 1250, Lisboa",
         "cuisineType": "Brazilian",
         "rating": 4.5,
         "image": "https://images.unsplash.com/photo-1555939594-58d7cb561ad1",
-        "reviews": [
-            {
-            "id": "rev21",
-            "rating": 4.6,
-            "text": "Churrasco fantástico e caipirinha autêntica!",
-            "author": "u22",
-            "date": "2024-05-17T20:50:00Z",
-            "replies": [
-                {
-                "id": "rpl8",
-                "text": "Muito obrigado! Esperamos vê-lo novamente.",
-                "author": "u50",
-                "date": "2024-05-18T10:35:00Z"
-                }
-            ]
-            }
+        "menuImages": [
+            "https://images.unsplash.com/photo-1555939594-58d7cb561ad1",
+            "https://images.unsplash.com/photo-1594731804736-c6cb8fde0798",
+            "https://images.unsplash.com/photo-1590301157890-4810ed352733"
+        ],
+        "foodImages": [
+            "https://images.unsplash.com/photo-1607116667981-ff148a4e509b",
+            "https://images.unsplash.com/photo-1551183053-bf91a1d81141",
+            "https://images.unsplash.com/photo-1544025162-d76694265947"
         ]
-        }
+    },
+    {
+        "name": "Cantinho do Minho",
+        "owner": "u60",
+        "location": "Avenida Central 45, 4710, Braga",
+        "cuisineType": "Portuguese",
+        "rating": 4.6,
+        "image": "https://images.unsplash.com/photo-1555396273-367ea4eb4db5",
+        "menuImages": [
+            "https://images.unsplash.com/photo-1569718212165-3a8278d5f624",
+            "https://images.unsplash.com/photo-1546241072-48010ad2862c",
+            "https://images.unsplash.com/photo-1521917441209-e886f0404a7b"
+        ],
+        "foodImages": [
+            "https://images.unsplash.com/photo-1498654896293-37aacf113fd9",
+            "https://images.unsplash.com/photo-1539136788836-5699e78bfc75",
+            "https://images.unsplash.com/photo-1529692236671-f1f6cf9683ba"
+        ]
+    },
+    {
+        "name": "Taberna da Sé",
+        "owner": "u62",
+        "location": "Rua Dom Diogo de Sousa 72, 4700, Braga",
+        "cuisineType": "Portuguese",
+        "rating": 4.7,
+        "image": "https://images.unsplash.com/photo-1543007630-9710e4a00a20",
+        "menuImages": [
+            "https://images.unsplash.com/photo-1569718212165-3a8278d5f624",
+            "https://images.unsplash.com/photo-1589302168068-964664d93dc0",
+            "https://images.unsplash.com/photo-1544148103-0773bf10d330"
+        ],
+        "foodImages": [
+            "https://images.unsplash.com/photo-1511690656952-34342bb7c2f2",
+            "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38",
+            "https://images.unsplash.com/photo-1607478900766-efe13248b125"
+        ]
+    },
+    {
+        "name": "Velha Braga",
+        "owner": "u65",
+        "location": "Praça da República 12, 4710, Braga",
+        "cuisineType": "Portuguese",
+        "rating": 4.8,
+        "image": "https://images.unsplash.com/photo-1466978913421-dad2ebd01d17",
+        "menuImages": [
+            "https://images.unsplash.com/photo-1546241072-48010ad2862c",
+            "https://images.unsplash.com/photo-1569718212165-3a8278d5f624",
+            "https://images.unsplash.com/photo-1611143669185-af224c5e3252"
+        ],
+        "foodImages": [
+            "https://images.unsplash.com/photo-1512621776951-a57141f2eefd",
+            "https://images.unsplash.com/photo-1539136788836-5699e78bfc75",
+            "https://images.unsplash.com/photo-1607478900766-efe13248b125"
+        ]
+    },
+    {
+        "name": "Braga Grill",
+        "owner": "u68",
+        "location": "Rua dos Chãos 35, 4710, Braga",
+        "cuisineType": "BBQ",
+        "rating": 4.4,
+        "image": "https://images.unsplash.com/photo-1544025162-d76694265947",
+        "menuImages": [
+            "https://images.unsplash.com/photo-1555939594-58d7cb561ad1",
+            "https://images.unsplash.com/photo-1594731804736-c6cb8fde0798",
+            "https://images.unsplash.com/photo-1561758033-d89a9ad46330"
+        ],
+        "foodImages": [
+            "https://images.unsplash.com/photo-1529692236671-f1f6cf9683ba",
+            "https://images.unsplash.com/photo-1432139509613-5c4255815697",
+            "https://images.unsplash.com/photo-1544025162-d76694265947"
+        ]
+    },
+    {
+        "name": "Ristorante Roma",
+        "owner": "u70",
+        "location": "Avenida da Liberdade 125, 4710, Braga",
+        "cuisineType": "Italian",
+        "rating": 4.5,
+        "image": "https://images.unsplash.com/photo-1579684947550-22e945225d9a",
+        "menuImages": [
+            "https://images.unsplash.com/photo-1559925393-8be0ec4767c8",
+            "https://images.unsplash.com/photo-1551183053-bf91a1d81141",
+            "https://images.unsplash.com/photo-1588166524941-3bf61a9c41db"
+        ],
+        "foodImages": [
+            "https://images.unsplash.com/photo-1551183053-bf91a1d81141",
+            "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38",
+            "https://images.unsplash.com/photo-1600803907087-f56d462fd26b"
+        ]
+    },
+    {
+        "name": "Tasca do Famalicão",
+        "owner": "u72",
+        "location": "Praça 9 de Abril 18, 4760, Vila Nova de Famalicão",
+        "cuisineType": "Portuguese",
+        "rating": 4.5,
+        "image": "https://images.unsplash.com/photo-1414235077428-338989a2e8c0",
+        "menuImages": [
+            "https://images.unsplash.com/photo-1546241072-48010ad2862c",
+            "https://images.unsplash.com/photo-1569718212165-3a8278d5f624",
+            "https://images.unsplash.com/photo-1589302168068-964664d93dc0"
+        ],
+        "foodImages": [
+            "https://images.unsplash.com/photo-1511690656952-34342bb7c2f2",
+            "https://images.unsplash.com/photo-1600335895229-6e75511892c8",
+            "https://images.unsplash.com/photo-1529692236671-f1f6cf9683ba"
+        ]
+    },
+    {
+        "name": "Sushi Fama",
+        "owner": "u75",
+        "location": "Avenida 25 de Abril 42, 4760, Vila Nova de Famalicão",
+        "cuisineType": "Japanese",
+        "rating": 4.4,
+        "image": "https://images.unsplash.com/photo-1579871494447-9811cf80d66c",
+        "menuImages": [
+            "https://images.unsplash.com/photo-1611143669185-af224c5e3252",
+            "https://images.unsplash.com/photo-1579584425555-c3ce17fd4351",
+            "https://images.unsplash.com/photo-1562802378-063ec186a863"
+        ],
+        "foodImages": [
+            "https://images.unsplash.com/photo-1617196034183-421b4f3f9c74",
+            "https://images.unsplash.com/photo-1583623025817-d180a2221d0a",
+            "https://images.unsplash.com/photo-1553621042-f6e147245754"
+        ]
+    },
+    {
+        "name": "El Tapas",
+        "owner": "u78",
+        "location": "Rua Adriano Pinto Basto 89, 4760, Vila Nova de Famalicão",
+        "cuisineType": "Spanish",
+        "rating": 4.3,
+        "image": "https://images.unsplash.com/photo-1515669097368-22e68427d265",
+        "menuImages": [
+            "https://images.unsplash.com/photo-1562059390-a761a084768e",
+            "https://images.unsplash.com/photo-1551504734-5ee1c4a1479b",
+            "https://images.unsplash.com/photo-1576020799627-aeac74d58d0d"
+        ],
+        "foodImages": [
+            "https://images.unsplash.com/photo-1563245372-f21724e3856d",
+            "https://images.unsplash.com/photo-1565299507177-b0ac66763828",
+            "https://images.unsplash.com/photo-1513456852971-30c0b8199d4d"
+        ]
+    },
+    {
+        "name": "Cantina Minhota",
+        "owner": "u80",
+        "location": "Rua Luís Barroso 56, 4760, Vila Nova de Famalicão",
+        "cuisineType": "Portuguese",
+        "rating": 4.7,
+        "image": "https://images.unsplash.com/photo-1555396273-367ea4eb4db5",
+        "menuImages": [
+            "https://images.unsplash.com/photo-1569718212165-3a8278d5f624",
+            "https://images.unsplash.com/photo-1546241072-48010ad2862c",
+            "https://images.unsplash.com/photo-1589302168068-964664d93dc0"
+        ],
+        "foodImages": [
+            "https://images.unsplash.com/photo-1505253758473-96b7015fcd40",
+            "https://images.unsplash.com/photo-1600803907087-f56d462fd26b",
+            "https://images.unsplash.com/photo-1607478900766-efe13248b125"
+        ]
+    },
+    {
+        "name": "Casa do Porco",
+        "owner": "u82",
+        "location": "Rua Dom Pedro V 22, 4760, Vila Nova de Famalicão",
+        "cuisineType": "Portuguese",
+        "rating": 4.8,
+        "image": "https://images.unsplash.com/photo-1505253716362-afaea1d3d1af",
+        "menuImages": [
+            "https://images.unsplash.com/photo-1546241072-48010ad2862c",
+            "https://images.unsplash.com/photo-1569718212165-3a8278d5f624",
+            "https://images.unsplash.com/photo-1589302168068-964664d93dc0"
+        ],
+        "foodImages": [
+            "https://images.unsplash.com/photo-1504674900247-0877df9cc836",
+            "https://images.unsplash.com/photo-1529692236671-f1f6cf9683ba",
+            "https://images.unsplash.com/photo-1432139509613-5c4255815697"
+        ]
+    }
 ]

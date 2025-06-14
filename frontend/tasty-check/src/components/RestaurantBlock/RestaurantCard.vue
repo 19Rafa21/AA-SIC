@@ -45,7 +45,7 @@ export default {
     navigateToDetails() {
       this.$router.push({ 
         name: 'RestaurantDetails', 
-        params: { name: this.restaurant.name },
+        params: { id: this.restaurant.id },
         state: { restaurant: this.restaurant }
       });
     }

@@ -99,8 +99,7 @@ async function geocodeAddress(address) {
 
 // 3) Geocodificar todos os restaurantes
 async function loadRestaurantsCoords() {
-  console.log('allRestaurants:', allRestaurants.value)
-  const promises = allRestaurants.value.map(async r => {
+  const promises = NearbyRestaurants.value.map(async r => {
     const coords = await geocodeAddress(r.location)
     return coords
       ? { 
@@ -161,7 +160,7 @@ onUnmounted(() => {
   </HeaderComponent>
   <PresentationCounter />
   
-  <div v-if="loadingRestaurants === true" class="text-center py-8">
+  <div v-if="loadingRestaurants" class="text-center py-8">
     <Spinner class="mx-auto mt-4 mb-1"/>    
     <span class="text-emerald-500 text-lg">Loading...</span>
   </div>

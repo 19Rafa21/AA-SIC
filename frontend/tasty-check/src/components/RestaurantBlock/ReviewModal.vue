@@ -48,6 +48,7 @@
 
 <script setup>
 import { ref } from 'vue'
+import { ReviewService } from '@/services'
 
 const props = defineProps({
   restaurantId: {
@@ -57,21 +58,23 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['close', 'review-submitted'])
-
+const ReviewServiceInstance = new ReviewService()
 const rating = ref(0)
+const text = ref('')
+const loading = ref(false)
 
 function setRating(value) {
   rating.value = rating.value === value ? value - 1 : value
 }
 
-const text = ref('')
 
 function cancelar() {
   emit('close')
 }
 
-function submeter() {
-  //to do 
+async function submeter() {
+
+
   emit('close')
 }
 </script>

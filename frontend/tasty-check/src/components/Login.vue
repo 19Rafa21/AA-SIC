@@ -5,51 +5,57 @@ import { useRouter } from 'vue-router'
 import MaterialInput from "@/material/MaterialInput.vue"
 import MaterialSwitch from "@/material/MaterialSwitch.vue"
 import MaterialButton from "@/material/MaterialButton.vue"
+import { AuthService } from "@/services"
 
 const router = useRouter()
 const email = ref('')
 const password = ref('')
+const errorMessage = ref('')
+const isLoading = ref(false)
 
-const login = () => {
-  console.log('Email:', email.value)
-  console.log('Password:', password.value)
-  
-  if (email.value === 'admin' && password.value === 'admin') {
-    localStorage.setItem('isLoggedIn', 'true')
-    localStorage.setItem('user', JSON.stringify({
-      name: 'admin',
-      email: 'admin@tasty.pt',
-      avatar: '/img/avatar.png',
-      role: 'proprietario'
-    }))
-    router.push('/')
-    setTimeout(() => location.reload(), 100)
-  } else if (email.value === 'cliente' && password.value === '123') {
-    localStorage.setItem('isLoggedIn', 'true')
-    localStorage.setItem('user', JSON.stringify({
-      name: 'Maria Cliente',
-      email: 'maria@tasty.pt',
-      avatar: 'cliente.png',
-      role: 'cliente'
-    }))
-    router.push('/')
-    setTimeout(() => location.reload(), 100)
-  } else {
-    console.error('Credenciais inválidas')
-    alert('Email ou password incorretos.')
+const login = async () => {
+  if (!email.value || !password.value) {
+    errorMessage.value = 'Por favor, preencha todos os campos.'
+    return
   }
+  
+  try {
+    isLoading.value = true
+    errorMessage.value = ''
+    
+    // Call the authentication service
+    const userData = await AuthService.login(email.value, password.value)
+    console.log('Login successful', userData)
+    
+    router.push('/')
+    setTimeout(() => location.reload(), 100)
+  } catch (error) {
+    console.error('Erro ao fazer login:', error)
+    errorMessage.value = error.response?.data?.message || 'Email ou password incorretos.'
+  } finally {
+    isLoading.value = false
+  }
+}
+
+const home = () => {
+  router.push('/')
 }
 </script>
 
 
 <template>
   <DefaultNavbar transparent />
-  <Header>
+  <!-- <Header> -->
     <div
   class="page-header min-vh-100 d-flex align-items-center justify-content-center px-3"
   :style="{ backgroundImage: 'url(/img/login-bg.png)' }"
   loading="lazy"
 >
+  <MaterialButton class="!fixed top-4 right-4 z-[100] max-w-[150px]" variant="gradient" color="success" fullWidth @click="home">
+    <span class="text-md mr-2">Voltar</span> 
+    <i class="fa-solid fa-turn-up pl-2 !mt-3 -rotate-90"></i>
+  </MaterialButton>
+
   <div class="w-100" style="max-width: 400px;">
     <div class="card z-index-0 fadeIn3 fadeInBottom">
       <router-link to="/" class="card-header p-0 position-relative mt-2 mx-3 z-index-2 tasty-header">
@@ -83,6 +89,10 @@ const login = () => {
             labelClass="mb-0 ms-3"
             checked
           >Lembrar-me</MaterialSwitch>
+          
+          <div v-if="errorMessage" class="alert alert-danger py-2 text-sm text-center">
+            {{ errorMessage }}
+          </div>
 
           <div class="text-center">
             <MaterialButton
@@ -91,10 +101,14 @@ const login = () => {
               color="success"
               fullWidth
               @click="login"
+              :disabled="isLoading"
+              :loading="isLoading"
             >
               Iniciar Sessão
             </MaterialButton>
           </div>
+
+          <p v-if="errorMessage" class="text-danger text-center">{{ errorMessage }}</p>
 
           <p class="mt-4 text-sm text-center">
             Não tem conta?
@@ -108,7 +122,7 @@ const login = () => {
   </div>
 </div>
 
-  </Header>
+  <!-- </Header> -->
 </template>
 
 <style>

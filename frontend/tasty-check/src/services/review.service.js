@@ -49,21 +49,6 @@ export class ReviewService {
     }
 
     /**
-     * Get reviews by restaurant ID
-     * @param {string} restaurantId - Restaurant ID
-     * @returns {Promise<ReviewDTO[]>} Array of ReviewDTO objects
-     */
-    async getReviewsByRestaurant(restaurantId) {
-        try {
-            const response = await this.axiosInstance.get(`${this.endpoint}/${restaurantId}/restaurant`);
-            return response.data.map(review => ReviewDTO.fromAPI(review));
-        } catch (error) {
-            console.error(`Error fetching reviews for restaurant ${restaurantId}:`, error);
-            throw error;
-        }
-    }
-
-    /**
      * Get reviews by author/user ID
      * @param {string} authorId - Author/User ID
      * @returns {Promise<ReviewDTO[]>} Array of ReviewDTO objects

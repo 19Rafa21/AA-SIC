@@ -2,7 +2,7 @@
   <!-- Dropdown do utilizador (quando logado) -->
   <div
     v-if="isLoggedIn"
-    class="relative"
+    class="fixed top-2 right-4 z-[9999]"
     @mouseenter="handleMouseEnter"
     @mouseleave="handleMouseLeave"
   >
@@ -113,6 +113,7 @@
 <script setup>
 import { ref, onMounted, onBeforeUnmount } from 'vue'
 import { useRouter } from 'vue-router'
+import { AuthService } from '@/services'
 
 const isLoggedIn = ref(false)
 const showDropdown = ref(false)
@@ -141,11 +142,22 @@ const closeDropdown = () => {
   }
 }
 
-const logout = () => {
-  localStorage.removeItem('isLoggedIn')
-  closeDropdown()
-  isLoggedIn.value = false
-  router.push('/')
+const logout = async () => {
+  try {
+    await AuthService.logout()
+    closeDropdown()
+    isLoggedIn.value = false
+    router.push('/')
+    setTimeout(() => location.reload(), 100)
+  } catch (error) {
+    console.error('Erro ao terminar sessão:', error)
+    // Fallback in case the API call fails
+    localStorage.removeItem('isLoggedIn')
+    localStorage.removeItem('user')
+    closeDropdown()
+    isLoggedIn.value = false
+    router.push('/')
+  }
 }
 
 // Fecha dropdown se clicar fora (backup para dispositivos touch)

@@ -30,7 +30,7 @@ const router = createRouter({
       component: Profile,
     },
     {
-      path: '/restaurant/:name',
+      path: '/restaurant/:id',
       name: 'RestaurantDetails',
       component: RestaurantDetails,
       props: true

@@ -1,48 +1,50 @@
 <template>
     <nav class="top-navbar">
       <div class="navbar-content">
-      <div
-        v-if="isLoggedIn"
-        class="fixed top-1 right-4 z-50"
-        @mouseenter="showDropdown = true"
-        @mouseleave="showDropdown = false"
-      >
-        <!-- Avatar -->
-        <img
-          src="/img/avatar.jpg"
-          alt="Avatar"
-          class="user-avatar"
-        />
+        <div
+          v-if="isLoggedIn"
+          class="fixed top-1 right-4 z-50"
+          @mouseenter="showDropdown = true"
+          @mouseleave="showDropdown = false"
+        >
+          <!-- Avatar -->
+          <img
+            src="/img/avatar.jpg"
+            alt="Avatar"
+            class="user-avatar"
+          />
 
-      <!-- Dropdown -->
-      <div
-        v-show="showDropdown"
-        class="absolute right-0 mt-2 w-48 bg-white border rounded-lg shadow-lg z-50"
-      >
-        <!-- Seta -->
-        <div class="absolute top-[-8px] right-4 w-0 h-0 border-l-8 border-r-8 border-b-8 border-transparent border-b-white"></div>
+          <!-- Dropdown -->
+          <div
+            v-show="showDropdown"
+            class="absolute right-0 mt-2 w-48 bg-white border rounded-lg shadow-lg z-50"
+          >
+          <!-- Seta -->
+          <div class="absolute top-[-8px] right-4 w-0 h-0 border-l-8 border-r-8 border-b-8 border-transparent border-b-white"></div>
 
-        <ul class="py-2">
-          <li>
-            <router-link
-              to="/profile"
-              class="block px-4 py-2 hover:bg-gray-100 text-gray-700"
-              @click="closeDropdown"
-            >
-              Ver Perfil
-            </router-link>
-          </li>
-          <li>
-            <button
-              class="block w-full text-left px-4 py-2 hover:bg-gray-100 text-gray-700"
-              @click="logout"
-            >
-              Terminar Sessão
-            </button>
-          </li>
-        </ul>
-      </div>
-    </div>
+            <ul class="py-2">
+              <li>
+                <router-link
+                  to="/profile"
+                  class="block px-4 py-2 hover:bg-gray-100 text-gray-700"
+                  @click="closeDropdown"
+                >
+                  Ver Perfil
+                </router-link>
+              </li>
+              <li>
+                <button
+                  class="block w-full text-left px-4 py-2 hover:bg-gray-100 text-gray-700"
+                  @click="logout"
+                >
+                  Terminar Sessão
+                </button>
+              </li>
+            </ul>
+
+          </div>
+        </div>
+
         <router-link
           v-else
           to="/login"
@@ -57,6 +59,7 @@
 <script setup>
 import { ref, onMounted, onBeforeUnmount } from 'vue'
 import { useRouter } from 'vue-router'
+import { AuthService } from '@/services'
 
 const isLoggedIn = ref(false)
 const showDropdown = ref(false)
@@ -70,11 +73,20 @@ const closeDropdown = () => {
   showDropdown.value = false
 }
 
-const logout = () => {
-  localStorage.removeItem('isLoggedIn')
-  localStorage.removeItem('user')
-  closeDropdown()
-  router.push('/')
+const logout = async () => {
+  try {
+    await AuthService.logout()
+    closeDropdown()
+    router.push('/')
+    setTimeout(() => location.reload(), 100)
+  } catch (error) {
+    console.error('Erro ao terminar sessão:', error)
+    // Fallback in case the API call fails
+    localStorage.removeItem('isLoggedIn')
+    localStorage.removeItem('user')
+    closeDropdown()
+    router.push('/')
+  }
 }
 
 // Fecha dropdown se clicar fora
@@ -139,15 +151,19 @@ onBeforeUnmount(() => {
 }
 
 .login-button {
+  position: fixed !important; 
   background-color: #095243;
   color: white;
   font-weight: bold;
   font-size: 0.75rem; /* text-xs */
-  padding: 8px 24px;
+  /* padding: 8px 24px; */
   border-radius: 0.5rem;
   transition: background-color 0.3s;
   width: 157px;
   text-align: center;
+  top: 0px;
+  right: 0px;
+  z-index: 1000;
 }
 
 .login-button:hover {

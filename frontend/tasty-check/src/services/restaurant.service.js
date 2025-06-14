@@ -5,7 +5,8 @@
 
 import axios from 'axios';
 import { API_CONFIG } from '../config/api.config.js';
-import { RestaurantDTO } from '../dto/restaurant.dto.js';
+import { RestaurantDTO, RestaurantDetailedDTO } from '../dto/restaurant.dto.js';
+import { ReviewDTO } from '../dto/review.dto.js';
 
 export class RestaurantService {
     constructor() {
@@ -50,14 +51,18 @@ export class RestaurantService {
 
     /**
      * Create a new restaurant
-     * @param {RestaurantDTO} restaurantDTO - Restaurant data
+     * @param {RestaurantDetailedDTO} restaurantDetailedDTO - Detailed restaurant data (without ID)
      * @returns {Promise<RestaurantDTO>} Created RestaurantDTO
      */
-    async createRestaurant(restaurantDTO) {
+    async createRestaurant(restaurantDetailedDTO) {
         try {
+            // For creation, ensure we're not sending an ID
+            const requestData = restaurantDetailedDTO.toAPIRequest();
+            delete requestData.id; // Remove ID if present
+            
             const response = await this.axiosInstance.post(
                 `${this.endpoint}`, 
-                restaurantDTO.toAPIRequest()
+                requestData
             );
             return RestaurantDTO.fromAPI(response.data);
         } catch (error) {
@@ -69,14 +74,17 @@ export class RestaurantService {
     /**
      * Update an existing restaurant
      * @param {string} id - Restaurant ID
-     * @param {RestaurantDTO} restaurantDTO - Updated restaurant data
+     * @param {RestaurantDetailedDTO} restaurantDetailedDTO - Updated detailed restaurant data
      * @returns {Promise<RestaurantDTO>} Updated RestaurantDTO
      */
-    async updateRestaurant(id, restaurantDTO) {
+    async updateRestaurant(id, restaurantDetailedDTO) {
         try {
+            // Make sure the ID is set in the DTO
+            restaurantDetailedDTO.id = id;
+            
             const response = await this.axiosInstance.put(
                 `${this.endpoint}/${id}`, 
-                restaurantDTO.toAPIRequest()
+                restaurantDetailedDTO.toAPIRequest(true) // Include ID for updates
             );
             return RestaurantDTO.fromAPI(response.data);
         } catch (error) {
@@ -141,6 +149,21 @@ export class RestaurantService {
             throw error;
         }
     }
+
+    /**
+         * Get reviews by restaurant ID
+         * @param {string} restaurantId - Restaurant ID
+         * @returns {Promise<ReviewDTO[]>} Array of ReviewDTO objects
+         */
+        async getReviewsByRestaurant(restaurantId) {
+            try {
+                const response = await this.axiosInstance.get(`${this.endpoint}/${restaurantId}/reviews`);
+                return response.data.map(review => ReviewDTO.fromAPI(review));
+            } catch (error) {
+                console.error(`Error fetching reviews for restaurant ${restaurantId}:`, error);
+                throw error;
+            }
+        }
 }
 
 export default RestaurantService;

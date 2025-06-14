@@ -3,6 +3,7 @@ import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import MaterialInput from "@/material/MaterialInput.vue"
 import MaterialButton from "@/material/MaterialButton.vue"
+import { AuthService } from "@/services"
 
 const router = useRouter()
 
@@ -11,31 +12,52 @@ const name = ref('')
 const email = ref('')
 const password = ref('')
 const confirmPassword = ref('')
+const errorMessage = ref('')
+const isLoading = ref(false)
 
 // Role selecionado
 const role = ref('cliente')
 
 // Lógica de registo
-const register = () => {
+const register = async () => {
+  // Validação do formulário
+  if (!name.value || !email.value || !password.value || !confirmPassword.value) {
+    errorMessage.value = 'Por favor, preencha todos os campos.'
+    return
+  }
+  
   if (password.value !== confirmPassword.value) {
-    alert('As passwords não coincidem.')
+    errorMessage.value = 'As passwords não coincidem.'
     return
   }
 
-  // Guardar no localStorage (simulação)
-  localStorage.setItem('user', JSON.stringify({
-    name: name.value,
-    email: email.value,
-    avatar: 'avatar.png',
-    role: role.value
-  }))
-  localStorage.setItem('isLoggedIn', 'true')
-
-  console.log("Conta criada com sucesso!")
-  router.push('/')
-  setTimeout(() => location.reload(), 100)
+  try {
+    isLoading.value = true
+    errorMessage.value = ''
+    
+    // Mapear o papel para o valor do discriminador
+    const discriminator = role.value === 'proprietario' ? 'Owner' : 'User'
+    
+    // Chamar o serviço de autenticação
+    await AuthService.register(email.value, password.value, name.value, discriminator)
+    
+    // Após o registo bem-sucedido, iniciar sessão o utilizador
+    await AuthService.login(email.value, password.value)
+    
+    console.log("Conta criada com sucesso!")
+    router.push('/')
+    setTimeout(() => location.reload(), 100)
+  } catch (error) {
+    console.error('Erro ao registar:', error)
+    errorMessage.value = error.response?.data?.message || 'Ocorreu um erro ao criar a conta. Por favor, tente novamente.'
+  } finally {
+    isLoading.value = false
+  }
 }
 
+const home = () => {
+  router.push('/')
+}
 
 </script>
 
@@ -47,7 +69,12 @@ const register = () => {
       :style="{ backgroundImage: 'url(/img/login-bg.png)' }"
       loading="lazy"
     >
-      <span class="mask bg-gradient-dark opacity-6"></span>
+      <MaterialButton class="!fixed top-4 right-4 z-[100] max-w-[150px]" variant="gradient" color="success" fullWidth @click="home">
+        <span class="text-md mr-2">Voltar</span> 
+        <i class="fa-solid fa-turn-up pl-2 !mt-3 -rotate-90"></i>
+      </MaterialButton> 
+
+      <span class="mask opacity-6"></span>
       <div class="container my-auto">
         <div class="row">
           <div class="col-lg-4 col-md-8 col-12 mx-auto">
@@ -119,6 +146,10 @@ const register = () => {
                     </ul>
                   </div>
 
+                  <div v-if="errorMessage" class="alert alert-danger py-2 text-sm text-center mb-3">
+                    {{ errorMessage }}
+                  </div>
+
                   <div class="text-center">
                     <MaterialButton
                       class="my-4 mb-2"
@@ -126,8 +157,10 @@ const register = () => {
                       color="success"
                       fullWidth
                       @click.prevent="register"
+                      :disabled="isLoading"
                     >
-                      Criar Conta
+                      <span v-if="isLoading">A registar...</span>
+                      <span v-else>Criar Conta</span>
                     </MaterialButton>
                   </div>
                   <p class="mt-4 text-sm text-center text-black">
