@@ -16,16 +16,8 @@ public class ImageController extends HttpServlet {
 
 	@Override
 	public void init() throws ServletException {
-		String bucketName = "aa-sic-images-storage"; // Nome do bucket
-
 		try {
-			// Lê a chave como stream a partir do classpath (resources/keys)
-			InputStream credentialsStream = getClass().getClassLoader().getResourceAsStream("aa-sic-storage-access.json");
-			if (credentialsStream == null) {
-				throw new RuntimeException("Chave JSON não encontrada no classpath!");
-			}
-
-			imageService = new ImageService(credentialsStream, bucketName);
+			imageService = new ImageService();
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
@@ -79,15 +71,15 @@ public class ImageController extends HttpServlet {
 
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String objectName = request.getParameter("objectName");
+		String imageName = request.getParameter("imageName");
 
-		if (objectName == null || objectName.isEmpty()) {
+		if (imageName == null || imageName.isEmpty()) {
 			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "objectName é obrigatório.");
 			return;
 		}
 
 		try {
-			byte[] imageBytes = imageService.downloadImage(objectName);
+			byte[] imageBytes = imageService.downloadImage(imageName);
 			response.setContentType("image/png"); // ou image/png
 			response.setContentLength(imageBytes.length);
 			response.getOutputStream().write(imageBytes);

@@ -8,12 +8,14 @@ public class UserDTO {
     private String email;
     private String password;
     private String discriminator;
+    private String imageName;
 
-    public UserDTO(String username, String email, String password, String discriminator) {
+    public UserDTO(String username, String email, String password, String discriminator, String imageName) {
         this.username = username;
         this.email = email;
         this.password = password;
         this.discriminator = discriminator;
+        this.imageName = imageName;
     }
 
     public UserDTO(User user) {
@@ -53,4 +55,11 @@ public class UserDTO {
         this.discriminator = discriminator;
     }
 
+    public String getImageName() {
+        return imageName;
+    }
+
+    public void setImageName(String imageName) {
+        this.imageName = imageName;
+    }
 }

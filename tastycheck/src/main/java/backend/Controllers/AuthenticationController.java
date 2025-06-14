@@ -9,12 +9,16 @@ import com.google.gson.Gson;
 import org.orm.PersistentException;
 
 import javax.servlet.ServletException;
+import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.Part;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Paths;
 import java.util.Map;
-
+@MultipartConfig
 public class AuthenticationController extends HttpServlet {
 
 	private AuthenticationService authService;
@@ -22,7 +26,11 @@ public class AuthenticationController extends HttpServlet {
 
 	@Override
 	public void init() throws ServletException {
-		authService = new AuthenticationService();
+		try {
+			authService = new AuthenticationService();
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
 		this.gson = new Gson();
 	}
 
@@ -53,37 +61,66 @@ public class AuthenticationController extends HttpServlet {
 					} catch (UnauthorizedException e) {
 						e.printStackTrace();
 						resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-						resp.setContentType("application/json; charset=UTF-8");
 						resp.getWriter().write("{\"message\": \"Unauthorized: " + e.getMessage() + "\"}");
 					} catch (Exception e){
 						e.printStackTrace();
 						resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-						resp.setContentType("application/json; charset=UTF-8");
 						resp.getWriter().write("{\"message\": \"Error: " + e.getMessage() + "\"}");
 					}
 
 				} else if ("register".equals(action)) {
 					try {
-						UserDTO user = gson.fromJson(HttpRequestUtils.readBodyJson(req), UserDTO.class);
-						String email = user.getEmail();
-						String password = user.getPassword();
+						String userJson = req.getParameter("user");
 
-						boolean saved = authService.register(user);
-						if (saved) {
-							Map<String, String> resultado = loginProcess(resp, email, password);
-							resp.setStatus(HttpServletResponse.SC_OK);
-							resp.getWriter().write(gson.toJson(resultado));
+						Part file = req.getPart("file");
+
+						boolean imageExist = file != null && file.getSize() > 0;
+
+						if (imageExist){
+							String originalFileName = Paths.get(file.getSubmittedFileName()).getFileName().toString();
+
+							InputStream fileContent = file.getInputStream();
+
+							String contentType = file.getContentType();
+							if (!contentType.startsWith("image/")){
+								resp.setStatus(HttpServletResponse.SC_OK);
+								resp.getWriter().write("{\"message\": Ficheiro não é uma imagem \"}");
+							}
+
+							UserDTO user = gson.fromJson(userJson, UserDTO.class);
+							String email = user.getEmail();
+							String password = user.getPassword();
+
+							boolean saved = authService.registerWithImage(user, originalFileName, fileContent);
+							if (saved) {
+								Map<String, String> resultado = loginProcess(resp, email, password);
+								resp.setStatus(HttpServletResponse.SC_OK);
+								resp.getWriter().write(gson.toJson(resultado));
+							}
+						} else {
+
+							UserDTO user = gson.fromJson(userJson, UserDTO.class);
+							String email = user.getEmail();
+							String password = user.getPassword();
+
+							boolean saved = authService.register(user);
+							if (saved) {
+								Map<String, String> resultado = loginProcess(resp, email, password);
+								resp.setStatus(HttpServletResponse.SC_OK);
+								resp.getWriter().write(gson.toJson(resultado));
+							}
 						}
+
+
+
 
 					} catch (UnauthorizedException e) {
 						e.printStackTrace();
 						resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-						resp.setContentType("application/json; charset=UTF-8");
 						resp.getWriter().write("{\"message\": \"Unauthorized: " + e.getMessage() + "\"}");
 					} catch (Exception e){
 						e.printStackTrace();
 						resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-						resp.setContentType("application/json; charset=UTF-8");
 						resp.getWriter().write("{\"message\": \"Error: " + e.getMessage() + "\"}");
 					}
 				} else {
