@@ -20,7 +20,7 @@ public class JwtService {
 	}
 
 	// Gera um token
-	public String generateToken(Map<String, Object> extraClaims, User user, long expiration) {
+	public String buildToken(Map<String, Object> extraClaims, User user, long expiration) {
 		return Jwts.builder()
 				.setClaims(extraClaims)
 				.setSubject(user.getEmail())
@@ -60,12 +60,16 @@ public class JwtService {
 		final Claims claims = extractAllClaims(token);
 		return claimsResolver.apply(claims);
 	}
-	
 
-	// Valida token (verifica se subject corresponde e não expirou)
-	public boolean validateToken(String token, String username) {
+	public String generateToken(User user) {
+		return buildToken(user.claimsForJwt(), user, expirationMs);
+	}
+
+
+	// Valida token (verifica se não expirou)
+	public boolean validateToken(String token) {
 		final String tokenUsername = extractUsername(token);
-		return (tokenUsername.equals(username) && !isTokenExpired(token));
+		return !isTokenExpired(token);
 	}
 
 	// Verifica se token está expirado
