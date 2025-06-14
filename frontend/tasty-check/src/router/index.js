@@ -4,6 +4,7 @@ import Login from "@/components/Login.vue";
 import RestaurantDetails from "@/components/RestaurantBlock/RestaurantDetails.vue";
 import Register from "@/components/Register.vue";
 import Profile from "@/components/Profile.vue";
+import CreateRestaurant from "@/components/Profile/CreateRestaurant.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -33,6 +34,11 @@ const router = createRouter({
       name: 'RestaurantDetails',
       component: RestaurantDetails,
       props: true
+    },
+    {
+      path: '/create-restaurant',
+      name: 'CreateRestaurant',
+      component: CreateRestaurant
     }
   ],
 });

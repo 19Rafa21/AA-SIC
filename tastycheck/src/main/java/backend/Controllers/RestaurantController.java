@@ -2,8 +2,10 @@ package backend.Controllers;
 
 import backend.DTOs.RestaurantDTO;
 import backend.DTOs.RestaurantDetailsDTO;
+import backend.DTOs.Review.ReviewDTO;
 import backend.Exceptions.UserException;
 import backend.Models.Restaurant;
+import backend.Models.Review;
 import backend.Services.RestaurantService;
 import backend.Services.UserService;
 import backend.Utils.HttpRequestUtils;
@@ -107,6 +109,9 @@ public class RestaurantController extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String pathInfo = req.getPathInfo();
 
+        resp.setCharacterEncoding("UTF-8");
+        resp.setContentType("application/json; charset=UTF-8");
+
         try {
             if (pathInfo == null || pathInfo.equals("/")) {
                 List<Restaurant> results = restaurantService.searchWithAllFilters("","", "", 0.0);
@@ -131,7 +136,6 @@ public class RestaurantController extends HttpServlet {
                 json.append("]");
 
                 //Responde com os resultados
-                resp.setContentType("application/json; charset=UTF-8");
                 resp.setStatus(HttpServletResponse.SC_OK);
                 resp.getWriter().write(json.toString());
 
@@ -142,41 +146,62 @@ public class RestaurantController extends HttpServlet {
                 if (parts.length >= 2) {
                     String id = parts[1];
 
-                    RestaurantDetailsDTO dto = restaurantService.getRestaurantById(id);
-
-                    StringBuilder json = new StringBuilder();
-                    json.append("{");
-                    json.append("\"id\":\"").append(dto.getId()).append("\",");
-                    json.append("\"name\":\"").append(dto.getName()).append("\",");
-                    json.append("\"owner\":\"").append(dto.getOwner()).append("\",");
-                    json.append("\"location\":\"").append(dto.getLocation()).append("\",");
-                    json.append("\"cuisineType\":\"").append(dto.getCuisineType()).append("\",");
-                    json.append("\"rating\":").append(dto.getRating()).append(",");
-                    json.append("\"image\":").append(dto.getImage() != null ? "\"" + dto.getImage() + "\"" : "null").append(",");
-
-                    // menuImages
-                    json.append("\"menuImages\":[");
-                    List<String> menuImages = dto.getMenuImages();
-                    for (int i = 0; i < menuImages.size(); i++) {
-                        json.append("\"").append(menuImages.get(i)).append("\"");
-                        if (i < menuImages.size() - 1) json.append(",");
+                    Restaurant restaurant = restaurantService.getRestaurantByOrmID(id);
+                    if (restaurant == null) {
+                        resp.sendError(HttpServletResponse.SC_NOT_FOUND, "Restaurante não encontrado.");
+                        return;
                     }
-                    json.append("],");
 
-                    // foodImages
-                    json.append("\"foodImages\":[");
-                    List<String> foodImages = dto.getFoodImages();
-                    for (int i = 0; i < foodImages.size(); i++) {
-                        json.append("\"").append(foodImages.get(i)).append("\"");
-                        if (i < foodImages.size() - 1) json.append(",");
+                    if (parts.length == 2) {
+                        RestaurantDetailsDTO dto = restaurantService.getRestaurantById(id);
+
+                        StringBuilder json = new StringBuilder();
+                        json.append("{");
+                        json.append("\"id\":\"").append(dto.getId()).append("\",");
+                        json.append("\"name\":\"").append(dto.getName()).append("\",");
+                        json.append("\"owner\":\"").append(dto.getOwner()).append("\",");
+                        json.append("\"location\":\"").append(dto.getLocation()).append("\",");
+                        json.append("\"cuisineType\":\"").append(dto.getCuisineType()).append("\",");
+                        json.append("\"rating\":").append(dto.getRating()).append(",");
+                        json.append("\"image\":").append(dto.getImage() != null ? "\"" + dto.getImage() + "\"" : "null").append(",");
+
+                        // menuImages
+                        json.append("\"menuImages\":[");
+                        List<String> menuImages = dto.getMenuImages();
+                        for (int i = 0; i < menuImages.size(); i++) {
+                            json.append("\"").append(menuImages.get(i)).append("\"");
+                            if (i < menuImages.size() - 1) json.append(",");
+                        }
+                        json.append("],");
+
+                        // foodImages
+                        json.append("\"foodImages\":[");
+                        List<String> foodImages = dto.getFoodImages();
+                        for (int i = 0; i < foodImages.size(); i++) {
+                            json.append("\"").append(foodImages.get(i)).append("\"");
+                            if (i < foodImages.size() - 1) json.append(",");
+                        }
+                        json.append("]");
+
+                        json.append("}");
+
+                        resp.setStatus(HttpServletResponse.SC_OK);
+                        resp.getWriter().write(json.toString());
+                    } else if (parts.length == 3) {
+                        String subResource = parts[2];
+
+                        if ("reviews".equals(subResource)) {
+                            List<Review> reviewsRestaurant = restaurantService.getAllRestaurantReviews(restaurant);
+                            List<ReviewDTO> dtos = reviewsRestaurant.stream()
+                                    .map(ReviewDTO::new)
+                                    .toList();
+                            resp.getWriter().println(gson.toJson(dtos));
+                        } else {
+                            resp.sendError(HttpServletResponse.SC_NOT_FOUND, "Sub-recurso não encontrado.");
+                        }
                     }
-                    json.append("]");
 
-                    json.append("}");
 
-                    resp.setContentType("application/json; charset=UTF-8");
-                    resp.setStatus(HttpServletResponse.SC_OK);
-                    resp.getWriter().write(json.toString());
 
                 } else {
                     resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "ID de restaurante em falta.");
