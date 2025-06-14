@@ -43,6 +43,16 @@
                     <i class="fa-solid fa-euro-sign"></i>
                     {{ formatPrice(restaurant.averagePrice) }}
                 </div>
+                <!-- Contacto -->
+                <div class="flex items-center gap-2 text-xl text-black">
+                    <i class="fa-solid fa-phone"></i>
+                    <span>+252 377 921</span>
+                </div>
+                <!-- Horário de funcionamento -->
+                <div class="flex items-center gap-2 text-xl text-black">
+                    <i class="fa-solid fa-clock"></i>
+                    <span>11:30-15:00 | 19:00-23:00 </span>
+                </div>
             </div>
         </div>
 
@@ -87,58 +97,30 @@
 
                 <!-- Avaliações -->
                 <div class="bg-white rounded-[26px] shadow mt-6 min-h-[200px]">
-                    <span class="ml-4 text-lg text-emerald-800 font-semibold justify-between">Avaliações</span>
-                    <div class="ml-2 pt-4 flex items-center">
+                    <!-- <span class="ml-4 text-lg text-emerald-800 font-semibold justify-between">Avaliações</span> -->
+                    <!-- <div class="ml-2 pt-4 flex items-center"> -->
                         <div class="flex flex-col items-center space-y-4">
-                            <span class="text-sm text-gray-500 font-bold">Avaliação Geral & Avaliações</span>
+                            <span class="text-lg text-gray-500 font-bold">Avaliação Geral & Avaliações</span>
                             <span class="text-6xl text-emerald-800"> {{ restaurant.rating }}</span>    
                             <star-rating :rating="restaurant.rating" starColor="#065f46" :hideText="true" size="xl" />
                             <span class="text-sm text-gray-500 font-bold">
                                 Based on {{ allFrequency }} reviews
-                                <span class="ml-3 text-emerald-800 underline cursor-pointer" @click="showModal = true">
+                                <span class="ml-3 text-emerald-800 underline cursor-pointer" @click="openModal">
                                     Avaliar já
                                 </span>
                             </span>
-                            <ReviewModal v-model="showModal" />
                         </div>
 
 
-                        <ul class="ml-6 space-y-4 pt-4 min-w-[500px] max-w-[700px]">
+                        <!-- <ul class="ml-6 space-y-4 pt-4 min-w-[500px] max-w-[700px]">
                             <li v-for="(item, i) in reviews" :key="i" class="flex items-center text-emerald-800 font-semibold gap-2">
                                 <span class="w-[100px] shrink-0">{{ item.category }}</span>
                                 <star-rating :rating="item.score" starColor="#065f46" :hideText="true" size="xl" />
                                 <frequency-bar :frequency=item.frequency :total="allFrequency" color="#065f46" />
                             </li>
-                        </ul>
-                    </div>
-                </div>
-
-
-                <!-- Comentários -->
-                <div class="mt-6 grid grid-cols-2 gap-3">
-                    <div v-for="(c, idx) in comments" :key="idx" class="bg-white rounded-[26px] shadow pl-4 pr-4 pb-4 pt-4">
-                        <!-- Header: avatar + nome + total reviews -->
-                        <div class="flex items-center mb-4">
-                            <img :src="c.userPhoto" :alt="c.user" class="w-12 h-12 rounded-full mr-3"/>
-                            <div class="flex flex-col items-start">
-                                <span class="font-semibold text-gray-800">{{ c.user }}</span>
-                                <span class="text-sm text-gray-500">Reviewed {{ c.totalReviews }} restaurants</span>
-                            </div>
-                        </div>
-
-                        <!-- Rating -->
-                        <star-rating :rating="c.rating" starColor="#065f46" :hideText="true" size="lg" class="pb-2"/>
-
-                        <!-- Texto do comentário -->
-                        <span class="text-base text-gray-700">{{ c.text }}</span>
-
-                        <!-- Fotos do restaurante, se houver -->
-                        <div v-if="c.restaurantPhotos.length" class="flex gap-2 mt-4">
-                            <img v-for="(photo, j) in c.restaurantPhotos" :key="j" :src="photo"
-                                                                           alt="Foto prato" class="w-20 h-14 object-cover rounded"/>
-                        </div>
-                    </div>
-                </div>
+                        </ul> -->
+                    <!-- </div> -->
+                </div>              
 
             </div>
 
@@ -148,14 +130,61 @@
 
         </div>
 
-        <div class="bg-white rounded-[26px] shadow mt-6 min-h-[200px] m-4">
+        <div class="bg-white rounded-[26px] mt-6 min-h-[200px] m-4">
 
+            <!-- Comentários -->
+            <div class="mt-6 grid grid-cols-4 gap-3">
+                <div v-for="(c, idx) in comments" :key="idx" class="bg-white rounded-[26px] shadow pl-4 pr-4 pb-4 pt-4">
+                    <!-- Header: avatar + nome + total reviews -->
+                    <div class="flex items-center mb-4">
+                        <img :src="c.userPhoto" :alt="c.user" class="w-12 h-12 rounded-full mr-3"/>
+                        <div class="flex flex-col items-start">
+                            <span class="font-semibold text-gray-800">{{ c.user }}</span>
+                            <span class="text-sm text-gray-500">Reviewed {{ c.totalReviews }} restaurants</span>
+                        </div>
+                    </div>
+
+                    <!-- Rating -->
+                    <star-rating :rating="c.rating" starColor="#065f46" :hideText="true" size="lg" class="pb-2"/>
+
+                    <!-- Texto do comentário -->
+                    <span class="text-base text-gray-700">{{ c.text }}</span>
+
+                    <!-- Fotos do restaurante, se houver -->
+                    <div v-if="c.restaurantPhotos.length" class="flex gap-2 mt-4">
+                        <img v-for="(photo, j) in c.restaurantPhotos" :key="j" :src="photo"
+                                                                        alt="Foto prato" class="w-20 h-14 object-cover rounded"/>
+                    </div>
+                </div>
+            </div>
         </div>
 
+        <div class="flex justify-center items-center mt-6 mb-6">            
+            <button @click="openReplyModal" class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700">
+              Comentar
+            </button>
+        </div>
 
-         <Footer />
+        <Footer />
             
         </div>
+
+        <!-- Review Modal -->
+        <ReviewModal 
+            v-if="showModal" 
+            :restaurantId="String(restaurant?.id)" 
+            @close="closeModal" 
+            @review-submitted="handleReviewSubmitted" 
+        />
+
+        <!-- Reply Modal -->
+        <ReplyModal 
+            v-if="showReplyModal" 
+            :restaurantId="String(restaurant?.id)" 
+            @close="closeReplyModal" 
+            @reply-submitted="handleReplySubmitted"
+        />
+
 </template>
 
 <script>
@@ -165,13 +194,14 @@ import StarRating from '../utils/Stars.vue';
 import ReviewModal from './ReviewModal.vue';
 import RestaurantGoogleMap from '../Maps/RestaurantGoogleMap.vue';
 import TopNav from '../Layout/TopNav.vue';
-import { ref } from 'vue';
+import ReplyModal from './ReplyModal.vue';
 
 export default {
     name: 'RestaurantDetails',
     components: {
         StarRating,
         ReviewModal,
+        ReplyModal,
         FrequencyBar,
         Footer,
         RestaurantGoogleMap,
@@ -185,7 +215,8 @@ export default {
     },
     data() {
         return {
-            showModal: ref(false),
+            showModal: false,
+            showReplyModal: false,
             restaurant: null,
             photos: [
                 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80',
@@ -263,6 +294,24 @@ export default {
         formatPrice(v) {
             return `${v} €`;
         },
+        openModal() {
+            this.showModal = true;
+        },
+        closeModal() {
+            this.showModal = false;
+        },
+        handleReviewSubmitted(review) {
+            alert("Avaliação recebida com sucesso!");
+        },
+        openReplyModal() {
+            this.showReplyModal = true;
+        },
+        closeReplyModal() {
+            this.showReplyModal = false;
+        },
+        handleReplySubmitted(reply) {
+            alert("Comentário enviado com sucesso!");
+        }
     },
 };
 </script>

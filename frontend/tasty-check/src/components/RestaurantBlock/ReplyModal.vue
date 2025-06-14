@@ -4,28 +4,16 @@
       <div class="bg-white rounded-lg p-6 min-w-[700px] shadow-lg">
 
         <div class="flex items-center justify-between mb-4">
-          <span class="text-2xl font-semibold text-emerald-800">Rating & FeedBack</span>
+          <span class="text-2xl font-semibold text-emerald-800">O que vai na sua mente?</span>
           <button @click="cancelar" class="text-2xl text-red-500 hover:text-red-800">
             <i class="fa-regular fa-circle-xmark"></i>
           </button>
         </div>
           
         <div class="flex flex-col items-start">
-          <span class="text-md text-emerald-800 mb-3">A minha experiência foi boa</span>
-
-          <div class="flex items-center space-x-1"> 
-            <button v-for="star in 5" :key="star" @click="setRating(star)"
-                    :class="[
-                      'text-2xl',
-                      star <= rating ? 'text-emerald-800 hover:text-emerald-600' : 'text-emerald-800 hover:text-yellow-400'
-                    ]"> 
-              <i :class="star <= rating ? 'fas fa-star' : 'far fa-star'"></i> 
-            </button> 
-          </div>
-
           
           <div class="mt-4 mb-4 w-full"></div>
-            <label for="reviewText" class="block text-md text-emerald-800 mb-2">O que o impressionou?</label>
+            <label for="reviewText" class="block text-md text-emerald-800 mb-2">A liberdade começa agora:</label>
             <textarea
               id="reviewText"
               v-model="text"
@@ -56,13 +44,10 @@ const props = defineProps({
   }
 })
 
-const emit = defineEmits(['close', 'review-submitted'])
+const emit = defineEmits(['close', 'reply-submitted'])
 
 const rating = ref(0)
 
-function setRating(value) {
-  rating.value = rating.value === value ? value - 1 : value
-}
 
 const text = ref('')
 

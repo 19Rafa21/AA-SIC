@@ -1,10 +1,13 @@
 package backend.Controllers;
 
 import backend.DTOs.EditUserDTO;
+import backend.DTOs.Restaurant.FavRestaurantsDTO;
 import backend.DTOs.Review.ReviewDTO;
 import backend.DTOs.UserDTO;
+import backend.Models.Restaurant;
 import backend.Models.Review;
 import backend.Models.User;
+import backend.Services.RestaurantService;
 import backend.Services.UserService;
 import backend.Exceptions.UserException;
 import com.google.gson.Gson;
@@ -22,19 +25,64 @@ import java.util.List;
 public class UserController extends HttpServlet {
 
     private final UserService userService = new UserService();
+    private final RestaurantService restaurantService = new RestaurantService();
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        UserDTO dto;
+
+        String pathInfo = req.getPathInfo();
+
+        resp.setCharacterEncoding("UTF-8");
+        resp.setContentType("application/json; charset=UTF-8");
+
         try {
-            dto = parseUserDTO(req);
-            userService.registerUser(dto);
-            resp.setContentType("application/json");
-            resp.setStatus(HttpServletResponse.SC_OK);
-            resp.getWriter().write("{\"message\": \"Utilizador criado com sucesso\"}");
-        } catch (Exception e) {
-            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
+            if (pathInfo == null || pathInfo.equals("/")) {
+                UserDTO dto;
+                try {
+                    dto = parseUserDTO(req);
+                    userService.registerUser(dto);
+                    resp.setStatus(HttpServletResponse.SC_OK);
+                    resp.getWriter().write("{\"message\": \"Utilizador criado com sucesso\"}");
+                } catch (Exception e) {
+                    resp.sendError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
+                }
+            } else {
+                String[] parts = pathInfo.split("/");
+                if (parts.length >= 2) {
+                    String userId = parts[1];
+
+                    User user = userService.getUserById(userId);
+                    if (user == null) {
+                        resp.sendError(HttpServletResponse.SC_NOT_FOUND, "User não encontrado!");
+                        return;
+                    }
+                    String action = parts[2];
+
+                    if ("favorites".equals(action)) {
+                        String restaurantId = parts[3];
+
+                        Restaurant restaurant = restaurantService.getRestaurantByOrmID(restaurantId);
+                        if (restaurant == null) {
+                            resp.sendError(HttpServletResponse.SC_NOT_FOUND, "Restaurante não encontrado!");
+                            return;
+                        }
+
+                        userService.addFavoriteRestaurant(user, restaurant);
+                        resp.setStatus(HttpServletResponse.SC_OK);
+                        resp.getWriter().write("{\"message\": \"Restaurante adicionado ao favoritos com sucesso\"}");
+
+                    } else {
+                        resp.sendError(HttpServletResponse.SC_NOT_FOUND, "ação não encontrado.");
+                    }
+
+                }
+            }
+        } catch (IOException | PersistentException | UserException e){
+            e.printStackTrace();
+            resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Erro interno: " + e.getMessage());
         }
+
+
     }
 
     @Override
@@ -62,13 +110,17 @@ public class UserController extends HttpServlet {
     protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String pathInfo = request.getPathInfo();
 
+        response.setCharacterEncoding("UTF-8");
+        response.setContentType("application/json; charset=UTF-8");
+
         try {
             if (pathInfo == null || pathInfo.equals("/") || pathInfo.split("/").length < 2) {
                 response.sendError(HttpServletResponse.SC_BAD_REQUEST, "ID do utilizador não especificado.");
                 return;
             }
 
-            String userId = pathInfo.split("/")[1];
+            String[] parts = pathInfo.split("/");
+            String userId = parts[1];
 
             User user = userService.getUserById(userId);
             if (user == null) {
@@ -76,14 +128,32 @@ public class UserController extends HttpServlet {
                 return;
             }
 
-            boolean deleted = userService.deleteUser(userId);
-            response.setContentType("application/json");
-            if (deleted) {
-                response.getWriter().println("{\"status\": \"Utilizador removido com sucesso\"}");
+            if (parts.length == 2) {
+                boolean deleted = userService.deleteUser(userId);
+                if (deleted) {
+                    response.getWriter().println("{\"status\": \"Utilizador removido com sucesso\"}");
+                } else {
+                    response.getWriter().println("{\"status\": \"Erro ao remover o utilizador\"}");
+                }
             } else {
-                response.getWriter().println("{\"status\": \"Erro ao remover o utilizador\"}");
-            }
+                String action = parts[2];
 
+                if ("favorites".equals(action)){
+                    String restaurantId = parts[3];
+
+                    Restaurant restaurant = restaurantService.getRestaurantByOrmID(restaurantId);
+                    if (restaurant == null) {
+                        response.sendError(HttpServletResponse.SC_NOT_FOUND, "Restaurante não encontrado.");
+                        return;
+                    }
+
+                    userService.removeFavoriteRestaurant(user, restaurant);
+                    response.setStatus(HttpServletResponse.SC_OK);
+                    response.getWriter().write("{\"message\": \"Restaurante removido dos favoritos com sucesso\"}");
+                } else {
+                    response.sendError(HttpServletResponse.SC_NOT_FOUND, "ação não encontrado.");
+                }
+            }
         } catch (NumberFormatException e) {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "ID do utilizador inválido.");
         } catch (Exception e) {
@@ -128,13 +198,15 @@ public class UserController extends HttpServlet {
                     } else if (parts.length == 3) {
                         String subResource = parts[2];
 
-                        if ("reviews".equals(subResource)) {
-                            // /users/{id}/reviews → reviews feitas por este user
-                            List<Review> reviews = userService.getReviewsByUserId(userId); // ou: reviewService.getReviewsByAuthor(user)
-                            List<ReviewDTO> dtos = reviews.stream()
-                                    .map(ReviewDTO::new)
+                        if ("favorites".equals(subResource)) {
+                            // /users/{id}/favorites → reviews feitas por este user
+                            List<Restaurant> favRestaurants = userService.getFavRestaurantsByUserId(userId); // ou: reviewService.getReviewsByAuthor(user)
+                            List<FavRestaurantsDTO> dtos = favRestaurants.stream()
+                                    .map(FavRestaurantsDTO::new)
                                     .toList();
                             response.getWriter().println(gson.toJson(dtos));
+
+
                         } else {
                             response.sendError(HttpServletResponse.SC_NOT_FOUND, "Sub-recurso não encontrado.");
                         }

@@ -13,7 +13,9 @@
  */
 package backend.Models;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class Restaurant {
@@ -53,9 +55,9 @@ public class Restaurant {
 	
 	private String coverImage;
 
-	private Set<String> menuImages;
+	private List<String> menuImages;
 
-	private Set<String> foodImages;
+	private List<String> foodImages;
 
 	private Set<Review> reviews;
 	
@@ -118,32 +120,22 @@ public class Restaurant {
 		this.coverImage = coverImage;
 	}
 
-	public Set<String> getMenuImages() {
+	public List<String> getMenuImages() {
 		return menuImages;
 	}
 
-	public void setMenuImages(Set<String> menuImages) {
+	public void setMenuImages(List<String> menuImages) {
 		this.menuImages = menuImages;
 	}
 
-	public Set<String> getFoodImages() {
+	public List<String> getFoodImages() {
 		return foodImages;
 	}
 
-	public void setFoodImages(Set<String> foodImages) {
+	public void setFoodImages(List<String> foodImages) {
 		this.foodImages = foodImages;
 	}
 
-	public void getAttribute() {
-		//TODO: Implement Method
-		throw new UnsupportedOperationException();
-	}
-	
-	public void setAttribute(int attribute) {
-		//TODO: Implement Method
-		throw new UnsupportedOperationException();
-	}
-	
 	public String toString() {
 		return String.valueOf(getId());
 	}

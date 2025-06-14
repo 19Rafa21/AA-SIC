@@ -21,5 +21,7 @@ License Type: Academic
 		<mapping resource="ormmapping/backend/Restaurant.hbm.xml" />
 		<mapping resource="ormmapping/backend/Review.hbm.xml" />
 		<mapping resource="ormmapping/backend/User.hbm.xml" />
+		<mapping resource="ormmapping/backend/Image.hbm.xml" />
+
 	</session-factory>
 </hibernate-configuration>

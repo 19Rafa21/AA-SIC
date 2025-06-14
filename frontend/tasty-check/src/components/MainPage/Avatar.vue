@@ -2,7 +2,7 @@
   <!-- Dropdown do utilizador (quando logado) -->
   <div
     v-if="isLoggedIn"
-    class="fixed top-2 right-4 z-[9999]"
+    class="relative"
     @mouseenter="handleMouseEnter"
     @mouseleave="handleMouseLeave"
   >
@@ -104,7 +104,7 @@
   <router-link
     v-else
     to="/login"
-    class="login-button fixed top-2 right-4 z-[9999]"
+    class="login-button"
   >
     Iniciar Sessão
   </router-link>
@@ -187,7 +187,7 @@ watch(() => props.editable, (isEditing) => {
 </script>
 
 <style scoped>
-/* Botão de login original */
+/* Botão de login - removido position fixed */
 .login-button {
   background-color: #095243;
   color: white;
@@ -196,16 +196,17 @@ watch(() => props.editable, (isEditing) => {
   padding: 8px 24px;
   border-radius: 0.5rem;
   transition: background-color 0.3s;
-  width: 157px;
   text-align: center;
   text-decoration: none;
+  display: inline-block;
+  white-space: nowrap;
 }
 
 .login-button:hover {
   background-color: #073b31;
 }
 
-/* Container do dropdown */
+/* Container do dropdown - removido position fixed e top negativo */
 .user-dropdown-container {
   position: relative;
   display: inline-block;
@@ -227,6 +228,7 @@ watch(() => props.editable, (isEditing) => {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   object-fit: cover;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: block;
 }
 
 .user-avatar-wrapper:hover .user-avatar {
@@ -248,7 +250,7 @@ watch(() => props.editable, (isEditing) => {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-/* Dropdown moderno */
+/* Dropdown moderno - ajustado z-index */
 .dropdown-menu-modern {
   position: absolute;
   top: 100%;
@@ -263,7 +265,7 @@ watch(() => props.editable, (isEditing) => {
     0 20px 25px -5px rgba(0, 0, 0, 0.1),
     0 10px 10px -5px rgba(0, 0, 0, 0.04),
     0 0 0 1px rgba(16, 185, 129, 0.05);
-  z-index: 50;
+  z-index: 1000;
   overflow: hidden;
 }
 
@@ -412,8 +414,6 @@ watch(() => props.editable, (isEditing) => {
   transform: translateY(-5px) scale(0.98);
 }
 
-
-
 /* Responsividade */
 @media (max-width: 640px) {
   .dropdown-menu-modern {
@@ -483,4 +483,3 @@ watch(() => props.editable, (isEditing) => {
   }
 }
 </style>
-

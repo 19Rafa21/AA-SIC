@@ -16,7 +16,7 @@
       </div>
 
       <!-- Direita: links e avatar -->
-        <Avatar class="mt-[-10px]"/>
+        <Avatar />
     </div>
   </nav>
 </template>

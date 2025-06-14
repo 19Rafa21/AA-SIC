@@ -2,9 +2,9 @@ package backend.Services;
 
 import backend.Criteria.UserCriteria;
 import backend.DAOs.OwnerDAO;
+import backend.DAOs.RestaurantDAO;
 import backend.DAOs.UserDAO;
 import backend.DTOs.EditUserDTO;
-import backend.DTOs.RestaurantDTO;
 import backend.DTOs.UserDTO;
 import backend.Exceptions.UserException;
 import backend.Models.Owner;
@@ -14,12 +14,7 @@ import backend.Models.User;
 import org.orm.PersistentException;
 import org.mindrot.jbcrypt.BCrypt;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.UUID;
-
-import static backend.Services.RestaurantService.toRestaurantEdit;
+import java.util.*;
 
 public class UserService {
 
@@ -70,11 +65,27 @@ public class UserService {
 		return user;
 	}
 
+	public String getOwnerById(String id) throws PersistentException, UserException {
+		Owner user = (Owner) UserDAO.getUserByORMID(id);
+		if (user == null) {
+			throw new UserException("User with ID: '" + id + "' does not exist");
+		}
+		return user.getId();
+	}
+
 
 	public User getUserByUsername(String username) throws PersistentException, UserException {
 		User user = UserDAO.loadUserByQuery("username = '" + username + "'", null);
 		if (user == null) {
 			throw new UserException("User with username '" + username + "' does not exist");
+		}
+		return user;
+	}
+
+	public User getUserByEmail(String email) throws PersistentException, UserException {
+		User user = UserDAO.loadUserByQuery("email = '" + email + "'", null);
+		if (user == null) {
+			throw new UserException("User with email '" + email + "' does not exist");
 		}
 		return user;
 	}
@@ -89,6 +100,11 @@ public class UserService {
 
 	public boolean usernameExists(String username) throws PersistentException {
 		User user = UserDAO.loadUserByQuery("username = '" + username + "'", null);
+		return user != null;
+	}
+
+	public boolean emailExists(String email) throws PersistentException{
+		User user = UserDAO.loadUserByQuery("email = '" + email + "'", null);
 		return user != null;
 	}
 
@@ -141,14 +157,14 @@ public class UserService {
 		return List.of(users);
 	}
 
-	public List<Review> getReviewsByUserId(String userId) throws PersistentException, UserException {
+	public List<Restaurant> getFavRestaurantsByUserId(String userId) throws PersistentException, UserException {
 		User user = getUserById(userId);
-		return new ArrayList<>(user.getReviews());
+		return new ArrayList<>(user.getRestaurantsFav());
 	}
 
-	public List<Review> getReviewsByUsername(String username) throws PersistentException, UserException {
+	public List<Restaurant> getFavRestaurantsByUsername(String username) throws PersistentException, UserException {
 		User user = getUserByUsername(username);
-		return new ArrayList<>(user.getReviews());
+		return new ArrayList<>(user.getRestaurantsFav());
 	}
 
 	public List<Restaurant> getRestaurantsByOwner(String username) throws PersistentException, UserException {
@@ -190,5 +206,47 @@ public class UserService {
 		user.setEmail(dto.getEmail());
 		user.setPassword(dto.getPassword());
 		return user;
+	}
+
+	public void addFavoriteRestaurant(String userId, String restaurantId) throws PersistentException {
+		User user = UserDAO.getUserByORMID(userId);
+		Restaurant restaurant = RestaurantDAO.getRestaurantByORMID(restaurantId);
+
+		if (user == null || restaurant == null) {
+			throw new IllegalArgumentException("User ou Restaurant não encontrado.");
+		}
+
+		user.getRestaurantsFav().add(restaurant);
+		UserDAO.save(user); // persiste a alteração na tabela user_favorites
+	}
+
+	public void addFavoriteRestaurant(User user, Restaurant restaurant) throws PersistentException {
+
+		if (user == null || restaurant == null) {
+			throw new IllegalArgumentException("User ou Restaurant não encontrado.");
+		}
+
+		user.getRestaurantsFav().add(restaurant);
+		UserDAO.save(user); // persiste a alteração na tabela user_favorites
+	}
+
+	public void removeFavoriteRestaurant(User user, Restaurant restaurant) throws PersistentException {
+
+		if (user == null || restaurant == null) {
+			throw new IllegalArgumentException("User ou Restaurant não encontrado.");
+		}
+
+		user.getRestaurantsFav().remove(restaurant);
+		UserDAO.save(user); // persiste a alteração na tabela user_favorites
+	}
+
+	public List<Restaurant> getFavoriteRestaurants(String userId) throws PersistentException {
+		User user = UserDAO.getUserByORMID(userId);
+
+		if (user == null) {
+			throw new IllegalArgumentException("User não encontrado.");
+		}
+
+		return new ArrayList<>(user.getRestaurantsFav()); // já devolve a lista de favoritos
 	}
 }
