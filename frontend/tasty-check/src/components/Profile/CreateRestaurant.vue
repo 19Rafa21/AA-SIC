@@ -183,9 +183,6 @@ function fileToBase64(file) {
   });
 }
 
-
-
-
 const guardarNoLocalStorageTeste = () => {
   const reader = new FileReader()
   reader.onload = () => {

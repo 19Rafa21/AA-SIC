@@ -16,7 +16,7 @@ public class ImageController extends HttpServlet {
 
 	@Override
 	public void init() throws ServletException {
-		String bucketName = "aa-sic-storage"; // Nome do bucket
+		String bucketName = "aa-sic-images-storage"; // Nome do bucket
 
 		try {
 			// Lê a chave como stream a partir do classpath (resources/keys)

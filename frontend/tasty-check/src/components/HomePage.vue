@@ -130,7 +130,9 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <Avatar/>
+  <div class="fixed top-3 right-4 z-50">
+    <Avatar />
+  </div>
   <HeaderComponent>
     <div class="page-header min-vh-100"
          :style="`background-image: url(${headerBgImage})`"

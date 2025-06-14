@@ -8,6 +8,7 @@ import backend.DTOs.Review.UpdateReviewDTO;
 import backend.DTOs.UserDTO;
 import backend.Exceptions.UserException;
 import backend.Models.Review;
+import backend.Services.RestaurantService;
 import backend.Services.ReviewService;
 
 import javax.servlet.ServletException;
@@ -24,11 +25,13 @@ import org.orm.PersistentException;
 public class ReviewController extends HttpServlet {
 
 	private ReviewService reviewService;
+	private RestaurantService restaurantService;
 	private Gson gson;
 
 	@Override
 	public void init() throws ServletException {
 		reviewService = new ReviewService();
+		restaurantService = new RestaurantService();
 		this.gson = new Gson();
 	}
 
@@ -95,13 +98,24 @@ public class ReviewController extends HttpServlet {
 
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		String userId = (String) request.getAttribute("userId");
+
+		response.setCharacterEncoding("UTF-8");
+		response.setContentType("application/json; charset=UTF-8");
+
 		try {
 			RegisterReviewDTO reviewDTO = gson.fromJson(HttpRequestUtils.readBodyJson(request), RegisterReviewDTO.class);
+			String restaurantId = reviewDTO.getRestaurantId();
+			//String userID = reviewDTO.getUserId();
+
+			if (restaurantService.isOwnerOfRestaurant(userId, restaurantId)) {
+				response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+				response.getWriter().write("Não pode fazer review do seu próprio restaurante.");
+				return;
+			}
 
 			boolean saved = reviewService.registerReview(reviewDTO);
 			if (saved) {
-				response.setCharacterEncoding("UTF-8");
-				response.setContentType("application/json; charset=UTF-8");
 				response.getWriter().println("{\"status\": \"review registado com sucesso\"}");
 			}
 
