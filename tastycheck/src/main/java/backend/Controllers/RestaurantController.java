@@ -134,6 +134,7 @@ public class RestaurantController extends HttpServlet {
                 json.append("]");
 
                 //Responde com os resultados
+                resp.setContentType("application/json; charset=UTF-8");
                 resp.setStatus(HttpServletResponse.SC_OK);
                 resp.getWriter().write(json.toString());
 
@@ -297,15 +298,8 @@ public class RestaurantController extends HttpServlet {
 
         //Converte o JSON → DTO
         Gson gson = new Gson();
-        RestaurantDetailsDTO dto = gson.fromJson(jsonPayload, RestaurantDetailsDTO.class);
 
-        //Preenche o owner usando o username recebido (assumindo que vem dentro do JSON)
-        UserService us = new UserService();
-        if (dto.getOwner() != null && dto.getOwner() != null) {
-            dto.setOwner(us.getOwnerById(dto.getOwner()));
-        }
-
-        return dto;
+        return gson.fromJson(jsonPayload, RestaurantDetailsDTO.class);
     }
 
 }

@@ -9,7 +9,7 @@ public class RestaurantDetailsDTO {
 
     private String id;
     private String name;
-    private String owner_id;
+    private String owner;
     private String location;
     private String cuisineType;
     private Double rating;
@@ -43,11 +43,11 @@ public class RestaurantDetailsDTO {
     }
 
     public String getOwner() {
-        return owner_id;
+        return owner;
     }
 
     public void setOwner(String owner_id) {
-        this.owner_id = owner_id;
+        this.owner = owner_id;
     }
 
     public String getImage() {
