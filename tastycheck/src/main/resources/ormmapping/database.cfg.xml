@@ -24,7 +24,7 @@
     <URL>jdbc:postgresql://35.223.193.37:5432/tastycheck</URL>
     <UserName>admin</UserName>
     <EncryptedPassword>2011802F73D90F020A7512EABA605B00</EncryptedPassword>
-    <HostName>35.223.193.37</HostName>
+    <HostName>34.10.28.162</HostName>
     <PortNO>5432</PortNO>
     <DBName>tastycheck</DBName>
     <ServiceName></ServiceName>
