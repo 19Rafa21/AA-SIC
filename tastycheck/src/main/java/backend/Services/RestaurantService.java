@@ -1,10 +1,9 @@
 package backend.Services;
 import backend.Criteria.RestaurantCriteria;
-import backend.DAOs.OwnerDAO;
-import backend.DAOs.RestaurantDAO;
-import backend.DAOs.ReviewDAO;
+import backend.DAOs.*;
 import backend.DTOs.RestaurantDTO;
 import backend.DTOs.RestaurantDetailsDTO;
+import backend.Models.Image;
 import backend.Models.Restaurant;
 import backend.Models.Review;
 import org.orm.PersistentException;
@@ -22,10 +21,31 @@ public class RestaurantService {
         restaurantDAO = new RestaurantDAO();
     }
 
-    public boolean createRestaurant(RestaurantDTO dto) {
+    public boolean createRestaurant(RestaurantDetailsDTO dto) {
         try {
-            Restaurant r = toRestaurant(dto);
+            Restaurant r = toRestaurant(dto);  // usa DTO com imagens
             restaurantDAO.save(r);
+
+            // Criar e guardar imagens (menu)
+            for (String url : dto.getMenuImages()) {
+                Image img = new Image();
+                img.setId(UUID.randomUUID().toString());
+                img.setRestaurantId(r.getId());
+                img.setUrl(url);
+                img.setType("menu");
+                ImageDAO.save(img);
+            }
+
+            // Criar e guardar imagens (food)
+            for (String url : dto.getFoodImages()) {
+                Image img = new Image();
+                img.setId(UUID.randomUUID().toString());
+                img.setRestaurantId(r.getId());
+                img.setUrl(url);
+                img.setType("food");
+                ImageDAO.save(img);
+            }
+
             return true;
         } catch (Exception e) {
             e.printStackTrace();
@@ -41,6 +61,26 @@ public class RestaurantService {
 
             restaurantDAO.save(r2);
 
+            // Criar e guardar imagens (menu)
+            for (String url : dto.getMenuImages()) {
+                Image img = new Image();
+                img.setId(UUID.randomUUID().toString());
+                img.setRestaurantId(r2.getId());
+                img.setUrl(url);
+                img.setType("menu");
+                ImageDAO.save(img);
+            }
+
+            // Criar e guardar imagens (food)
+            for (String url : dto.getFoodImages()) {
+                Image img = new Image();
+                img.setId(UUID.randomUUID().toString());
+                img.setRestaurantId(r2.getId());
+                img.setUrl(url);
+                img.setType("food");
+                ImageDAO.save(img);
+            }
+
             return true;
         } catch (Exception e) {
             e.printStackTrace();
@@ -52,6 +92,7 @@ public class RestaurantService {
         try {
             Restaurant r = restaurantDAO.getRestaurantByORMID(id);
             if (r != null) {
+                ImageDAO.deleteByRestaurantId(id);
                 restaurantDAO.delete(r);
                 return true;
             }
@@ -101,13 +142,13 @@ public class RestaurantService {
         }
     }
 
-    public static Restaurant toRestaurant(RestaurantDTO dto) {
+    public static Restaurant toRestaurant(RestaurantDetailsDTO dto) throws PersistentException {
         Restaurant restaurant = new Restaurant();
         restaurant.setId(UUID.randomUUID().toString());
         restaurant.setName(dto.getName());
         restaurant.setLocation(dto.getLocation());
         restaurant.setCuisineType(dto.getCuisineType());
-        restaurant.setOwner(dto.getOwner());
+        restaurant.setOwner(OwnerDAO.getOwnerByORMID(dto.getOwner()));
         restaurant.setCoverImage(dto.getImage());
         restaurant.setRating(0.0);
 

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class name="backend.Models.Image" table="images" lazy="false">
+        <id name="id" column="id" type="string">
+            <generator class="assigned" />
+        </id>
+        <property name="restaurantId" column="restaurant" type="string" not-null="true" />
+        <property name="url" column="image" type="string" not-null="true" />
+        <property name="type" column="type" type="string" not-null="true" />
+    </class>
+</hibernate-mapping>
