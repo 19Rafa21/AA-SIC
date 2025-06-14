@@ -28,7 +28,7 @@ export default {
     },
     starColor: {
       type: String,
-      default: '#454545'  
+      default: '#4a4a4a'  
     },
     hideText: {
       type: Boolean,
