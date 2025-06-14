@@ -124,11 +124,12 @@ public class RestaurantController extends HttpServlet {
                             .append("\"name\":\"").append(r.getName()).append("\",")
                             .append("\"location\":\"").append(r.getLocation()).append("\",")
                             .append("\"cuisineType\":\"").append(r.getCuisineType()).append("\",")
-                            .append("\"rating\":").append(r.getRating()).append("\",")
-                            .append("\"image\":").append(r.getCoverImage())
+                            .append("\"rating\":").append(r.getRating()).append(",")
+                            .append("\"image\":").append(r.getCoverImage() != null ? "\"" + r.getCoverImage() + "\"" : "null")
                             .append("}");
                     if (i < results.size() - 1) json.append(",");
                 }
+
 
                 json.append("]");
 
@@ -152,8 +153,8 @@ public class RestaurantController extends HttpServlet {
                     json.append("\"owner\":\"").append(dto.getOwner()).append("\",");
                     json.append("\"location\":\"").append(dto.getLocation()).append("\",");
                     json.append("\"cuisineType\":\"").append(dto.getCuisineType()).append("\",");
-                    json.append("\"rating\":").append(dto.getRating()).append("\",");
-                    json.append("\"image\":\"").append(dto.getImage()).append("\",");
+                    json.append("\"rating\":").append(dto.getRating()).append(",");
+                    json.append("\"image\":").append(dto.getImage() != null ? "\"" + dto.getImage() + "\"" : "null").append(",");
 
                     // menuImages
                     json.append("\"menuImages\":[");
