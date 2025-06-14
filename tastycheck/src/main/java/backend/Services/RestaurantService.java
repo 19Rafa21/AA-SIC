@@ -214,5 +214,15 @@ public class RestaurantService {
         return dto;
     }
 
+    public List<Review> getAllRestaurantReviews(Restaurant restaurant) throws PersistentException {
+        return new ArrayList<>(restaurant.getReviews());
+    }
+
+    /*public boolean isOwnerOfRestaurant(String userId, String restaurantId) {
+        Restaurant restaurant = getRestaurantByOrmID()
+    }
+    */
+
+
 
 }
