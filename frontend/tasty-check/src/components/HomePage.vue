@@ -99,14 +99,14 @@ async function geocodeAddress(address) {
 
 // 3) Geocodificar todos os restaurantes
 async function loadRestaurantsCoords() {
-  const promises = allRestaurants.slice(0, 5).map(async r => {
+  console.log('allRestaurants:', allRestaurants.value)
+  const promises = allRestaurants.value.map(async r => {
     const coords = await geocodeAddress(r.location)
     return coords
       ? { 
           ...r, 
           lat: coords.lat, 
           lng: coords.lng,
-          // Garantindo compatibilidade com qualquer versão do JSON
           cuisineType: r.cuisineType 
         }
       : null
