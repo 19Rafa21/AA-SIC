@@ -16,13 +16,20 @@ const restaurantService = new RestaurantService();
 const headerBgImage = '/img/header-bg.webp';
 
 const restaurants = ref([]);
+const loadingRestaurants = ref(true);
 
 // Carregar restaurantes com rating >= 4.0
 async function loadFilteredRestaurants() {
   try {
-    await restaurantService.getRestaurantsWithFilter(null, null, null, 4.0);
+    const data = await restaurantService.getRestaurantsWithFilter(null, null, null, 0.0);
+    restaurants.value = data;
   } catch (error) {
     console.error('Error loading filtered restaurants:', error);
+  }
+  finally{
+    loadingRestaurants.value = false;
+    console.log('Filtered Restaurants:', restaurants.value);
+    console.log('Loading status:', loadingRestaurants.value);
   }
 }
 
@@ -137,12 +144,18 @@ onUnmounted(() => {
   </HeaderComponent>
   <PresentationCounter />
   
-  <div v-if="restaurants.length === 0" class="text-center py-8">
+    <div v-if="loadingRestaurants === true" class="text-center py-8">
     <Spinner class="mx-auto mt-4 mb-1"/>    
     <span class="text-emerald-500 text-lg">Loading...</span>
   </div>
-  <RestaurantCarousel v-else :title="'Melhores Sugestões'" :restaurants="restaurants" :visibleCount="4"/>
- 
+
+  <RestaurantCarousel v-else-if="restaurants.length !== 0 " :title="'Melhores Sugestões'" :restaurants="restaurants" :visibleCount="4"/>
+  <div v-else class="flex justify-center items-center">
+    <span class="text-center text-lg text-gray-500 py-8">
+      Nenhum restaurante encontrado :/
+    </span>
+  </div>
+
   <div class="relative bg-[#08342c] rounded-lg w-full max-w-[1200px] mx-auto my-8 flex justify-between items-center text-white h-[220px] overflow-hidden px-4">
     <div class="flex flex-col justify-center pr-6 space-y-2 max-w-md">
       <h2 class="text-3xl font-normal text-white leading-tight">
