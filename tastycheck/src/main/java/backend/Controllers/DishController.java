@@ -71,9 +71,11 @@ public class DishController extends HttpServlet {
         if (path != null && path.length() > 1) {
             String dishId = path.substring(1); // remove o slash
             boolean success = dishService.deleteDishById(dishId);
+            resp.setContentType("application/json; charset=utf-8");
             resp.setStatus(success ? HttpServletResponse.SC_OK : HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             gson.toJson(success ? "Dish apagado com sucesso" : "Erro ao apagar dish", resp.getWriter());
         } else {
+            resp.setContentType("application/json; charset=utf-8");
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             gson.toJson("Parâmetro dishId em falta no path", resp.getWriter());
         }
@@ -82,7 +84,7 @@ public class DishController extends HttpServlet {
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String path = req.getPathInfo(); // "/dish-001"
-        resp.setContentType("application/json");
+        resp.setContentType("application/json; charset=utf-8");
 
         Gson gson = new Gson();
 
