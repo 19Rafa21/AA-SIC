@@ -212,6 +212,7 @@ watch(() => props.editable, (isEditing) => {
   text-decoration: none;
   display: inline-block;
   white-space: nowrap;
+  border: 1px solid #1A2D29;
 }
 
 .login-button:hover {
