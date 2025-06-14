@@ -82,6 +82,14 @@ public class UserService {
 		return user;
 	}
 
+	public User getUserByEmail(String email) throws PersistentException, UserException {
+		User user = UserDAO.loadUserByQuery("email = '" + email + "'", null);
+		if (user == null) {
+			throw new UserException("User with email '" + email + "' does not exist");
+		}
+		return user;
+	}
+
 	public Owner getOwnerByUsername(String username) throws PersistentException, UserException {
 		Owner owner = OwnerDAO.loadOwnerByQuery("username = '" + username + "' AND Discriminator = 'Owner'", null);
 		if (owner == null) {
@@ -92,6 +100,11 @@ public class UserService {
 
 	public boolean usernameExists(String username) throws PersistentException {
 		User user = UserDAO.loadUserByQuery("username = '" + username + "'", null);
+		return user != null;
+	}
+
+	public boolean emailExists(String email) throws PersistentException{
+		User user = UserDAO.loadUserByQuery("email = '" + email + "'", null);
 		return user != null;
 	}
 
