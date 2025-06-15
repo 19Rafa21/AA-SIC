@@ -54,22 +54,24 @@ export class RestaurantService {
      * @param {RestaurantDetailedDTO} restaurantDetailedDTO - Detailed restaurant data (without ID)
      * @returns {Promise<RestaurantDTO>} Created RestaurantDTO
      */
-    async createRestaurant(restaurantDetailedDTO) {
-        try {
-            // For creation, ensure we're not sending an ID
-            const requestData = restaurantDetailedDTO.toAPIRequest();
-            delete requestData.id; // Remove ID if present
-            
-            const response = await this.axiosInstance.post(
-                `${this.endpoint}`, 
-                requestData
-            );
-            return RestaurantDTO.fromAPI(response.data);
-        } catch (error) {
-            console.error('Error creating restaurant:', error);
-            throw error;
-        }
-    }
+async createRestaurant(restaurantDetailedDTO) {
+  try {
+    const requestData = restaurantDetailedDTO.toAPIRequest();
+    delete requestData.id;
+
+    console.log("📦 Dados a enviar:", requestData);
+
+    const response = await this.axiosInstance.post(`${this.endpoint}`, requestData);
+
+    console.log("✅ Restaurante criado:", response.data);
+
+    return RestaurantDTO.fromAPI(response.data);
+  } catch (error) {
+    console.error('❌ Erro ao criar restaurante:', error.response?.data || error.message);
+    throw error;
+  }
+}
+
 
     /**
      * Update an existing restaurant

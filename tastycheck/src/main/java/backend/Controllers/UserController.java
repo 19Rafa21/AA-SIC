@@ -175,7 +175,7 @@ public class UserController extends HttpServlet {
                 // /users → listar todos os users
                 List<User> users = userService.listAllUsers();
                 List<UserDTO> dtos = users.stream()
-                        .map(user -> new UserDTO(user.getUsername(), user.getEmail(), user.getPassword(),user.getDiscriminator()))
+                        .map(user -> new UserDTO(user.getUsername(), user.getEmail(), user.getPassword(),user.getDiscriminator(),user.getProfilePicture()))
                         .toList();
                 response.getWriter().println(gson.toJson(dtos));
 
@@ -192,7 +192,7 @@ public class UserController extends HttpServlet {
 
                     if (parts.length == 2) {
                         // /users/{id} → detalhes do user
-                        UserDTO userDTO = new UserDTO(user.getUsername(), user.getEmail(), user.getPassword(),user.getDiscriminator());
+                        UserDTO userDTO = new UserDTO(user.getUsername(), user.getEmail(), user.getPassword(),user.getDiscriminator(),user.getProfilePicture());
                         response.getWriter().println(gson.toJson(userDTO));
 
                     } else if (parts.length == 3) {

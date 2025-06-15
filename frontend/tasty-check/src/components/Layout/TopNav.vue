@@ -15,8 +15,11 @@
         <SearchBar />
       </div>
 
-      <!-- Direita: links e avatar -->
+      <!-- Direita: avatar -->
+      <div class="flex items-center justify-end h-full">
         <Avatar />
+      </div>
+
     </div>
   </nav>
 </template>
@@ -40,11 +43,12 @@ import Avatar from '../MainPage/Avatar.vue';
 }
 
 .nav-content {
-  display: flex;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
   align-items: center;
   width: 100%;
 }
+
 
 .logo-img {
   width: 60px;
@@ -55,10 +59,10 @@ import Avatar from '../MainPage/Avatar.vue';
 .user-avatar {
   width: 40px;
   height: 40px;
-  border-radius: 50%;         /* círculo */
+  border-radius: 9999px;
   border: 2px solid white;
-  box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
   object-fit: cover;
 }
+
 
 </style>

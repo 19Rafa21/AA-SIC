@@ -126,7 +126,8 @@ const onFoodImages = (e) => {
 }
 
 import RestaurantService from '../../services/restaurant.service';
-import { RestaurantDTO } from '../../dto/restaurant.dto.js';
+import { RestaurantDetailedDTO } from '../../dto/restaurant.dto.js'
+
 
 const service = new RestaurantService();
 
@@ -151,27 +152,29 @@ const submitForm = async () => {
     foodImages.value.map(file => fileToBase64(file))
   );
 
-  // Criar o objeto DTO (assumindo que o constructor aceita os campos diretamente)
-  const restaurantDTO = new RestaurantDTO({
-    name: name.value,
-    location: location.value,
-    cuisineType: cuisineType.value,
-    schedule: schedule.value,
-    rating: 0,
-    image: coverBase64,             // campo image base64
-    menuImages: menuBase64,        // array de strings base64
-    foodImages: foodBase64,        // array de strings base64
-    owner: user.id || 'anon'
-  });
+const restaurantDTO = new RestaurantDetailedDTO({
+  name: name.value,
+  location: location.value,
+  cuisineType: cuisineType.value,
+  schedule: schedule.value,
+  rating: 0,
+  image: coverBase64,
+  menuImages: menuBase64,
+  foodImages: foodBase64,
+  owner: user.id || 'anon'
+})
+
 
   try {
+    console.log('📦 Enviando para o backend:', restaurantDTO.toAPIRequest())
     await service.createRestaurant(restaurantDTO);
     alert('✅ Restaurante criado com sucesso!');
     router.push('/profile');
   } catch (error) {
-    console.error('❌ Erro ao criar restaurante:', error);
-    alert('Erro ao criar restaurante');
+    console.error('❌ Erro ao criar restaurante:', error.response?.data || error.message);
+    alert('Erro ao criar restaurante: ' + (error.response?.data?.message || 'ver consola'));
   }
+
 };
 
 function fileToBase64(file) {

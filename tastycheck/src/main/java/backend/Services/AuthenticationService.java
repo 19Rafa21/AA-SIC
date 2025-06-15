@@ -9,20 +9,43 @@ import backend.Services.UserService;  // ou o teu DAO direto
 import org.orm.PersistentException;
 
 import javax.servlet.http.Cookie;
+import java.io.IOException;
+import java.io.InputStream;
 
 public class AuthenticationService {
 
 	private final JwtService jwtService;
 	private final UserService userService;
 
-	public AuthenticationService() {
+	private final ImageService imageService;
+
+	public AuthenticationService() throws IOException {
 		this.jwtService = new JwtService();
 		this.userService = new UserService();
+		this.imageService = new ImageService();
 	}
 
 	public boolean register(UserDTO user) throws UnauthorizedException, PersistentException {
 		if (userService.emailExists(user.getEmail())){
 			throw new UnauthorizedException("User with email '" + user.getEmail() + "' already exists!");
+		}
+
+		return userService.registerUser(user);
+	}
+
+	public boolean registerWithImage(UserDTO user, String fileName, InputStream fileContent) throws UnauthorizedException, PersistentException {
+		if (userService.emailExists(user.getEmail())) {
+			throw new UnauthorizedException("User with email: '" + user.getEmail() + "' already exists!");
+		}
+
+		if (fileContent != null) {
+			try {
+				String uploadedImage = imageService.uploadImage(fileName, fileContent);
+				user.setImageName(uploadedImage);
+
+			} catch (IOException e){
+				throw new UnauthorizedException("Error while uploading user image: " + e.getMessage());
+			}
 		}
 
 		return userService.registerUser(user);
