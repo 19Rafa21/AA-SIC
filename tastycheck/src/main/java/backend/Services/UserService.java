@@ -189,6 +189,7 @@ public class UserService {
 		user.setUsername(dto.getUsername());
 		user.setEmail(dto.getEmail());
 		user.setPassword(dto.getPassword());
+		user.setProfilePicture(dto.getImageName());
 		return user;
 	}
 
@@ -198,6 +199,7 @@ public class UserService {
 		user.setUsername(dto.getUsername());
 		user.setEmail(dto.getEmail());
 		user.setPassword(dto.getPassword());
+		user.setProfilePicture(dto.getImageName());
 		return user;
 	}
 

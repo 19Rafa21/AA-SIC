@@ -13,9 +13,18 @@ import java.util.concurrent.TimeUnit;
 public class ImageService {
 
 	private final Storage storage;
-	private final String bucketName;
+	private static final String bucketName = "aa-sic-images-storage";
 
-	public ImageService(InputStream credentialsStream, String bucketName) throws IOException {
+	public ImageService() throws IOException {
+		InputStream credentials = getClass().getClassLoader().getResourceAsStream("aa-sic-storage-access.json");
+		StorageOptions storageOptions = StorageOptions.newBuilder()
+				.setCredentials(GoogleCredentials.fromStream(credentials))
+				.build();
+
+		this.storage = storageOptions.getService();
+	}
+
+	/*public ImageService(InputStream credentialsStream, String bucketName) throws IOException {
 		this.bucketName = bucketName;
 		StorageOptions storageOptions = StorageOptions.newBuilder()
 				.setCredentials(GoogleCredentials.fromStream(credentialsStream))
@@ -23,6 +32,9 @@ public class ImageService {
 
 		storage = storageOptions.getService();
 	}
+	*/
+
+	//public String uloadUserProfileImage(String foldername, String objectName, MultipartFile file)
 
 	// Upload de imagem
 	public String uploadImage(String objectName, InputStream inputStream, String contentType) throws IOException {
@@ -35,6 +47,27 @@ public class ImageService {
 
 		// URL de acesso público (se o objeto for público depois)
 		return String.format("https://storage.googleapis.com/%s/%s", bucketName, objectName);
+	}
+
+	public String uploadImage(String fileName, InputStream fileContent) throws IOException {
+
+		String extension = fileName.substring(fileName.lastIndexOf('.') + 1);
+		String baseName = fileName.substring(0, fileName.lastIndexOf('.'));
+		String uniqueFileName = baseName + "_" + System.currentTimeMillis() + "." + extension;
+
+		BlobId blobId = BlobId.of(bucketName, uniqueFileName);
+		BlobInfo blobInfo = BlobInfo.newBuilder(blobId)
+				.setContentType("image/" + extension)
+				.build();
+
+		try {
+			byte[] bytes = fileContent.readAllBytes();
+			storage.create(blobInfo, bytes);
+			return uniqueFileName;
+		} catch (IOException e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 
 	public byte[] downloadImage(String objectName) throws IOException {
