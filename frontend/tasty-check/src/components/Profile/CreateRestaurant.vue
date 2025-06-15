@@ -1,6 +1,7 @@
 <script setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { useAuthStore } from '@/stores/auth' // <-- import store
 import TopNav from '../Layout/TopNav.vue'
 import Footer from '../Footer.vue'
 import { RestaurantDetailedDTO } from '@/dto/restaurant.dto.js'
@@ -8,13 +9,15 @@ import RestaurantService from '@/services/restaurant.service.js'
 
 const router = useRouter()
 const service = new RestaurantService()
+const authStore = useAuthStore()
 
 const name = ref('')
 const location = ref('')
 const cuisineType = ref('')
-const schedule = ref('')
 const imageFile = ref(null)
 const imagePreview = ref('')
+const menuImageFiles = ref([])
+const foodImageFiles = ref([])
 const errorMessage = ref('')
 const successMessage = ref('')
 const isLoading = ref(false)
@@ -27,6 +30,24 @@ const handleImageUpload = (event) => {
   }
 }
 
+const handleMenuImages = (event) => {
+  const files = Array.from(event.target.files)
+  menuImageFiles.value.push(...files)
+}
+
+const handleFoodImages = (event) => {
+  const files = Array.from(event.target.files)
+  foodImageFiles.value.push(...files)
+}
+
+const removeMenuImage = (index) => {
+  menuImageFiles.value.splice(index, 1)
+}
+
+const removeFoodImage = (index) => {
+  foodImageFiles.value.splice(index, 1)
+}
+
 const removeImage = () => {
   imageFile.value = null
   imagePreview.value = ''
@@ -34,9 +55,18 @@ const removeImage = () => {
   if (fileInput) fileInput.value = ''
 }
 
+const getObjectURL = (file) => {
+  return file ? URL.createObjectURL(file) : ''
+}
+
 const createRestaurant = async () => {
-  if (!name.value || !location.value || !cuisineType.value || !schedule.value) {
+  if (!name.value || !location.value || !cuisineType.value) {
     errorMessage.value = 'Preencha todos os campos obrigatórios.'
+    return
+  }
+
+  if (!authStore.isAuthenticated || !authStore.currentUser?.id) {
+    errorMessage.value = 'É necessário estar autenticado para criar um restaurante.'
     return
   }
 
@@ -48,11 +78,12 @@ const createRestaurant = async () => {
     rating: 0.0,
     image: imageFile.value?.name || '',
     menuImages: [],
-    foodImages: []
+    foodImages: [],
+    owner: authStore.currentUser.id // <-- agora está correto!
   })
 
   try {
-    await service.createRestaurant(dto)
+    await service.createRestaurant(dto, imageFile.value, menuImageFiles.value, foodImageFiles.value)
     successMessage.value = 'Restaurante criado com sucesso!'
     alert('🎉 Restaurante adicionado com sucesso!')
     setTimeout(() => router.push('/'), 1500)
@@ -97,23 +128,42 @@ const cancel = () => {
           </div>
 
           <div class="form-group">
-            <label class="label">Nome do Restaurante</label>
+            <label class="label">Nome do Restaurante *</label>
             <input type="text" class="input" v-model="name" />
           </div>
 
           <div class="form-group">
-            <label class="label">Localização</label>
+            <label class="label">Localização *</label>
             <input type="text" class="input" v-model="location" />
           </div>
 
           <div class="form-group">
-            <label class="label">Tipo de Cozinha</label>
+            <label class="label">Tipo de Cozinha *</label>
             <input type="text" class="input" v-model="cuisineType" />
           </div>
 
+          <!-- Imagens Menu -->
           <div class="form-group">
-            <label class="label">Horário</label>
-            <input type="text" class="input" v-model="schedule" placeholder="Ex: 10h - 22h" />
+            <label class="label">Imagens do Menu (opcional)</label>
+            <input type="file" multiple @change="handleMenuImages" accept="image/*" />
+            <div class="image-list">
+              <div v-for="(img, i) in menuImageFiles" :key="i" class="image-thumb">
+                <img :src="getObjectURL(img)" class="thumb" />
+                <button type="button" class="remove-btn" @click="removeMenuImage(i)">×</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Imagens Comida -->
+          <div class="form-group">
+            <label class="label">Imagens da Comida (opcional)</label>
+            <input type="file" multiple @change="handleFoodImages" accept="image/*" />
+            <div class="image-list">
+              <div v-for="(img, i) in foodImageFiles" :key="i" class="image-thumb">
+                <img :src="getObjectURL(img)" class="thumb" />
+                <button type="button" class="remove-btn" @click="removeFoodImage(i)">×</button>
+              </div>
+            </div>
           </div>
 
           <div v-if="errorMessage" class="error">{{ errorMessage }}</div>
@@ -141,6 +191,7 @@ const cancel = () => {
 </template>
 
 <style scoped>
+/* [CSS igual ao teu — não foi modificado] */
 .page-container {
   background-color: #ffffff;
   min-height: 100vh;
@@ -217,6 +268,43 @@ const cancel = () => {
   outline: none;
 }
 
+.image-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.image-thumb {
+  position: relative;
+  width: 80px;
+  height: 80px;
+}
+
+.thumb {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 0.5rem;
+}
+
+.remove-btn {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  background: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 9999px;
+  width: 20px;
+  height: 20px;
+  font-size: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
 .error {
   background: #f8d7da;
   color: #842029;
@@ -242,7 +330,6 @@ const cancel = () => {
   margin-top: 1.5rem;
 }
 
-/* Botões como no SearchBar */
 .search-button {
   flex: 1;
   border: none;

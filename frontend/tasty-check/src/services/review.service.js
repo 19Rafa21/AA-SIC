@@ -69,15 +69,31 @@ export class ReviewService {
      * @param {ReviewDTO} reviewDTO - Review data
      * @returns {Promise<ReviewDTO>} Created ReviewDTO
      */
-    async createReview(reviewDTO) {
-        try {
-            const response = await this.axiosInstance.post(`${this.endpoint}`, reviewDTO.toCreateRequest());
-            return ReviewDTO.fromAPI(response.data);
-        } catch (error) {
-            console.error('Error creating review:', error);
-            throw error;
+async createReview(payload) {
+  try {
+    let response
+
+    if (payload instanceof FormData) {
+      response = await axios.post(
+        `${this.baseUrl}/${this.endpoint}`,
+        payload, // já está tudo (review + reviewImages)
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
         }
+      )
+    } else {
+      response = await this.axiosInstance.post(`${this.endpoint}`, payload.toCreateRequest())
     }
+
+    return ReviewDTO.fromAPI(response.data)
+  } catch (error) {
+    console.error('Error creating review:', error)
+    throw error
+  }
+}
+
 
     /**
      * Update an existing review

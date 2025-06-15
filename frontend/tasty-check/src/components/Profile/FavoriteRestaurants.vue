@@ -1,9 +1,12 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import UserService from '@/services/user.service'
+import ImageService from '@/services/image.service'
 import Spinner from '../utils/Spinner.vue'
 
 const userService = new UserService()
+const imageService = new ImageService()
+
 const favoritos = ref([])
 const loading = ref(true)
 const erro = ref(null)
@@ -13,7 +16,6 @@ const carregarFavoritos = async () => {
   const userId = local.id
 
   if (!userId) {
-    console.warn('ID do utilizador não encontrado no localStorage.')
     erro.value = 'Utilizador não autenticado.'
     loading.value = false
     return
@@ -21,9 +23,21 @@ const carregarFavoritos = async () => {
 
   try {
     const data = await userService.getFavorites(userId)
-    favoritos.value = data || []
+
+    const favoritosComImagens = await Promise.all(
+      (data || []).map(async (rest) => {
+        try {
+          const blob = await imageService.getImage(rest.image)
+          rest.imageUrl = URL.createObjectURL(blob)
+        } catch (e) {
+          rest.imageUrl = '/img/placeholder-restaurant.png'
+        }
+        return rest
+      })
+    )
+
+    favoritos.value = favoritosComImagens
   } catch (e) {
-    console.error('Erro ao carregar favoritos:', e)
     erro.value = 'Erro ao carregar favoritos.'
   } finally {
     loading.value = false
@@ -68,7 +82,7 @@ onMounted(carregarFavoritos)
           class="w-full block"
         >
           <img
-            :src="rest.image"
+            :src="rest.imageUrl"
             alt="Imagem restaurante"
             class="w-full h-28 object-cover rounded-md mb-2"
           />

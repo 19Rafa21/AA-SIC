@@ -12,7 +12,8 @@ export class ReviewDTO {
         username = '',
         restaurantId = null,
         date = null,
-        replies = []
+        replies = [],
+        reviewImages = [] // <---- ADICIONAR ISTO
     } = {}) {
         this.id = id;
         this.text = text;
@@ -22,6 +23,7 @@ export class ReviewDTO {
         this.restaurantId = restaurantId;
         this.date = date;
         this.replies = replies;
+        this.reviewImages = reviewImages; // <---- ADICIONAR ISTO
     }
 
     /**
@@ -29,6 +31,8 @@ export class ReviewDTO {
      * @param {Object} data - Review data from API
      * @returns {ReviewDTO} A new ReviewDTO instance
      */
+// review.dto.js
+
     static fromAPI(data) {
         return new ReviewDTO({
             id: data.id,
@@ -38,9 +42,11 @@ export class ReviewDTO {
             username: data.username,
             restaurantId: data.restaurantId,
             date: data.date,
-            replies: data.replies || []
+            replies: data.replies || [],
+            reviewImages: data.reviewImages || [] // <---- ADICIONAR ISTO
         });
     }
+
 
     /**
      * Converts the DTO to a format suitable for API create requests

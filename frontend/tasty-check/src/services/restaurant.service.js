@@ -54,23 +54,39 @@ export class RestaurantService {
      * @param {RestaurantDetailedDTO} restaurantDetailedDTO - Detailed restaurant data (without ID)
      * @returns {Promise<RestaurantDTO>} Created RestaurantDTO
      */
-async createRestaurant(restaurantDetailedDTO) {
+async createRestaurant(restaurantDetailedDTO, coverImageFile, menuImageFiles = [], foodImageFiles = []) {
   try {
-    const requestData = restaurantDetailedDTO.toAPIRequest();
-    delete requestData.id;
+    const formData = new FormData();
 
-    console.log("📦 Dados a enviar:", requestData);
+    // Parte textual: JSON com os dados do restaurante
+    const restaurantData = restaurantDetailedDTO.toAPIRequest();
+    delete restaurantData.id;
+    formData.append('restaurant', JSON.stringify(restaurantData));
 
-    const response = await this.axiosInstance.post(`${this.endpoint}`, requestData);
+    // Imagem de capa
+    if (coverImageFile) {
+      formData.append('coverImage', coverImageFile);
+    }
 
-    console.log("✅ Restaurante criado:", response.data);
+    // Imagens do menu
+    for (const file of menuImageFiles) {
+      formData.append('menuImages', file);
+    }
 
+    // Imagens da comida
+    for (const file of foodImageFiles) {
+      formData.append('foodImages', file);
+    }
+
+    // Faz o request com headers corretos (axios faz isso automaticamente com FormData)
+    const response = await axios.post(`${this.baseUrl}/${this.endpoint}`, formData);
     return RestaurantDTO.fromAPI(response.data);
   } catch (error) {
     console.error('❌ Erro ao criar restaurante:', error.response?.data || error.message);
     throw error;
   }
 }
+
 
 
     /**

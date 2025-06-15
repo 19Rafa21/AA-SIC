@@ -80,7 +80,7 @@
                         <img v-for="(photo, i) in restaurant.menuImages" :key="i" :src="photo"
                             class="w-full h-32 object-cover rounded" alt="Foto do restaurante" />
                     </div> -->
-                    <PhotosCarousel :images="restaurant.menuImages" />
+                    <PhotosCarousel :images="menuImageUrls" />
                 </div>
 
                 <!-- Fotografias Comida -->
@@ -90,7 +90,7 @@
                         <img v-for="(photo, i) in restaurant.foodImages" :key="i" :src="photo"
                             class="w-full h-32 object-cover rounded" alt="Foto do restaurante" />
                     </div> -->
-                    <PhotosCarousel :images="restaurant.foodImages" />
+                    <PhotosCarousel :images="foodImageUrls" />
                 </div>
 
                 <!-- Menu  -->
@@ -164,8 +164,17 @@
             </div>
 
             <div v-else-if="!loadingReviews && reviews.length > 0" class="mt-6 grid grid-cols-4 gap-3">
-                <div v-for="(c, idx) in reviews" :key="idx" class="bg-white rounded-[26px] shadow pl-4 pr-4 pb-4 pt-4">
-                    <!-- Header: avatar + nome + total reviews -->
+                <div v-for="(c, idx) in reviews" :key="idx" class="bg-white rounded-[26px] shadow pl-4 pr-4 pb-4 pt-4 relative">
+                    <!-- Botões de editar e apagar se for do utilizador -->
+                    <div v-if="authStore.currentUser?.id === c.userId" class="absolute top-2 right-2 flex gap-2 z-10">
+                        <button @click="editReview(c)" class="text-gray-500 hover:text-emerald-600">
+                            <i class="fa-solid fa-pen-to-square text-xl"></i>
+                        </button>
+                        <button @click="deleteReview(c)" class="text-gray-500 hover:text-red-600">
+                            <i class="fa-solid fa-trash text-xl"></i>
+                        </button>
+                    </div>
+                    <!-- Header: avatar + nome -->
                     <div class="flex items-center mb-4">
                         <div v-if="c.photoLoading" class="w-12 h-12 rounded-full mr-3 flex items-center justify-center bg-gray-100">
                             <Spinner class="mx-auto" />
@@ -193,13 +202,9 @@
                         </button>
                     </div>
 
-                    <!-- Fotos do restaurante, se houver -->
-                    <div v-if="false" class="flex gap-2 mt-4">
-                        <img v-for="(photo, j) in c.restaurantPhotos" :key="j" :src="photo"
-                                                                        alt="Foto prato" class="w-20 h-14 object-cover rounded"/>
-                    </div>
-                    <div v-else class="flex gap-2 mt-4">
-                        <span class="text-gray-500">!!!!! REVER AS FOTOS O IF ESTA FORÇADO</span>
+                    <!-- Carousel de imagens da review -->
+                    <div v-if="c.reviewImages && c.reviewImages.length" class="mt-4">
+                        <PhotosCarousel :images="c.reviewImages" />
                     </div>
                 </div>
             </div>
@@ -235,6 +240,14 @@
             @reply-submitted="handleReplySubmitted"
         />
 
+        <EditReview 
+        v-if="showEditModal"
+        :review="reviewToEdit"
+        @close="showEditModal = false"
+        @review-updated="handleReviewUpdated"
+        />
+
+
 </template>
 
 <script>
@@ -249,6 +262,8 @@ import ReplyModal from './ReplyModal.vue';
 import { RestaurantService, ReviewService, DishService, UserService, ImageService } from '@/services';
 import PhotosCarousel from '../utils/PhotosCarousel.vue';
 import { useAuthStore } from '@/stores/auth';
+import EditReview from './EditReview.vue';
+    
 
 export default {
     name: 'RestaurantDetails',
@@ -259,6 +274,7 @@ export default {
         FrequencyBar,
         Footer,
         RestaurantGoogleMap,
+        EditReview,
         TopNav,
         Spinner,
         PhotosCarousel,
@@ -293,6 +309,10 @@ export default {
             authStore: useAuthStore(),
             showLoginWarning: false,
             isAddingToFavorites: false,
+            menuImageUrls: [],
+            foodImageUrls: [],
+            showEditModal: false,
+            reviewToEdit: null
         };
     },
     created() {
@@ -302,6 +322,9 @@ export default {
         this.fetchDishes();
     },
     computed: {
+        currentUserId() {
+            return this.authStore?.currentUser?.id || null;
+        },
         averageScore() {
             if (!this.reviews) return 0;
             if (!this.reviews.length) return 0;
@@ -317,12 +340,49 @@ export default {
         async fetchRestaurantDetails() {
             this.loading = true;
             try {
-                const restaurantDTO = await this.RestaurantService.getRestaurantById(this.id);
-                this.restaurant = restaurantDTO;
-                // console.log("Restaurant details fetched:", this.restaurant.menuImages);
-                // Check if restaurant is in favorites after loading details
+                const dto = await this.RestaurantService.getRestaurantById(this.id);
+                
+                // Criar clones para armazenar os blobs convertidos
+                const mainImage = dto.image
+                ? await this.ImageService.getImage(dto.image).then(blob =>
+                    blob ? URL.createObjectURL(blob) : null
+                    )
+                : null;
+
+                const menuImages = await Promise.all(
+                dto.menuImages.map(async (imgName) => {
+                    try {
+                    const blob = await this.ImageService.getImage(imgName);
+                    return blob ? URL.createObjectURL(blob) : null;
+                    } catch {
+                    return null;
+                    }
+                })
+                );
+
+                const foodImages = await Promise.all(
+                dto.foodImages.map(async (imgName) => {
+                    try {
+                    const blob = await this.ImageService.getImage(imgName);
+                    return blob ? URL.createObjectURL(blob) : null;
+                    } catch {
+                    return null;
+                    }
+                })
+                );
+
+                // guardar nos arrays separados (os ref's)
+                this.menuImageUrls = menuImages.filter(Boolean);
+                this.foodImageUrls = foodImages.filter(Boolean);
+
+
+                this.restaurant = {
+                ...dto,
+                image: mainImage
+                };
+
                 if (this.authStore.isAuthenticated) {
-                    this.checkIfFavorite();
+                this.checkIfFavorite();
                 }
             } catch (err) {
                 this.error = err.message;
@@ -334,41 +394,46 @@ export default {
             this.loadingReviews = true;
             try {
                 const reviews = await this.RestaurantService.getReviewsByRestaurant(this.id);
-                // Process each review to handle user photos
-                this.reviews = await Promise.all(reviews.map(async review => {
-                    // Add photoLoading flag
-                    review.photoLoading = true;
-                    review.photoUrl = null;
 
-                    try {
-                        // Fetch user details for the review author
-                        const userData = await this.UserService.getUserById(review.userId);
-                        
-                        // If user has an imageName, fetch the image
-                        if (userData && userData.imageName) {
-                            try {
-                                const imageBlob = await this.ImageService.getImage(userData.imageName);
-                                if (imageBlob) {
-                                    review.photoUrl = URL.createObjectURL(imageBlob);
-                                } else {
-                                    review.photoUrl = '/img/avatar.png';
-                                }
-                            } catch (error) {
-                                console.error('Error loading user image for review:', error);
-                                review.photoUrl = '/img/avatar.png';
-                            }
-                        } else {
-                            review.photoUrl = '/img/avatar.png';
-                        }
-                    } catch (error) {
-                        console.error('Error fetching user details for review:', error);
-                        review.photoUrl = '/img/avatar.png';
-                    } finally {
-                        review.photoLoading = false;
+                this.reviews = await Promise.all(reviews.map(async review => {
+                review.photoLoading = true;
+                review.photoUrl = null;
+
+                try {
+                    const userData = await this.UserService.getUserById(review.userId);
+                    if (userData?.imageName) {
+                    const blob = await this.ImageService.getImage(userData.imageName);
+                    review.photoUrl = blob ? URL.createObjectURL(blob) : '/img/avatar.png';
+                    } else {
+                    review.photoUrl = '/img/avatar.png';
                     }
-                    
-                    return review;
+                } catch {
+                    review.photoUrl = '/img/avatar.png';
+                }
+
+                // Carregar imagens da review
+                // em vez de: if (review.imageNames && Array.isArray(review.imageNames)) {
+                if (review.reviewImages && Array.isArray(review.reviewImages)) {
+                    review.reviewImages = await Promise.all(
+                        review.reviewImages.map(async (imgName) => {
+                            try {
+                                const blob = await this.ImageService.getImage(imgName);
+                                return blob ? URL.createObjectURL(blob) : null;
+                            } catch {
+                                return null;
+                            }
+                        })
+                    );
+                    review.reviewImages = review.reviewImages.filter(Boolean);
+                } else {
+                    review.reviewImages = [];
+                }
+
+
+                review.photoLoading = false;
+                return review;
                 }));
+                
             } catch (err) {
                 this.errorReviews = err.message;
             } finally {
@@ -423,6 +488,23 @@ export default {
             // Check if user is authenticated using Pinia store
             if (this.authStore.isAuthenticated && this.authStore.currentUser) {
                 this.checkIfFavorite();
+            }
+        },
+        async editReview(review) {
+            this.reviewToEdit = review;
+            this.showEditModal = true;
+        },
+
+        async deleteReview(review) {
+            if (!confirm("Tens a certeza que queres apagar esta review?")) return;
+
+            try {
+                await this.ReviewService.deleteReview(review.id);
+                this.reviews = this.reviews.filter(r => r.id !== review.id);
+                alert("Review apagada com sucesso!");
+            } catch (err) {
+                console.error("Erro ao apagar review:", err);
+                alert("Ocorreu um erro ao apagar a review.");
             }
         },
         async checkIfFavorite() {
@@ -485,6 +567,12 @@ export default {
                 review.photoLoading = false;
             }
         },
+        handleReviewUpdated(updatedReview) {
+            this.showEditModal = false; // Fecha o modal
+            this.fetchReviews();        // Recarrega reviews do backend
+            this.fetchRestaurantDetails(); // Atualiza o rating médio (caso tenha mudado)
+            alert("Avaliação atualizada com sucesso!");
+        }
     },
     watch: {
         'authStore.isAuthenticated': {

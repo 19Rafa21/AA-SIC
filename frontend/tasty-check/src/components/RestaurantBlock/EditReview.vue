@@ -4,7 +4,7 @@
       <div class="bg-white rounded-lg p-6 min-w-[700px] shadow-lg">
 
         <div class="flex items-center justify-between mb-4">
-          <span class="text-2xl font-semibold text-emerald-800">Rating & Feedback</span>
+          <span class="text-2xl font-semibold text-emerald-800">Editar Avaliação</span>
           <button @click="cancelar" class="text-2xl text-red-500 hover:text-red-800">
             <i class="fa-regular fa-circle-xmark"></i>
           </button>
@@ -12,7 +12,7 @@
 
         <!-- Rating -->
         <div class="flex flex-col items-start">
-          <span class="text-md text-emerald-800 mb-3">A minha experiência foi boa</span>
+          <span class="text-md text-emerald-800 mb-3">Atualiza a tua classificação</span>
 
           <div class="flex items-center space-x-1">
             <button v-for="star in 5" :key="star" @click="setRating(star)"
@@ -25,23 +25,30 @@
 
           <!-- Texto -->
           <div class="mt-4 mb-4 w-full">
-            <label for="reviewText" class="block text-md text-emerald-800 mb-2">O que o impressionou?</label>
+            <label for="reviewText" class="block text-md text-emerald-800 mb-2">Texto</label>
             <textarea
               id="reviewText"
               v-model="text"
               class="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-emerald-500"
               rows="4"
-              placeholder="Partilhe a sua experiência com este restaurante...">
+              placeholder="Atualiza o teu comentário...">
             </textarea>
           </div>
           <span v-if="textError" class="text-sm text-red-600 mt-1">{{ textError }}</span>
+          <!-- Imagens existentes -->
+          <div class="image-list mt-2">
+            <div v-for="(img, i) in initialImages" :key="'existing-' + i" class="image-thumb">
+              <img :src="img" class="thumb" />
+              <button type="button" class="remove-btn" @click="removeInitialImage(i)">×</button>
+            </div>
+          </div>
 
-          <!-- Upload Imagens -->
+          <!-- Novas imagens -->
           <div class="form-group mt-4 w-full">
-            <label class="block text-md text-emerald-800 mb-2">Imagens (opcional)</label>
+            <label class="block text-md text-emerald-800 mb-2">Adicionar Imagens</label>
             <input type="file" multiple accept="image/*" @change="handleImageUpload" />
             <div class="image-list mt-2">
-              <div v-for="(img, i) in imageFiles" :key="i" class="image-thumb">
+              <div v-for="(img, i) in imageFiles" :key="'new-' + i" class="image-thumb">
                 <img :src="getObjectURL(img)" class="thumb" />
                 <button type="button" class="remove-btn" @click="removeImage(i)">×</button>
               </div>
@@ -50,7 +57,7 @@
 
           <div class="mt-4 flex items-end gap-3 justify-end">
             <button @click="submeter" class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700">
-              Submeter
+              Guardar alterações
             </button>
           </div>
 
@@ -65,31 +72,35 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { ReviewService } from '@/services'
 import { useAuthStore } from '@/stores/auth'
 import { ReviewDTO } from '@/dto/review.dto'
 
-const props = defineProps({
-  restaurantId: {
-    type: [String, Number],
-    required: true
-  }
-})
 
-const emit = defineEmits(['close', 'review-submitted'])
+const props = defineProps({
+  review: { type: Object, required: true }
+})
+const emit = defineEmits(['close', 'review-updated'])
 
 const authStore = useAuthStore()
 const ReviewServiceInstance = new ReviewService()
 
 const rating = ref(0)
 const text = ref('')
-const imageFiles = ref([])
+const initialImages = ref([])
+const imageFiles = ref([]) // novas
 
-const loading = ref(false)
 const errorMessage = ref(null)
 const ratingError = ref('')
 const textError = ref('')
+
+onMounted(() => {
+  rating.value = props.review.rating
+  text.value = props.review.text
+  initialImages.value = [...props.review.reviewImages] // imagens existentes
+})
+
 
 function setRating(value) {
   rating.value = rating.value === value ? value - 1 : value
@@ -98,6 +109,10 @@ function setRating(value) {
 
 function cancelar() {
   emit('close')
+}
+
+function removeInitialImage(index) {
+  initialImages.value.splice(index, 1)
 }
 
 function handleImageUpload(event) {
@@ -113,63 +128,48 @@ function getObjectURL(file) {
   return file ? URL.createObjectURL(file) : ''
 }
 
+
 async function submeter() {
   ratingError.value = ''
   textError.value = ''
   errorMessage.value = null
 
-  let hasError = false
   if (rating.value === 0) {
     ratingError.value = 'Por favor, selecione uma classificação.'
-    hasError = true
+    return
   }
   if (!text.value.trim()) {
     textError.value = 'O comentário não pode estar vazio.'
-    hasError = true
+    return
   }
-  if (hasError) return
 
-  loading.value = true
   try {
-    if (!authStore.isAuthenticated || !authStore.currentUser) {
-      errorMessage.value = 'Deve iniciar sessão para submeter uma avaliação.'
-      loading.value = false
-      return
-    }
-
-    const reviewDTO = new ReviewDTO({
-      restaurantId: props.restaurantId,
-      userId: authStore.currentUser.id,
+    const dto = new ReviewDTO({
+      ...props.review,
       rating: rating.value,
-      text: text.value
+      text: text.value,
+      reviewImages: initialImages.value
     })
 
     let response
     if (imageFiles.value.length > 0) {
       const formData = new FormData()
-      formData.append('review', JSON.stringify(reviewDTO.toCreateRequest())) // usar JSON diretamente
-      imageFiles.value.forEach(file => formData.append('reviewImages', file)) // nome correto!
+      formData.append('review', JSON.stringify(dto.toUpdateRequest()))
+      imageFiles.value.forEach(file => formData.append('reviewImages', file))
 
-      response = await ReviewServiceInstance.createReview(formData)
+      response = await ReviewServiceInstance.updateReview(dto.id, formData)
     } else {
-      response = await ReviewServiceInstance.createReview(reviewDTO)
+      response = await ReviewServiceInstance.updateReview(dto.id, dto)
     }
 
-    emit('review-submitted', response)
-
-    // Reset
-    rating.value = 0
-    text.value = ''
-    imageFiles.value = []
-    errorMessage.value = null
+    emit('review-updated', response)
     emit('close')
   } catch (err) {
-    console.error('Erro ao submeter review:', err)
-    errorMessage.value = err.response?.data?.message || err.message || 'Erro ao submeter a avaliação.'
-  } finally {
-    loading.value = false
+    console.error('Erro ao atualizar review:', err)
+    errorMessage.value = err.response?.data?.message || err.message || 'Erro ao atualizar a avaliação.'
   }
 }
+
 
 </script>
 
@@ -210,4 +210,5 @@ async function submeter() {
   justify-content: center;
   cursor: pointer;
 }
+
 </style>

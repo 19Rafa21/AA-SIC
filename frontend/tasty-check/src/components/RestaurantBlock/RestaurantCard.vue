@@ -2,8 +2,9 @@
   <div class="restaurant-card" @click="navigateToDetails">
     <img
       class="restaurant-card__image"
-      :src="restaurant.image"
+      :src="imageUrl"
       :alt="restaurant.name"
+      @error="handleImageError"
     />
     <div class="restaurant-card__info">
       <span class="restaurant-card__category">{{ restaurant.category || restaurant.cuisineType }}</span>
@@ -14,12 +15,16 @@
         </span>
         <span class="restaurant-card__location">{{ restaurant.location }}</span>
       </div>
-      <div class="restaurant-card__price" v-if="restaurant.averagePrice">Preço médio: {{ formatPrice(restaurant.averagePrice) }}</div>
+      <div class="restaurant-card__price" v-if="restaurant.averagePrice">
+        Preço médio: {{ formatPrice(restaurant.averagePrice) }}
+      </div>
     </div>
   </div>
 </template>
 
 <script>
+import ImageService from '@/services/image.service.js'
+
 export default {
   name: 'RestaurantCard',
   props: {
@@ -34,23 +39,44 @@ export default {
           typeof obj.rating === 'number' &&
           typeof obj.location === 'string' &&
           typeof obj.image === 'string'
-        );
+        )
+      }
+    }
+  },
+  data() {
+    return {
+      imageUrl: '/img/placeholder-restaurant.png'
+    }
+  },
+  async mounted() {
+    if (this.restaurant.image) {
+      try {
+        const blob = await new ImageService().getImage(this.restaurant.image)
+        if (blob) {
+          this.imageUrl = URL.createObjectURL(blob)
+        }
+      } catch (e) {
+        console.warn('Erro ao carregar imagem do restaurante:', e)
+        this.imageUrl = '/img/placeholder-restaurant.png'
       }
     }
   },
   methods: {
     formatPrice(value) {
-      return value + ' €';
+      return value + ' €'
     },
     navigateToDetails() {
-      this.$router.push({ 
-        name: 'RestaurantDetails', 
+      this.$router.push({
+        name: 'RestaurantDetails',
         params: { id: this.restaurant.id },
         state: { restaurant: this.restaurant }
-      });
+      })
+    },
+    handleImageError() {
+      this.imageUrl = '/img/placeholder-restaurant.png'
     }
   }
-};
+}
 </script>
 
 <style scoped>
@@ -64,12 +90,19 @@ export default {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
   display: flex;
   flex-direction: column;
+  cursor: pointer;
+  transition: box-shadow 0.3s ease;
+}
+
+.restaurant-card:hover {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
 }
 
 .restaurant-card__image {
   width: 100%;
   height: 160px;
   object-fit: cover;
+  background-color: #f3f4f6;
 }
 
 .restaurant-card__info {
@@ -111,9 +144,9 @@ export default {
 
 .restaurant-card__location {
   flex: 1;
-  min-width: 0;              
+  min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
-  white-space: nowrap;       
+  white-space: nowrap;
 }
 </style>
