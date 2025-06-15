@@ -22,7 +22,7 @@ const defaultAvatar = '/img/avatar.jpg'
 <template>
   <div class="bg-gray-100 rounded-xl p-6 flex gap-8">
     <img 
-      :src="profileImage || defaultAvatar" 
+      :src="profileImage && profileImage.trim() !== '' ? profileImage : defaultAvatar"
       alt="Avatar" 
       class="w-20 rounded-xl object-cover" 
     />
