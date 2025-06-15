@@ -1,12 +1,15 @@
 <script setup>
 import { ref } from 'vue'
-const emit = defineEmits(['close'])
+import Spinner from '../utils/Spinner.vue'
 
+const emit = defineEmits(['close'])
+const isSaving = ref(false)
 const user = ref(JSON.parse(localStorage.getItem('user') || '{}'))
 
 const guardar = async () => {
+  isSaving.value = true
   try {
-    await UserService.updateUser({
+    await userService.updateUser({
       name: user.value.name,
       birthdate: user.value.birthdate,
       country: user.value.country,
@@ -22,6 +25,8 @@ const guardar = async () => {
   } catch (err) {
     console.error('Erro ao guardar alterações:', err);
     alert('Erro ao atualizar perfil. Tenta novamente.');
+  } finally {
+    isSaving.value = false
   }
 };
 
@@ -41,6 +46,7 @@ const handleImageUpload = (event) => {
 }
 
 import UserService from '@/services/user.service'
+const userService = new UserService()
 
 
 </script>
@@ -70,7 +76,7 @@ import UserService from '@/services/user.service'
           <input v-model="user.name" type="text" class="input-style" />
         </div>
 
-        <div>
+        <!-- <div>
           <label class="block font-semibold">Data de Nascimento</label>
           <input v-model="user.birthdate" type="date" class="input-style" />
         </div>
@@ -88,12 +94,14 @@ import UserService from '@/services/user.service'
         <div class="col-span-2">
           <label class="block font-semibold">Email</label>
           <input v-model="user.email" type="email" class="input-style" />
-        </div>
+        </div> -->
       </div>
 
-      <div class="mt-6 flex justify-end gap-3">
-        <button @click="cancelar" class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400">Cancelar</button>
-        <button @click="guardar" class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700">Guardar</button>
+      <div class="mt-6 flex justify-end gap-3 items-center">
+        <Spinner v-if="isSaving" class="mx-auto mt-4 mb-1" />
+        <span v-if="isSaving" class="text-emerald-500 mr-2">A guardar...</span>
+        <button @click="cancelar" class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400" :disabled="isSaving">Cancelar</button>
+        <button @click="guardar" class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700" :disabled="isSaving">Guardar</button>
       </div>
     </div>
   </div>

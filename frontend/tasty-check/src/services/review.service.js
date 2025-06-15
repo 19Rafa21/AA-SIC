@@ -6,6 +6,7 @@
 import axios from 'axios';
 import { API_CONFIG } from '../config/api.config.js';
 import { ReviewDTO } from '../dto/review.dto.js';
+import { ReplyDTO } from '../dto/reply.dto.js';
 
 export class ReviewService {
     constructor() {
@@ -105,6 +106,21 @@ export class ReviewService {
             return true;
         } catch (error) {
             console.error(`Error deleting review with id ${id}:`, error);
+            throw error;
+        }
+    }
+
+    /**
+     * Get replies for a review by ID
+     * @param {string} reviewId - Review ID
+     * @returns {Promise<ReplyDTO[]>} Array of ReplyDTO objects
+     */
+    async getReviewReplies(reviewId) {
+        try {
+            const response = await this.axiosInstance.get(`${this.endpoint}/${reviewId}/replies`);
+            return response.data.map(reply => ReplyDTO.fromAPI(reply));
+        } catch (error) {
+            console.error(`Error fetching replies for review with id ${reviewId}:`, error);
             throw error;
         }
     }

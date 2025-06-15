@@ -1,0 +1,303 @@
+[
+  
+  {"name":"Spaghetti Carbonara","description":"ovo, queijo pecorino, pancetta","price":12.5,"image":"https://images.unsplash.com/photo-1589308078050-8ec9a6f25dbb","restaurantId":"478b3743-d91b-4cf6-ad0c-06ba3dc57cd1"},
+  {"name":"Margherita Pizza","description":"tomate, mozzarella, manjericão","price":10.0,"image":"https://images.unsplash.com/photo-1600891964599-f61ba0e24092","restaurantId":"478b3743-d91b-4cf6-ad0c-06ba3dc57cd1"},
+  {"name":"Lasagna Bolognese","description":"massa, ragu de carne, queijo","price":13.0,"image":"https://images.unsplash.com/photo-1601297112889-0b8c57e80f1d","restaurantId":"478b3743-d91b-4cf6-ad0c-06ba3dc57cd1"},
+  {"name":"Risotto ai Funghi","description":"arroz arbóreo, cogumelos, parmesão","price":14.0,"image":"https://images.unsplash.com/photo-1543353071-873f17a7a088","restaurantId":"478b3743-d91b-4cf6-ad0c-06ba3dc57cd1"},
+  {"name":"Tiramisu","description":"mascarpone, café, cacau","price":6.5,"image":"https://images.unsplash.com/photo-1578985545062-69928b1d9587","restaurantId":"478b3743-d91b-4cf6-ad0c-06ba3dc57cd1"},
+  {"name":"Bruschetta","description":"pão, tomate, alho, manjericão","price":5.0,"image":"https://images.unsplash.com/photo-1594007650795-df14bb57524c","restaurantId":"478b3743-d91b-4cf6-ad0c-06ba3dc57cd1"},
+
+
+  {"name":"Sushi Assorted","description":"variados nigiri e maki","price":16.0,"image":"https://images.unsplash.com/photo-1562967916-eb82221dfb36?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8","restaurantId":"54873f2b-0753-4bb9-be94-7cb76978be88"},
+  {"name":"Salmon Sashimi","description":"salmão fresco","price":14.0,"image":"https://images.unsplash.com/photo-1553621042-f6e147245754","restaurantId":"54873f2b-0753-4bb9-be94-7cb76978be88"},
+  {"name":"Temaki","description":"cones de sushi","price":8.0,"image":"https://images.unsplash.com/photo-1523987355523-c7b5b208a7d7","restaurantId":"54873f2b-0753-4bb9-be94-7cb76978be88"},
+  {"name":"Ramen","description":"caldo, noodles, ovo, chashu","price":11.5,"image":"https://images.unsplash.com/photo-1523985094-311c03a398a2","restaurantId":"54873f2b-0753-4bb9-be94-7cb76978be88"},
+  {"name":"Gyoza","description":"pastéis japoneses","price":7.0,"image":"https://images.unsplash.com/photo-1580795479480-71804f6160da","restaurantId":"54873f2b-0753-4bb9-be94-7cb76978be88"},
+  {"name":"Miso Soup","description":"caldo de miso, tofu, wakame","price":4.5,"image":"https://images.unsplash.com/photo-1599785209797-6a4f9dbde5fa","restaurantId":"54873f2b-0753-4bb9-be94-7cb76978be88"},
+
+  
+  {"name":"Bacalhau à Bras","description":"bacalhau, ovos, batata palha","price":13.0,"image":"https://images.unsplash.com/photo-1584270354949-ef21a7a04cb0","restaurantId":"122dfa1d-cf26-41ac-b1b0-df3f24b4ac2b"},
+  {"name":"Açorda de Marisco","description":"pão, marisco, coentro","price":12.0,"image":"https://images.unsplash.com/photo-1605476719691-16e41d4750c9","restaurantId":"122dfa1d-cf26-41ac-b1b0-df3f24b4ac2b"},
+  {"name":"Sardinhas Assadas","description":"sardinhas grelhadas","price":11.0,"image":"https://images.unsplash.com/photo-1562158070-cc748a6888ef","restaurantId":"122dfa1d-cf26-41ac-b1b0-df3f24b4ac2b"},
+  {"name":"Carne de Porco à Alentejana","description":"porco, amêijoas","price":14.0,"image":"https://images.unsplash.com/photo-1586190848861-99aa4a171e90","restaurantId":"122dfa1d-cf26-41ac-b1b0-df3f24b4ac2b"},
+  {"name":"Migas","description":"pão, alho, gordura","price":9.0,"image":"https://images.unsplash.com/photo-1556228724-4b8f33fbbfb9","restaurantId":"122dfa1d-cf26-41ac-b1b0-df3f24b4ac2b"},
+  {"name":"Pastéis de Nata","description":"nata, massa folhada","price":2.0,"image":"https://images.unsplash.com/photo-1556228724-4b8f33fbbfb9","restaurantId":"122dfa1d-cf26-41ac-b1b0-df3f24b4ac2b"},
+
+  
+  {"name":"Paella de Mariscos","description":"arroz, camarão, mexilhão, açafrão","price":18.0,"image":"https://images.unsplash.com/photo-1589308078050-8ec9a6f25dbb","restaurantId":"2a9ee422-b284-464d-a2b1-980731d4417d"},
+  {"name":"Patatas Bravas","description":"batata frita, molho picante","price":6.0,"image":"https://images.unsplash.com/photo-1562158070-cc748a6888ef","restaurantId":"2a9ee422-b284-464d-a2b1-980731d4417d"},
+  {"name":"Tortilla Española","description":"batata, ovo, cebola","price":7.5,"image":"https://images.unsplash.com/photo-1543353071-873f17a7a088","restaurantId":"2a9ee422-b284-464d-a2b1-980731d4417d"},
+  {"name":"Pulpo a la Gallega","description":"polvo, batata, páprica","price":16.0,"image":"https://images.unsplash.com/photo-1605476719691-16e41d4750c9","restaurantId":"2a9ee422-b284-464d-a2b1-980731d4417d"},
+  {"name":"Chorizo al Vino","description":"chouriço, vinho tinto","price":8.0,"image":"https://images.unsplash.com/photo-1563245372-f21724e3856d","restaurantId":"2a9ee422-b284-464d-a2b1-980731d4417d"},
+  {"name":"Crema Catalana","description":"custard, canela, limão","price":5.5,"image":"https://images.unsplash.com/photo-1578985545062-69928b1d9587","restaurantId":"2a9ee422-b284-464d-a2b1-980731d4417d"},
+
+  
+  {"name":"Butter Chicken","description":"frango, molho de manteiga e especiarias","price":14.0,"image":"https://images.unsplash.com/photo-1589272556792-5dd45f6bb04c","restaurantId":"54c04f19-5b5c-4518-a02d-dd22630dfd13"},
+  {"name":"Chicken Tikka Masala","description":"frango tikka, molho cremoso","price":15.0,"image":"https://images.unsplash.com/photo-1580795479480-71804f6160da","restaurantId":"54c04f19-5b5c-4518-a02d-dd22630dfd13"},
+  {"name":"Lamb Rogan Josh","description":"carne de cordeiro, especiarias","price":16.5,"image":"https://images.unsplash.com/photo-1582878826629-29b7ad1cdc43","restaurantId":"54c04f19-5b5c-4518-a02d-dd22630dfd13"},
+  {"name":"Saag Paneer","description":"espinafres, queijo cottage indiano","price":12.0,"image":"https://images.unsplash.com/photo-1565299507177-b0ac66763828","restaurantId":"54c04f19-5b5c-4518-a02d-dd22630dfd13"},
+  {"name":"Biryani","description":"arroz basmati, especiarias, frango","price":13.5,"image":"https://images.unsplash.com/photo-1599785209797-6a4f9dbde5fa","restaurantId":"54c04f19-5b5c-4518-a02d-dd22630dfd13"},
+  {"name":"Gulab Jamun","description":"bolinhos de leite, calda doce","price":4.0,"image":"https://images.unsplash.com/photo-1556228724-4b8f33fbbfb9","restaurantId":"54c04f19-5b5c-4518-a02d-dd22630dfd13"},
+
+  
+  {
+    "name": "Classic Cheeseburger",
+    "description": "carne bovina, queijo cheddar, alface, tomate",
+    "price": 9.5,
+    "image": "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8",
+    "restaurantId": "85579370-bb60-40d4-ad51-a266549b0761"
+  },
+  {
+    "name": "Bacon Double",
+    "description": "duas carnes, bacon crocante, queijo, cebola caramelizada",
+    "price": 12.0,
+    "image": "https://images.unsplash.com/photo-1553979459-d2229ba7433b?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8",
+    "restaurantId": "85579370-bb60-40d4-ad51-a266549b0761"
+  },
+  {
+    "name": "Mushroom Swiss Burger",
+    "description": "carne bovina, cogumelos salteados, queijo suíço",
+    "price": 11.0,
+    "image": "https://images.unsplash.com/photo-1625813506062-0aeb1d7a094b?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8",
+    "restaurantId": "85579370-bb60-40d4-ad51-a266549b0761"
+  },
+  {
+    "name": "Veggie Burger",
+    "description": "hambúrguer de grão-de-bico, alface, tomate",
+    "price": 8.5,
+    "image": "https://images.unsplash.com/photo-1550317138-10000687a72b?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8",
+    "restaurantId": "85579370-bb60-40d4-ad51-a266549b0761"
+  },
+  {
+    "name": "BBQ Burger",
+    "description": "carne bovina, molho barbecue, cebola frita",
+    "price": 12.5,
+    "image": "https://images.unsplash.com/photo-1594212699903-ec8a3eca50f5?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8",
+    "restaurantId": "85579370-bb60-40d4-ad51-a266549b0761"
+  },
+  {
+    "name": "Fries & Dip",
+    "description": "batatas fritas crocantes, molho especial",
+    "price": 4.0,
+    "image": "https://images.unsplash.com/photo-1585109649139-366815a0d713?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8",
+    "restaurantId": "85579370-bb60-40d4-ad51-a266549b0761"
+  },
+
+  
+  
+  {
+    "name": "Pad Thai",
+    "description": "noodles de arroz, camarão, amendoim, broto de feijão",
+    "price": 10.5,
+    "image": "https://images.unsplash.com/photo-1559314809-0d155014e29e?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8",
+    "restaurantId": "6540e5de-f08e-4fcc-b8ce-c4583a66240c"
+  },
+  {
+    "name": "Green Curry",
+    "description": "curry verde, leite de coco, frango, legumes",
+    "price": 11.5,
+    "image": "https://images.unsplash.com/photo-1455619452474-d2be8b1e70cd?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8",
+    "restaurantId": "6540e5de-f08e-4fcc-b8ce-c4583a66240c"
+  },
+  {
+    "name": "Tom Yum Soup",
+    "description": "caldo picante, camarão, cogumelos, limão",
+    "price": 9.0,
+    "image": "https://images.unsplash.com/photo-1548943487-a2e4e43b4853?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8",
+    "restaurantId": "6540e5de-f08e-4fcc-b8ce-c4583a66240c"
+  },
+  {
+    "name": "Massaman Curry",
+    "description": "carne de vaca, amendoim, batata, especiarias",
+    "price": 12.0,
+    "image": "https://images.unsplash.com/photo-1574484284002-952d92456975?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8",
+    "restaurantId": "6540e5de-f08e-4fcc-b8ce-c4583a66240c"
+  },
+  {
+    "name": "Spring Rolls",
+    "description": "rolinhos de vegetais, molho agridoce",
+    "price": 6.5,
+    "image": "https://images.unsplash.com/photo-1536187422921-8332c0c3d2a5?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8",
+    "restaurantId": "6540e5de-f08e-4fcc-b8ce-c4583a66240c"
+  },
+  {
+    "name": "Mango Sticky Rice",
+    "description": "arroz doce, manga madura, coco",
+    "price": 5.0,
+    "image": "https://images.unsplash.com/photo-1519996409144-56c88c9aa612?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8",
+    "restaurantId": "6540e5de-f08e-4fcc-b8ce-c4583a66240c"
+  },
+  {
+    "name": "Coq au Vin",
+    "description": "frango confitado, vinho tinto, cogumelos, cebola",
+    "price": 18.0,
+    "image": "https://images.unsplash.com/photo-1598103442097-8b74394b95c6?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8",
+    "restaurantId": "f99bbda2-6150-4f1a-8a1b-027127fccfa6"
+  },
+  {
+    "name": "Steak Frites",
+    "description": "bife grelhado, batatas fritas",
+    "price": 17.5,
+    "image": "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38",
+    "restaurantId": "f99bbda2-6150-4f1a-8a1b-027127fccfa6"
+  },
+  {
+    "name": "Ratatouille",
+    "description": "legumes assados, tomate, ervas",
+    "price": 14.0,
+    "image": "https://images.unsplash.com/photo-1572453800999-e8d2d1589b7c?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8",
+    "restaurantId": "f99bbda2-6150-4f1a-8a1b-027127fccfa6"
+  },
+  {
+    "name": "Beef Bourguignon",
+    "description": "carne de vaca estufada, vinho, cenoura",
+    "price": 19.0,
+    "image": "https://images.unsplash.com/photo-1579684287505-5be8fa0f8b69",
+    "restaurantId": "f99bbda2-6150-4f1a-8a1b-027127fccfa6"
+  },
+  {
+    "name": "Soupe à l'oignon",
+    "description": "sopa de cebola gratinada",
+    "price": 7.0,
+    "image": "https://images.unsplash.com/photo-1547592166-23ac45744acd?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8",
+    "restaurantId": "f99bbda2-6150-4f1a-8a1b-027127fccfa6"
+  },
+  {
+    "name": "Crème Brûlée",
+    "description": "creme, caramelo crocante",
+    "price": 6.5,
+    "image": "https://images.unsplash.com/photo-1599785209797-6a4f9dbde5fa",
+    "restaurantId": "f99bbda2-6150-4f1a-8a1b-027127fccfa6"
+  },
+
+  {
+    "name": "Tacos al Pastor",
+    "description": "tortilla, carne de porco, abacaxi, coentro",
+    "price": 11.0,
+    "image": "https://images.unsplash.com/photo-1551504734-5ee1c4a3479c?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8",
+    "restaurantId": "6fbf9dde-0b67-4f19-9b4d-db22e832b6ea"
+  },
+  {
+    "name": "Quesadilla",
+    "description": "tortilla, queijo, frango ou carne",
+    "price": 9.5,
+    "image": "https://images.unsplash.com/photo-1586190848861-99aa4a171e90",
+    "restaurantId": "6fbf9dde-0b67-4f19-9b4d-db22e832b6ea"
+  },
+  {
+    "name": "Guacamole & Chips",
+    "description": "abacate, limão, coentro, tortilla chips",
+    "price": 6.0,
+    "image": "https://images.unsplash.com/photo-1599812155414-5c1b0d285652?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8",
+    "restaurantId": "6fbf9dde-0b67-4f19-9b4d-db22e832b6ea"
+  },
+  {
+    "name": "Enchiladas Verdes",
+    "description": "tortillas recheadas, molho verde",
+    "price": 12.0,
+    "image": "https://images.unsplash.com/photo-1562967916-eb82221dfb36",
+    "restaurantId": "6fbf9dde-0b67-4f19-9b4d-db22e832b6ea"
+  },
+  {
+    "name": "Churros",
+    "description": "massa frita, açúcar, chocolate",
+    "price": 5.0,
+    "image": "https://images.unsplash.com/photo-1624554396423-cdaee5691dc3?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8",
+    "restaurantId": "6fbf9dde-0b67-4f19-9b4d-db22e832b6ea"
+  },
+  {
+    "name": "Mexican Rice",
+    "description": "arroz vermelho, tomate, pimenta",
+    "price": 4.5,
+    "image": "https://images.unsplash.com/photo-1626200419199-391ae4dae853?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8",
+    "restaurantId": "6fbf9dde-0b67-4f19-9b4d-db22e832b6ea"
+  },
+
+  {
+    "name": "Greek Salad",
+    "description": "tomate, pepino, queijo feta, azeitonas",
+    "price": 8.0,
+    "image": "https://images.unsplash.com/photo-1586190848861-99aa4a171e90",
+    "restaurantId": "557bbcb5-065a-432a-98c6-d747a125eb68"
+  },
+  {
+    "name": "Moussaka",
+    "description": "berinjela, carne, molho bechamel",
+    "price": 13.0,
+    "image": "https://images.unsplash.com/photo-1562967916-eb82221dfb36",
+    "restaurantId": "557bbcb5-065a-432a-98c6-d747a125eb68"
+  },
+  {
+    "name": "Souvlaki",
+    "description": "espetinhos de frango, pita, tzatziki",
+    "price": 11.0,
+    "image": "https://images.unsplash.com/photo-1522313389649-133a0b226be6?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8",
+    "restaurantId": "557bbcb5-065a-432a-98c6-d747a125eb68"
+  },
+  {
+    "name": "Spanakopita",
+    "description": "folhado, espinafre, queijo feta",
+    "price": 6.5,
+    "image": "https://images.unsplash.com/photo-1637844528806-192811a7e572?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8",
+    "restaurantId": "557bbcb5-065a-432a-98c6-d747a125eb68"
+  },
+  {
+    "name": "Baklava",
+    "description": "folhas, nozes, mel",
+    "price": 4.5,
+    "image": "https://images.unsplash.com/photo-1616313253719-c54bd3697936?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8",
+    "restaurantId": "557bbcb5-065a-432a-98c6-d747a125eb68"
+  },
+  {
+    "name": "Greek Yogurt with Honey",
+    "description": "iogurte grego, mel, nozes",
+    "price": 3.5,
+    "image": "https://images.unsplash.com/photo-1596567595106-aa125fcbea51?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8",
+    "restaurantId": "557bbcb5-065a-432a-98c6-d747a125eb68"
+  },
+
+  {
+    "name": "Kung Pao Chicken",
+    "description": "frango picante, amendoim, pimento",
+    "price": 12.0,
+    "image": "https://images.unsplash.com/photo-1586190848861-99aa4a171e90",
+    "restaurantId": "bac34646-651d-4e62-8918-626d2e082cd5"
+  },
+  {
+    "name": "Sweet and Sour Pork",
+    "description": "porco, pimento, ananás",
+    "price": 11.5,
+    "image": "https://images.unsplash.com/photo-1562967916-eb82221dfb36",
+    "restaurantId": "bac34646-651d-4e62-8918-626d2e082cd5"
+  },
+  {
+    "name": "Fried Rice",
+    "description": "arroz frito, ovo, legumes",
+    "price": 9.0,
+    "image": "https://images.unsplash.com/photo-1611414431060-ec5666c612d8",
+    "restaurantId": "bac34646-651d-4e62-8918-626d2e082cd5"
+  },
+  {
+    "name": "Spring Rolls",
+    "description": "rolinhos de legumes fritos",
+    "price": 6.0,
+    "image": "https://images.unsplash.com/photo-1574476889984-e7476a50306e?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8",
+    "restaurantId": "bac34646-651d-4e62-8918-626d2e082cd5"
+  },
+  {
+    "name": "Mapo Tofu",
+    "description": "tofu com molho picante e carne",
+    "price": 10.0,
+    "image": "https://images.unsplash.com/photo-1587590227264-0ac64ce63ce8?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8",
+    "restaurantId": "bac34646-651d-4e62-8918-626d2e082cd5"
+  },
+  {
+    "name": "Fortune Cookies",
+    "description": "biscoitos da sorte",
+    "price": 3.0,
+    "image": "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38",
+    "restaurantId": "bac34646-651d-4e62-8918-626d2e082cd5"
+  }
+]
+
+

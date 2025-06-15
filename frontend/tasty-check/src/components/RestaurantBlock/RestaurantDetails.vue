@@ -1,4 +1,4 @@
- <template>
+<template>
     <div v-if="loading" class="text-center py-12">
         <Spinner class="mx-auto mt-4 mb-1"/>    
         <span class="text-lg text-emerald-500">Carregando detalhes do restaurante...</span>
@@ -20,9 +20,20 @@
             <!-- Título  e like -->
             <div class="flex justify-between items-center">
                 <h1 class="text-3xl font-bold text-black">{{ restaurant.name }}</h1>
-                <button class="text-2xl text-gray-400 hover:text-red-500">
-                    <i class="far fa-heart"></i>
-                </button>
+                <div class="flex flex-col items-end">
+                    <div class="flex items-center">
+                        <Spinner v-if="isAddingToFavorites" class="mr-2 text-lg" />
+                        <button class="text-2xl hover:text-red-500" 
+                                :class="{ 'text-red-500': isFavorite, 'text-gray-400': !isFavorite }" 
+                                @click="toggleFavorite"
+                                :disabled="isAddingToFavorites">
+                            <i :class="isFavorite ? 'fas fa-heart' : 'far fa-heart'"></i>
+                        </button>
+                    </div>
+                    <p v-if="showLoginWarning" class="text-red-500 text-sm mt-1">
+                        É necessário fazer login para adicionar aos favoritos
+                    </p>
+                </div>
             </div>
 
             <!-- Rating -->
@@ -42,8 +53,8 @@
                 </div>
                 <!-- Preço médio -->
                 <div class="flex items-center gap-2 text-xl text-black">
-                    <i class="fa-solid fa-euro-sign"></i>
-                    {{ formatPrice(restaurant.averagePrice) }}
+                    <i class="fa-solid fa-money-bill"></i>
+                    {{ formatPrice(averagePrice()) }}
                 </div>
                 <!-- Contacto -->
                 <div class="flex items-center gap-2 text-xl text-black">
@@ -63,7 +74,7 @@
 
             <div>
                 <!-- Fotografias Menu -->
-                <div class="bg-white rounded-[26px] shadow min-h-[200px]">
+                <div class="bg-white mb-2 rounded-[26px] shadow min-h-[200px]">
                     <span class="ml-4 text-lg text-emerald-800 font-semibold">Fotografias do Menu</span>
                     <!-- <div class="grid grid-cols-4 gap-2 pt-4 mb-14 ml-4 mr-4">
                         <img v-for="(photo, i) in restaurant.menuImages" :key="i" :src="photo"
@@ -85,17 +96,19 @@
                 <!-- Menu  -->
                 <div class="bg-white rounded-[26px] shadow mt-6 min-h-[400px]">
                     <span class="ml-4 text-lg text-emerald-800 font-semibold">Menu</span>
-                    <ul class="space-y-3 pt-4 !pl-0">
-                        <!-- <div class="flex flex-col items-center justify-between"> -->
-                            <li v-for="(item, i) in restaurant.dishes" :key="i" class="flex justify-between items-center text-gray-700">
-                                <img :src="item.photo" class="w-28 h-24 object-cover rounded ml-4" alt="Foto do prato" />
-                                <div class="ml-10 flex flex-col flex-1">
-                                    <span class="text-base text-emerald-800 font-semibold">{{ item.name }}</span>
-                                    <span class="text-sm text-emerald-800">{{ item.ingredients }}</span>
-                                </div>
-                                <span class="text-base text-emerald-800 font-semibold mr-4">{{ formatPrice(item.price) }}</span>
-                            </li>
-                        <!-- </div> -->
+                    <div v-if="!dishes || dishes.length === 0" class="flex flex-col items-center justify-center p-8 text-gray-500">
+                        <i class="fa-solid fa-utensils text-5xl mb-4"></i>
+                        <span class="text-lg">Sem pratos adicionados</span>
+                    </div>
+                    <ul v-else class="space-y-3 pt-4 !pl-0">
+                        <li v-for="(item, i) in dishes" :key="i" class="flex justify-between items-center text-gray-700">
+                            <img :src="item.image" class="w-28 h-24 object-cover rounded ml-4" alt="Foto do prato" />
+                            <div class="ml-10 flex flex-col flex-1">
+                                <span class="text-base text-emerald-800 font-semibold">{{ item.name }}</span>
+                                <span class="text-sm text-emerald-800">{{ item.ingredients }}</span>
+                            </div>
+                            <span class="text-base text-emerald-800 font-semibold mr-4">{{ formatPrice(item.price) }}</span>
+                        </li>
                     </ul>
                 </div>
 
@@ -144,8 +157,13 @@
 
         <div class="bg-white rounded-[26px] mt-6 min-h-[200px] m-4">
 
-            <!-- Comentários -->
-            <div class="mt-6 grid grid-cols-4 gap-3">
+            <!-- Reviews -->
+            <div v-if="loadingReviews" class="text-center py-12">
+                <Spinner class="mx-auto mt-4 mb-1"/>    
+                <span class="text-lg text-emerald-500">Carregando reviews...</span>
+            </div>
+
+            <div v-else-if="!loadingReviews && reviews.length > 0" class="mt-6 grid grid-cols-4 gap-3">
                 <div v-for="(c, idx) in reviews" :key="idx" class="bg-white rounded-[26px] shadow pl-4 pr-4 pb-4 pt-4">
                     <!-- Header: avatar + nome + total reviews -->
                     <div class="flex items-center mb-4">
@@ -162,6 +180,14 @@
                     <!-- Texto do comentário -->
                     <span class="text-base text-gray-700">{{ c.text }}</span>
 
+                    <!-- Comentar -->
+                    <div class="flex justify-end gap-2 mt-4">
+                        <button @click="openReplyModal(c.id)" class="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-700">
+                            <span class="mr-2">Comentários</span>
+                            <i class="fa-solid fa-comment"></i>
+                        </button>
+                    </div>
+
                     <!-- Fotos do restaurante, se houver -->
                     <div v-if="false" class="flex gap-2 mt-4">
                         <img v-for="(photo, j) in c.restaurantPhotos" :key="j" :src="photo"
@@ -172,12 +198,15 @@
                     </div>
                 </div>
             </div>
-        </div>
 
-        <div class="flex justify-center items-center mt-6 mb-6">            
-            <button @click="openReplyModal" class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700">
-              Comentar
-            </button>
+            <div v-else-if="reviews.length === 0 && !loadingReviews" class="flex items-center gap-2 justify-center">
+                <i class="fa-regular fa-comment-dots text-5xl text-emerald-500"></i>
+                <span class="text-xl text-gray-600 font-medium">Ainda sem reviews, seja o primeiro a avaliar!</span>
+                <button @click="openModal" class="px-6 min-h-[35px] bg-emerald-600 text-white rounded-full hover:bg-emerald-700 transition-colors flex items-center">
+                    <i class="fa-solid fa-star mr-2"></i>
+                    Avaliar agora
+                </button>
+            </div>
         </div>
 
         <Footer />
@@ -195,7 +224,8 @@
         <!-- Reply Modal -->
         <ReplyModal 
             v-if="showReplyModal" 
-            :restaurantId="String(restaurant?.id)" 
+            :restaurantId="String(restaurant?.id)"
+            :reviewId="currentReviewId"
             @close="closeReplyModal" 
             @reply-submitted="handleReplySubmitted"
         />
@@ -211,8 +241,9 @@ import RestaurantGoogleMap from '../Maps/RestaurantGoogleMap.vue';
 import TopNav from '../Layout/TopNav.vue';
 import Spinner from '../utils/Spinner.vue';
 import ReplyModal from './ReplyModal.vue';
-import { RestaurantService, ReviewService } from '@/services';
+import { RestaurantService, ReviewService, DishService, UserService } from '@/services';
 import PhotosCarousel from '../utils/PhotosCarousel.vue';
+import { useAuthStore } from '@/stores/auth';
 
 export default {
     name: 'RestaurantDetails',
@@ -237,20 +268,32 @@ export default {
         return {
             RestaurantService: new RestaurantService(),
             ReviewService: new ReviewService(),
+            DishService: new DishService(),
+            UserService: new UserService(),
             showModal: false,
             showReplyModal: false,
             restaurant: null,
             reviews: [],
             loadingReviews: false,
             errorReviews: null,
+            dishes: [],
+            loadindDishes: false,
+            errorDishes: null,
             loading: true,
             error: null,
             restaurant: null,
+            currentReviewId: null,
+            isFavorite: false,
+            authStore: useAuthStore(),
+            showLoginWarning: false,
+            isAddingToFavorites: false,
         };
     },
     created() {
+        this.getUserInfo();
         this.fetchRestaurantDetails();
         this.fetchReviews();
+        this.fetchDishes();
     },
     computed: {
         averageScore() {
@@ -269,7 +312,11 @@ export default {
             this.loading = true;
             try {
                 const restaurantDTO = await this.RestaurantService.getRestaurantById(this.id);
-                this.restaurant = restaurantDTO;    
+                this.restaurant = restaurantDTO;
+                // Check if restaurant is in favorites after loading details
+                if (this.authStore.isAuthenticated) {
+                    this.checkIfFavorite();
+                }
             } catch (err) {
                 this.error = err.message;
             } finally {
@@ -288,8 +335,24 @@ export default {
                 this.loadingReviews = false;
             }
         },
+        async fetchDishes() {
+            this.loadindDishes = true;
+            try {
+                const dishes = await this.DishService.getDishesByRestaurant(this.id);
+                this.dishes = dishes;
+            } catch (err) {
+                this.errorDishes = err.message;
+            } finally {
+                this.loadindDishes = false;
+            }
+        },
         formatPrice(v) {
             return `${v} €`;
+        },
+        averagePrice() {
+            if (!this.dishes || !this.dishes.length) return 0;
+            const total = this.dishes.reduce((sum, dish) => sum + dish.price, 0);
+            return (total / this.dishes.length).toFixed(2);
         },
         openModal() {
             this.showModal = true;
@@ -297,17 +360,79 @@ export default {
         closeModal() {
             this.showModal = false;
         },
-        handleReviewSubmitted(review) {
+        async handleReviewSubmitted(review) {
+            // Refresh the reviews list and restaurant details
+            await Promise.all([
+                this.fetchRestaurantDetails(),
+                this.fetchReviews()
+            ]);
+            // Show success message
             alert("Avaliação recebida com sucesso!");
         },
-        openReplyModal() {
+        openReplyModal(reviewId) {
             this.showReplyModal = true;
+            this.currentReviewId = reviewId;
         },
         closeReplyModal() {
             this.showReplyModal = false;
         },
         handleReplySubmitted(reply) {
             alert("Comentário enviado com sucesso!");
+        },
+        getUserInfo() {
+            // Check if user is authenticated using Pinia store
+            if (this.authStore.isAuthenticated && this.authStore.currentUser) {
+                this.checkIfFavorite();
+            }
+        },
+        async checkIfFavorite() {
+            // Make sure user is authenticated
+            if (!this.authStore.isAuthenticated || !this.authStore.currentUser) return;
+            
+            try {
+                const userId = this.authStore.currentUser.id;
+                const favorites = await this.UserService.getFavorites(userId);
+                if (favorites && Array.isArray(favorites)) {
+                    this.isFavorite = favorites.some(fav => fav.id === parseInt(this.id));
+                }
+            } catch (error) {
+                console.error('Erro ao verificar favoritos:', error);
+            }
+        },
+        async toggleFavorite() {
+            // Check if user is authenticated
+            if (!this.authStore.isAuthenticated) {
+                // Show the warning message instead of alert
+                this.showLoginWarning = true;
+                
+                // Hide the warning after 3 seconds
+                setTimeout(() => {
+                    this.showLoginWarning = false;
+                }, 3000);
+                return;
+            }
+
+            try {
+                this.isAddingToFavorites = true;
+                const userId = this.authStore.currentUser.id;
+                
+                if (this.isFavorite) {
+                    // If already a favorite, remove from favorites
+                    await this.UserService.removeFromFavorites(userId, this.id);
+                    this.isFavorite = false;
+                    alert("Restaurante removido dos favoritos!");
+                } else {
+                    // If not a favorite, add to favorites
+                    await this.UserService.addToFavorites(userId, this.id);
+                    this.isFavorite = true;
+                    alert("Restaurante adicionado aos favoritos!");
+                }
+            } catch (error) {
+                console.error('Erro ao atualizar favoritos:', error);
+                alert("Ocorreu um erro ao atualizar favoritos.");
+            } finally {
+                this.isAddingToFavorites = false;
+            }
         }
     },
 };

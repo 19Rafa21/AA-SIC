@@ -22,10 +22,10 @@ watch(() => props.editable, (isEditing) => {
     <img src="/img/avatar.jpg" alt="Avatar" class="w-20 rounded-xl object-cover" />
 
     <div class="grid grid-cols-2 gap-y-3 text-sm flex-1">
-      <div><strong>Nome Completo</strong><div>{{ user.name }}</div></div>
+      <!-- <div><strong>Nome Completo</strong><div>{{ user.name }}</div></div>
       <div><strong>Data de Nascimento</strong><div>{{ user.birthdate || '—' }}</div></div>
       <div><strong>País</strong><div>{{ user.country || '—' }}</div></div>
-      <div><strong>Contacto</strong><div>{{ user.phone || '—' }}</div></div>
+      <div><strong>Contacto</strong><div>{{ user.phone || '—' }}</div></div> -->
       <div class="col-span-2"><strong>Email</strong><div>{{ user.email }}</div></div>
     </div>
   </div>
