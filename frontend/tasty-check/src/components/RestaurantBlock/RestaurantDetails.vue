@@ -433,7 +433,9 @@ export default {
                 const userId = this.authStore.currentUser.id;
                 const favorites = await this.UserService.getFavorites(userId);
                 if (favorites && Array.isArray(favorites)) {
-                    this.isFavorite = favorites.some(fav => fav.id === parseInt(this.id));
+                    // Convert both to strings for accurate comparison
+                    this.isFavorite = favorites.some(fav => String(fav.id) === String(this.id));
+                    // console.log('Is favorite?', this.isFavorite, 'Restaurant ID:', this.id);
                 }
             } catch (error) {
                 console.error('Erro ao verificar favoritos:', error);
@@ -467,6 +469,9 @@ export default {
                     this.isFavorite = true;
                     alert("Restaurante adicionado aos favoritos!");
                 }
+                
+                // Re-check favorites to ensure UI is in sync
+                this.checkIfFavorite();
             } catch (error) {
                 console.error('Erro ao atualizar favoritos:', error);
                 alert("Ocorreu um erro ao atualizar favoritos.");
@@ -480,6 +485,24 @@ export default {
                 review.photoLoading = false;
             }
         },
+    },
+    watch: {
+        'authStore.isAuthenticated': {
+            immediate: true,
+            handler(newValue) {
+                if (newValue && this.restaurant) {
+                    this.checkIfFavorite();
+                }
+            }
+        },
+        restaurant: {
+            immediate: false,
+            handler(newValue) {
+                if (newValue && this.authStore.isAuthenticated) {
+                    this.checkIfFavorite();
+                }
+            }
+        }
     },
 };
 </script>
