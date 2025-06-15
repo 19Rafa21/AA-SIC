@@ -31,10 +31,7 @@
     </form>
 
     <transition name="dropdown-fade">
-      <div
-        v-if="showMainDropdown"
-        class="filter-dropdown-modern"
-      >
+      <div v-if="showMainDropdown" class="filter-dropdown-modern">
         <div class="dropdown-arrow-modern"></div>
         <ul class="dropdown-menu-list">
           <li @mouseenter="openSubmenu('location')" class="dropdown-item-modern">Localização</li>
@@ -88,15 +85,26 @@
 
     <div v-if="showResults" class="mt-4 bg-white/80 backdrop-blur-lg rounded-lg p-4 relative">
       <button class="absolute top-2 right-2 text-red-500 text-xl" @click="showResults = false">×</button>
+
       <div v-if="isLoading" class="text-center py-6">
         <i class="fas fa-spinner fa-spin text-emerald-500 text-2xl"></i>
         <p class="text-gray-700 mt-2">A Carregar Restaurantes...</p>
       </div>
+
       <div v-else-if="searchResults.length === 0" class="text-center text-gray-600 py-6">
-        Nenhum restaurante encontrado com os critérios selecionados.
+        <i class="fas fa-search-minus text-3xl mb-3 text-gray-400"></i>
+        <p class="text-base">Nenhum restaurante encontrado com os critérios selecionados.</p>
+        <p class="text-sm mt-1 text-gray-500">Tenta alterar os filtros ou escrever outro nome.</p>
       </div>
+
       <div v-else>
-        <RestaurantCarousel :title="'Resultados da Pesquisa'" :restaurants="searchResults" :visibleCount="3" ref="carousel" :key="carouselKey" />
+        <RestaurantCarousel
+          :title="'Resultados da Pesquisa'"
+          :restaurants="searchResults"
+          :visibleCount="3"
+          ref="carousel"
+          :key="carouselKey"
+        />
       </div>
     </div>
   </div>
@@ -172,8 +180,8 @@ const searchRestaurants = async () => {
 
   isLoading.value = true
   showResults.value = true
-  carouselKey.value++ // Reinicia o carousel para a página 1
-  closeDropdown() // Fecha o dropdown ao filtrar
+  carouselKey.value++
+  closeDropdown()
 
   try {
     const data = await service.getRestaurantsWithFilter(name, location, cuisine, rating)
