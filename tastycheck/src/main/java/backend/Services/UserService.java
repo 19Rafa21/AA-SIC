@@ -229,7 +229,12 @@ public class UserService {
 	public static User toEditUserWithImage(EditUserDTO dto, User user){
 		user.setUsername(dto.getUsername());
 		user.setEmail(dto.getEmail());
-		user.setPassword(dto.getPassword());
+		if (dto.getPassword() != null && !dto.getPassword().isBlank()) {
+			String hashedPassword = BCrypt.hashpw(dto.getPassword(), BCrypt.gensalt());
+			user.setPassword(hashedPassword);
+		} else {
+			user.setPassword(user.getPassword());
+		}
 		user.setProfilePicture(dto.getUserImage());
 		return user;
 	}
