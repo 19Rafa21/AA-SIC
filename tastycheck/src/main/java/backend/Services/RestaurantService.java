@@ -21,7 +21,10 @@ public class RestaurantService {
 
     private RestaurantDAO restaurantDAO;
 
-    public RestaurantService() {
+    private ImageService imageService;
+
+    public RestaurantService() throws IOException {
+        imageService = new ImageService();
         restaurantDAO = new RestaurantDAO();
     }
 
@@ -59,32 +62,49 @@ public class RestaurantService {
 
     public boolean updateRestaurant(String id, RestaurantDetailsDTO dto) {
         try {
+            // 1. Obter restaurante existente
             Restaurant r2 = getRestaurantByOrmID(id);
 
+            // 2. Atualizar campos editáveis (só se não forem null)
             r2 = toRestaurantEdit(r2, dto);
 
+            // 3. Gravar alterações do restaurante (nome, morada, capa, etc.)
             restaurantDAO.save(r2);
 
+            // 4. Guardar novas imagens de menu na BD
             if (dto.getMenuImages() != null) {
                 for (String url : dto.getMenuImages()) {
                     Image img = new Image(UUID.randomUUID().toString(), id, url, "menu");
                     ImageDAO.save(img);
+                    System.out.println("Imagem de menu guardada: " + url);
                 }
             }
 
+            // 5. Guardar novas imagens de comida na BD
             if (dto.getFoodImages() != null) {
                 for (String url : dto.getFoodImages()) {
                     Image img = new Image(UUID.randomUUID().toString(), id, url, "food");
                     ImageDAO.save(img);
+                    System.out.println("Imagem de comida guardada: " + url);
                 }
             }
 
             return true;
+
         } catch (Exception e) {
             e.printStackTrace();
             return false;
         }
     }
+
+    public void deleteAllImagesByRestaurant(String restaurantId) throws IOException, PersistentException {
+        List<Image> images = ImageDAO.getImagesByRestaurantId(restaurantId);
+        for (Image img : images) {
+            imageService.deleteImage(img.getUrl()); // Apaga do bucket
+        }
+        ImageDAO.deleteByRestaurantId(restaurantId); // Apaga da BD (1x)
+    }
+
 
 
     public boolean removeRestaurant(String id) {

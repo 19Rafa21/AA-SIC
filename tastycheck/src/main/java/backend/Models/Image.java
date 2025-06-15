@@ -23,7 +23,7 @@ public class Image {
     }
 
 
-    public Image(String id, String url, String type, String restaurantId) {
+    public Image(String id, String restaurantId, String url, String type) {
         this.id = id;
         this.url = url;
         this.type = type;

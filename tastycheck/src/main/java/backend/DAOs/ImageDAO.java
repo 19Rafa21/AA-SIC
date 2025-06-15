@@ -27,7 +27,7 @@ public class ImageDAO {
                 .executeUpdate();
     }
 
-    public static List<Image> getByRestaurantId(String restaurantId) throws PersistentException {
+    public static List<Image> getImagesByRestaurantId(String restaurantId) throws PersistentException {
         PersistentSession session = AASICPersistentManager.instance().getSession();
         List<Image> images = session.createQuery("FROM Image WHERE restaurantId = :id")
                                 .setParameter("id", restaurantId)

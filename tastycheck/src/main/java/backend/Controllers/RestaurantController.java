@@ -303,20 +303,18 @@ public class RestaurantController extends HttpServlet {
 
 
     @Override
-    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-
+    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
+        resp.setCharacterEncoding("UTF-8");
         resp.setContentType("application/json; charset=UTF-8");
 
-        // 1. Obter o ID da URL (ex: /restaurant/id12 → id12)
-        String pathInfo = req.getPathInfo(); // ex: /id12
+        String pathInfo = req.getPathInfo();
         if (pathInfo == null || pathInfo.length() <= 1) {
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             resp.getWriter().write("{\"error\": \"ID do restaurante em falta na URL\"}");
             return;
         }
-        String restaurantId = pathInfo.substring(1); // remove a barra inicial
+        String restaurantId = pathInfo.substring(1);
 
-        // 2. Verificar se o restaurante existe
         Restaurant existing;
         try {
             existing = restaurantService.getRestaurantByOrmID(restaurantId);
@@ -331,31 +329,67 @@ public class RestaurantController extends HttpServlet {
             return;
         }
 
-        // 3. Ler os dados do body (JSON → DTO)
-        RestaurantDetailsDTO dto;
         try {
-            dto = parseRestaurantDetailsDTO(req); // este método deve permitir campos parciais (null)
+            // 1. Parse do JSON
+            String restaurantJson = req.getParameter("restaurant");
+            RestaurantDetailsDTO restaurantDTO = new ObjectMapper().readValue(restaurantJson, RestaurantDetailsDTO.class);
+
+            // 2. Apagar imagens antigas
+            restaurantService.deleteAllImagesByRestaurant(restaurantId);
+            System.out.println("Imagens antigas apagadas com sucesso.");
+
+            // 3. Upload da imagem de capa
+            Part coverImage = req.getPart("coverImage");
+            if (coverImage != null && coverImage.getSize() > 0) {
+                String fileName = Paths.get(coverImage.getSubmittedFileName()).getFileName().toString();
+                String uploadedUrl = imageService.uploadImage(fileName, coverImage.getInputStream());
+                restaurantDTO.setImage(uploadedUrl);
+                System.out.println("Imagem de capa carregada: " + uploadedUrl);
+            }
+
+            // 4. Menu Images
+            List<String> uploadedMenuImages = new ArrayList<>();
+            for (Part part : req.getParts()) {
+                if ("menuImages".equals(part.getName()) && part.getSize() > 0 && part.getContentType().startsWith("image/")) {
+                    String fileName = Paths.get(part.getSubmittedFileName()).getFileName().toString();
+                    String uploadedUrl = imageService.uploadImage(fileName, part.getInputStream());
+                    uploadedMenuImages.add(uploadedUrl);
+                    System.out.println("Imagem de menu carregada: " + uploadedUrl);
+                }
+            }
+            restaurantDTO.setMenuImages(uploadedMenuImages);
+
+            // 5. Food Images
+            List<String> uploadedFoodImages = new ArrayList<>();
+            for (Part part : req.getParts()) {
+                if ("foodImages".equals(part.getName()) && part.getSize() > 0 && part.getContentType().startsWith("image/")) {
+                    String fileName = Paths.get(part.getSubmittedFileName()).getFileName().toString();
+                    String uploadedUrl = imageService.uploadImage(fileName, part.getInputStream());
+                    uploadedFoodImages.add(uploadedUrl);
+                    System.out.println("Imagem de comida carregada: " + uploadedUrl);
+                }
+            }
+            restaurantDTO.setFoodImages(uploadedFoodImages);
+
+            // 6. Atualizar restaurante (inclui guardar novas imagens na BD)
+            boolean success = restaurantService.updateRestaurant(restaurantId, restaurantDTO);
+            if (!success) {
+                resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                resp.getWriter().write("{\"message\": \"Erro ao atualizar o restaurante\"}");
+                return;
+            }
+
+            resp.setStatus(HttpServletResponse.SC_OK);
+            resp.getWriter().write("{\"message\": \"Restaurante atualizado com sucesso\"}");
+
         } catch (Exception e) {
-            resp.setContentType("application/json; charset=UTF-8");
+            e.printStackTrace();
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            resp.getWriter().write("{\"error\": \"Erro ao processar os dados do restaurante\"}");
-            return;
+            resp.getWriter().write("{\"error\": \"Erro ao processar o update\"}");
         }
-
-        // 4. Tentar atualizar o restaurante com os dados fornecidos
-        boolean success = restaurantService.updateRestaurant(restaurantId, dto);
-        if (!success) {
-            resp.setContentType("application/json; charset=UTF-8");
-            resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            resp.getWriter().write("{\"message\": \"Erro ao atualizar o restaurante\"}");
-            return;
-        }
-
-        // 5. Sucesso!
-        resp.setContentType("application/json; charset=UTF-8");
-        resp.setStatus(HttpServletResponse.SC_OK);
-        resp.getWriter().write("{\"message\": \"Restaurante atualizado com sucesso\"}");
     }
+
+
 
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
