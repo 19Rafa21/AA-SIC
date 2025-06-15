@@ -14,12 +14,34 @@ const email = ref('')
 const password = ref('')
 const confirmPassword = ref('')
 const errorMessage = ref('')
+const profileImage = ref(null)  // Referência para o arquivo de imagem
+const imagePreview = ref('')    // Para mostrar preview da imagem
 
 // Computed properties from the store
 const isLoading = computed(() => authStore.isLoading)
 
 // Role selecionado
 const role = ref('cliente')
+
+// Handler para seleção de arquivo de imagem
+const handleImageUpload = (event) => {
+  const file = event.target.files[0]
+  if (file) {
+    profileImage.value = file
+    
+    // Criar uma URL para preview
+    imagePreview.value = URL.createObjectURL(file)
+  }
+}
+
+// Remover imagem selecionada
+const removeImage = () => {
+  profileImage.value = null
+  imagePreview.value = ''
+  // Reset input do tipo file
+  const fileInput = document.getElementById('profile-image')
+  if (fileInput) fileInput.value = ''
+}
 
 // Lógica de registo
 const register = async () => {
@@ -46,7 +68,8 @@ const register = async () => {
     email.value, 
     password.value, 
     name.value, 
-    discriminator
+    discriminator,
+    profileImage.value // Passar o arquivo de imagem se existir
   )
   
   if (registerSuccess) {
@@ -128,6 +151,34 @@ const home = () => {
                     type="password"
                     v-model="confirmPassword"
                   />
+
+                  <!-- Avatar Imagem -->
+                  <div class="mb-3">
+                    <p class="text-sm text-dark mb-1">Imagem de Perfil (opcional)</p>
+                    <div v-if="imagePreview" class="mb-2">
+                      <div class="preview-container">
+                        <img :src="imagePreview" alt="Pré-visualização" class="img-preview" />
+                        <button 
+                          type="button" 
+                          class="btn-remove-image" 
+                          @click="removeImage"
+                          title="Remover imagem"
+                        >
+                          <i class="fas fa-times"></i>
+                        </button>
+                      </div>
+                    </div>
+                    <div class="input-group input-group-outline">
+                      <input
+                        type="file"
+                        id="profile-image"
+                        class="form-control"
+                        @change="handleImageUpload"
+                        accept="image/*"
+                      />
+                    </div>
+                    <span class="text-xs text-muted">Formatos aceites: JPG, PNG, GIF (máx. 5MB)</span>
+                  </div>
 
                   <!-- Nav pills para selecionar tipo de utilizador -->
                   <div class="nav-wrapper position-relative end-0 my-3">
@@ -255,5 +306,47 @@ const home = () => {
   border-radius: 0.5rem;
 }
 
+.img-preview {
+  max-width: 100px;
+  max-height: 100px;
+  border-radius: 8px;
+  object-fit: cover;
+}
 
+.preview-container {
+  position: relative;
+  display: inline-block;
+  margin-bottom: 10px;
+}
+
+.btn-remove-image {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.btn-remove-image:hover {
+  background: #c82333;
+}
+
+input[type="file"] {
+  padding: 10px;
+  margin-bottom: 5px;
+}
+
+.text-muted {
+  color: #6c757d;
+}
 </style>

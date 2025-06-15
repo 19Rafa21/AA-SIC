@@ -27,11 +27,6 @@ const login = async () => {
   // Clear any previous error
   authStore.clearError()
   errorMessage.value = ''
-  console.log('Attempting to login with:', {
-    email: email.value,
-    password: password.value,
-    rememberMe: rememberMe.value
-  })
   // Login using the auth store
   const success = await authStore.login(
     email.value, 
@@ -40,7 +35,6 @@ const login = async () => {
   )
   
   if (success) {
-    console.log('Login successful', authStore.currentUser)
     router.push('/')
   } else {
     errorMessage.value = authStore.error || 'Email ou password incorretos.'

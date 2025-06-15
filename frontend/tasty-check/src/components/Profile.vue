@@ -8,38 +8,51 @@ import EditProfileModal from './Profile/EditProfileModal.vue'
 import Footer from './Footer.vue'
 import TopNav from './Layout/TopNav.vue'
 import Spinner from './utils/Spinner.vue'
+import { useAuthStore } from '@/stores/auth'
+import { UserService, ImageService } from '@/services'
+import UserDTO from '@/dto/user.dto.js'
 
 const showModal = ref(false)
 const user = ref(null)
 const isLoading = ref(true)
 const error = ref(null)
-
-import UserService from '@/services/user.service.js'
-import UserDTO from '@/dto/user.dto.js'
+const authStore = useAuthStore()
 const userService = new UserService()
+const imageService = new ImageService()
+const profileImage = ref(null)
 
 onMounted(async () => {
   isLoading.value = true
-  const local = localStorage.getItem('user')
-  if (local) {
-    user.value = JSON.parse(local) // carregar rapidamente
+  
+  // Use Pinia store instead of localStorage
+  if (authStore.isAuthenticated && authStore.user) {
+    user.value = authStore.user
   }
 
   try {
     const data = await userService.getCurrentUser()
     user.value = UserDTO.fromAPI(data) // atualiza com dados do backend
+    
+    // Se o usuário tem uma imagem, vamos carregá-la
+    if (user.value.imageName) {
+      try {
+        const imageBlob = await imageService.getImage(user.value.imageName)
+        profileImage.value = URL.createObjectURL(imageBlob)
+      } catch (imageError) {
+        console.error("Erro ao carregar imagem do perfil:", imageError)
+        // Não definimos um erro global, apenas falha silenciosamente a imagem
+      }
+    }
   } catch (err) {
-    console.warn("Falha ao atualizar perfil do backend. A usar localStorage.")
+    console.warn("Falha ao atualizar perfil do backend.", err)
     error.value = "Não foi possível carregar todos os dados do perfil"
   } finally {
     isLoading.value = false
   }
 })
 
-
 const openModal = () => (showModal.value = true)
 const closeModal = () => (showModal.value = false)
-
 </script>
 
 
@@ -62,7 +75,7 @@ const closeModal = () => (showModal.value = false)
 
     <div class="container mx-auto max-w-6xl px-6 mt-6" v-else-if="user">
       <ProfileHeader @edit="openModal" />
-      <ProfileInfo />
+      <ProfileInfo :profileImage="profileImage" :user="user" />
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <FavoriteRestaurants
           v-if="user && (user.discriminator === 'User' || user.discriminator === 'Owner')"

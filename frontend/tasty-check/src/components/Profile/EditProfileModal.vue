@@ -1,34 +1,83 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import Spinner from '../utils/Spinner.vue'
+import { useAuthStore } from '@/stores/auth'
+import { UserService, ImageService } from '@/services'
+import UserDTO from '@/dto/user.dto.js'
 
-const emit = defineEmits(['close'])
+const emit = defineEmits(['close', 'profileUpdated'])
 const isSaving = ref(false)
-const user = ref(JSON.parse(localStorage.getItem('user') || '{}'))
+const authStore = useAuthStore()
+const userService = new UserService()
+const imageService = new ImageService()
+
+const user = ref(authStore.user ? { ...authStore.user } : {})
+const selectedFile = ref(null)
+const previewImage = ref(null)
+
+onMounted(async () => {
+  // Carregar a imagem atual do usuário, se existir
+  try {
+    if (user.value.imageName) {
+      const imageBlob = await imageService.getImage(user.value.imageName)
+      previewImage.value = URL.createObjectURL(imageBlob)
+    }
+  } catch (err) {
+    console.error('Erro ao carregar imagem do perfil:', err)
+  }
+})
 
 const guardar = async () => {
   isSaving.value = true
   try {
-    await userService.updateUser({
-      name: user.value.name,
-      birthdate: user.value.birthdate,
-      country: user.value.country,
-      phone: user.value.phone,
-      email: user.value.email,
-      avatar: user.value.avatar
-    });
-
-    // Atualiza o localStorage (opcional)
-    localStorage.setItem('user', JSON.stringify(user.value));
-
-    location.reload(); // recarrega a página com o novo estado
+    // Se temos um arquivo de imagem selecionado, primeiro enviamos a imagem
+    if (selectedFile.value) {
+      try {
+        // Criar objeto userData para enviar com a imagem
+        const userData = {
+          username: user.value.username,
+          email: user.value.email,
+          password: "", // Se necessário, pode ser adicionado
+          discriminator: user.value.discriminator
+        }
+        
+        // Enviar a imagem
+        const imageResponse = await imageService.uploadImage(selectedFile.value, userData)
+        
+        // Se o upload for bem-sucedido, atualizamos o imageName no objeto do usuário
+        if (imageResponse && imageResponse.imageName) {
+          user.value.imageName = imageResponse.imageName
+        }
+      } catch (imageError) {
+        console.error('Erro ao fazer upload da imagem:', imageError)
+        alert('Erro ao enviar a imagem. O perfil será atualizado sem a nova imagem.')
+      }
+    }
+    
+    // Agora atualizamos o perfil do usuário
+    const updatedUser = await userService.updateUser(UserDTO.toAPI(user.value))
+    
+    // Atualiza o estado da aplicação
+    if (updatedUser) {
+      // Atualizar o usuário na store
+      authStore.user = { ...user.value }
+      
+      // Notificar que o perfil foi atualizado
+      emit('profileUpdated', user.value)
+      
+      // Fechar o modal
+      emit('close')
+      
+      // Opcional: recarregar a página para refletir todas as alterações
+      location.reload()
+    }
   } catch (err) {
-    console.error('Erro ao guardar alterações:', err);
-    alert('Erro ao atualizar perfil. Tenta novamente.');
+    console.error('Erro ao guardar alterações:', err)
+    alert('Erro ao atualizar perfil. Tente novamente.')
   } finally {
     isSaving.value = false
   }
-};
+}
 
 const cancelar = () => {
   emit('close')
@@ -37,18 +86,12 @@ const cancelar = () => {
 const handleImageUpload = (event) => {
   const file = event.target.files[0]
   if (!file) return
-
-  const reader = new FileReader()
-  reader.onload = () => {
-    user.value.avatar = reader.result // imagem em base64
-  }
-  reader.readAsDataURL(file)
+  
+  selectedFile.value = file
+  
+  // Cria uma prévia da imagem
+  previewImage.value = URL.createObjectURL(file)
 }
-
-import UserService from '@/services/user.service'
-const userService = new UserService()
-
-
 </script>
 
 <template>
@@ -60,41 +103,32 @@ const userService = new UserService()
           <i class="fa-regular fa-circle-xmark"></i>
         </button>
       </div>
-    <div class="flex flex-col items-center mb-6">
+      <div class="flex flex-col items-center mb-6">
         <img
-            :src="user.avatar || '/img/default-avatar.png'"
-            alt="Avatar"
-            class="w-28 h-28 rounded-xl object-cover mb-2"
+          :src="previewImage || '/img/avatar.jpg'"
+          alt="Avatar"
+          class="w-28 h-28 rounded-xl object-cover mb-2"
         />
         <input type="file" accept="image/*" @change="handleImageUpload" />
-    </div>
+      </div>
 
-
-      <div class="grid grid-cols-2 gap-4 text-sm">
+      <div class="grid grid-cols-1 gap-4 text-sm">
         <div>
-          <label class="block font-semibold">Nome</label>
-          <input v-model="user.name" type="text" class="input-style" />
+          <label class="block font-semibold">Nome de Usuário</label>
+          <input v-model="user.username" type="text" class="input-style" />
+        </div>
+
+        <div>
+          <label class="block font-semibold">Email</label>
+          <input v-model="user.email" type="email" class="input-style" />
         </div>
 
         <!-- <div>
-          <label class="block font-semibold">Data de Nascimento</label>
-          <input v-model="user.birthdate" type="date" class="input-style" />
-        </div>
-
-        <div>
-          <label class="block font-semibold">País</label>
-          <input v-model="user.country" type="text" class="input-style" />
-        </div>
-
-        <div>
-          <label class="block font-semibold">Contacto</label>
-          <input v-model="user.phone" type="text" class="input-style" />
-        </div>
-
-        <div class="col-span-2">
-          <label class="block font-semibold">Email</label>
-          <input v-model="user.email" type="email" class="input-style" />
+          <label class="block font-semibold">Password</label>
+          <input v-model="user.password" type="text" class="input-style" />
         </div> -->
+
+
       </div>
 
       <div class="mt-6 flex justify-end gap-3 items-center">
@@ -121,5 +155,4 @@ input[type="file"] {
   margin-top: 6px;
   font-size: 0.75rem;
 }
-
 </style>

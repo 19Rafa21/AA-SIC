@@ -3,7 +3,7 @@ export class UserDTO {
     id = null,
     username = '',
     email = '',
-    avatarUrl = '',
+    imageName = '',
     birthDate = '',
     country = '',
     contact = '',
@@ -12,7 +12,7 @@ export class UserDTO {
     this.id = id;
     this.username = username;
     this.email = email;
-    this.avatarUrl = avatarUrl;
+    this.imageName = imageName;
     this.birthDate = birthDate;
     this.country = country;
     this.contact = contact;
@@ -24,7 +24,7 @@ export class UserDTO {
       id: data.id,
       username: data.username,
       email: data.email,
-      avatarUrl: data.avatarUrl,
+      imageName: data.imageName,
       birthDate: data.birthDate,
       country: data.country,
       contact: data.contact,
@@ -35,7 +35,7 @@ export class UserDTO {
   static toAPI(user) {
     return {
       username: user.username,
-      avatarUrl: user.avatarUrl,
+      imageName: user.imageName,
       birthDate: user.birthDate,
       country: user.country,
       contact: user.contact

@@ -113,14 +113,15 @@ export const useAuthStore = defineStore('auth', {
      * @param {string} password - User password
      * @param {string} username - Username
      * @param {string} discriminator - User type ('User' or 'Owner')
+     * @param {File} [imageFile] - Optional profile image file
      * @returns {Promise<boolean>} Success status
      */
-    async register(email, password, username, discriminator = 'User') {
+    async register(email, password, username, discriminator = 'User', imageFile = null) {
       this.isLoading = true;
       this.error = null;
       
       try {
-        await authService.register(email, password, username, discriminator);
+        await authService.register(email, password, username, discriminator, imageFile);
         return true;
       } catch (error) {
         console.error('Registration error:', error);
@@ -189,6 +190,23 @@ export const useAuthStore = defineStore('auth', {
           if (token) {
             this.token = token;
             localStorage.setItem('authToken', token);
+          }
+          
+          // Fetch complete user details from the server including imageName
+          try {
+            const userService = new (await import('../services/user.service.js')).default();
+            const completeUserData = await userService.getCurrentUser();
+            if (completeUserData) {
+              // Merge the complete user data with existing user data
+              // console.log('Complete user data fetched:', completeUserData);
+              this.user = { ...this.user, ...completeUserData };
+              
+              // Update localStorage with complete user data
+              localStorage.setItem('user', JSON.stringify(this.user));
+            }
+          } catch (userError) {
+            console.error('Error fetching complete user data:', userError);
+            // Continue with login even if getting complete user data fails
           }
           
           return true;

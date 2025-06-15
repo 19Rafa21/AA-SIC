@@ -9,10 +9,15 @@
     >
       <!-- Avatar redondo com hover -->
       <div class="user-avatar-wrapper">
+        <div v-if="avatarLoading" class="user-avatar">
+          <Spinner class="mx-auto mr-2"/>
+        </div>
         <img
-          src="/img/avatar.jpg"
+          v-else
+          :src="userAvatarSrc"
           alt="Avatar"
           class="user-avatar"
+          @error="handleImageError"
         />
         <div class="avatar-status-indicator"></div>
       </div>
@@ -27,7 +32,7 @@
           <div class="dropdown-content">
             <div class="dropdown-header">
               <div class="user-info">
-                <div class="user-name">{{ user.name }}</div>
+                <div class="user-name">{{ user.userName }}</div>
                 <div class="user-email">{{ user.email }}</div>
               </div>
             </div>
@@ -54,7 +59,7 @@
             <div class="dropdown-footer">
               <button class="dropdown-item-modern logout-item" @click="logout">
                 <svg class="dropdown-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1..." />
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
                 </svg>
                 Terminar Sessão
               </button>
@@ -74,13 +79,21 @@
 <script setup>
 import { ref, onMounted, onBeforeUnmount, watch } from 'vue'
 import { useRouter } from 'vue-router'
-import { AuthService } from '@/services'
+import { AuthService, ImageService } from '@/services'
+import Spinner from '@/components/utils/Spinner.vue'
 
 const isLoggedIn = ref(false)
 const showDropdown = ref(false)
 const router = useRouter()
 let hoverTimeout = null
+const avatarLoading = ref(false)
+const avatarError = ref(false)
+const userAvatarSrc = ref('/img/avatar.png')
 
+// Create an instance of the ImageService
+const imageService = new ImageService()
+
+// Handle mouse interactions for dropdown
 const handleMouseEnter = () => {
   clearTimeout(hoverTimeout)
   showDropdown.value = true
@@ -121,15 +134,43 @@ const handleClickOutside = (event) => {
   }
 }
 
-onMounted(() => {
-  isLoggedIn.value = localStorage.getItem('isLoggedIn') === 'true'
-  document.addEventListener('click', handleClickOutside)
-})
+// Fetch user profile image using the ImageService
+const fetchUserProfileImage = async () => {
+  const userData = JSON.parse(localStorage.getItem('user') || '{}')
+  
+  if (!userData.id) {
+    userAvatarSrc.value = '/img/avatar.png'
+    return
+  }
+  
+  // Check if user has an image name property
+  if (!userData.imageName) {
+    console.log('No image name found for user, using default avatar')
+    userAvatarSrc.value = '/img/avatar.png'
+    return
+  }
+  
+  try {
+    avatarLoading.value = true
+    // Using imageName from user data
+    // console.log('Fetching image with name:', userData.imageName)
+    const imageBlob = await imageService.getImage(userData.imageName)
+    if (imageBlob) {
+      userAvatarSrc.value = URL.createObjectURL(imageBlob)
+    }
+  } catch (error) {
+    console.error('Error loading profile image:', error)
+    userAvatarSrc.value = '/img/avatar.png'
+  } finally {
+    avatarLoading.value = false
+  }
+}
 
-onBeforeUnmount(() => {
-  document.removeEventListener('click', handleClickOutside)
-  clearTimeout(hoverTimeout)
-})
+// Handle image loading error
+const handleImageError = () => {
+  userAvatarSrc.value = '/img/avatar.png'
+  avatarError.value = true
+}
 
 const originalUser = JSON.parse(localStorage.getItem('user') || '{}')
 const user = ref({ ...originalUser })
@@ -142,6 +183,20 @@ watch(() => props.editable, (isEditing) => {
   if (!isEditing) {
     user.value = { ...JSON.parse(localStorage.getItem('user') || '{}') }
   }
+})
+
+// Initialize component
+onMounted(() => {
+  isLoggedIn.value = localStorage.getItem('isLoggedIn') === 'true'
+  document.addEventListener('click', handleClickOutside)
+  
+  // Try to load the user's profile image
+  fetchUserProfileImage()
+})
+
+onBeforeUnmount(() => {
+  document.removeEventListener('click', handleClickOutside)
+  clearTimeout(hoverTimeout)
 })
 </script>
 
@@ -450,5 +505,25 @@ watch(() => props.editable, (isEditing) => {
   .dropdown-footer {
     background: rgba(31, 41, 55, 0.8);
   }
+}
+
+/* Loading container styles */
+.avatar-loading-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+}
+
+.avatar-loading-container :deep(.animate-spin) {
+  height: 24px !important;
+  width: 24px !important;
 }
 </style>
