@@ -144,16 +144,18 @@ async function submeter() {
       text: text.value
     })
 
-    let response
-    if (imageFiles.value.length > 0) {
-      const formData = new FormData()
-      formData.append('review', JSON.stringify(reviewDTO.toCreateRequest())) // usar JSON diretamente
-      imageFiles.value.forEach(file => formData.append('reviewImages', file)) // nome correto!
+    const formData = new FormData()
+    formData.append('review', JSON.stringify(reviewDTO.toCreateRequest()))
 
-      response = await ReviewServiceInstance.createReview(formData)
+    if (imageFiles.value.length > 0) {
+      imageFiles.value.forEach(file => {
+        formData.append('reviewImages', file)
+      })
     } else {
-      response = await ReviewServiceInstance.createReview(reviewDTO)
+      formData.append('reviewImages', new Blob()) // para garantir que o campo existe
     }
+
+    const response = await ReviewServiceInstance.createReview(formData)
 
     emit('review-submitted', response)
 
@@ -165,11 +167,13 @@ async function submeter() {
     emit('close')
   } catch (err) {
     console.error('Erro ao submeter review:', err)
-    errorMessage.value = err.response?.data?.message || err.message || 'Erro ao submeter a avaliação.'
+    errorMessage.value =
+      err.response?.data?.message || err.message || 'Erro ao submeter a avaliação.'
   } finally {
     loading.value = false
   }
 }
+
 
 </script>
 
