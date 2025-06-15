@@ -38,7 +38,6 @@ const apagarRestaurante = (id) => {
   restaurantes.value = restaurantes.value.filter(r => r.id !== id)
   localStorage.setItem('restaurants', JSON.stringify(restaurantes.value))
 }
-
 </script>
 
 <template>
@@ -53,32 +52,43 @@ const apagarRestaurante = (id) => {
       </router-link>
     </div>
 
-    <div class="grid grid-cols-2 gap-4">
-      <div v-for="restaurante in restaurantes" :key="restaurante.name" class="relative">
-        <img
-          :src="restaurante.image"
-          class="w-full h-32 object-cover rounded-md mb-2"
-        />
-        <div class="text-xs text-gray-500">{{ restaurante.cuisineType }}</div>
-        <div class="font-semibold text-sm">{{ restaurante.name }}</div>
+    <!-- Grid ou mensagem quando vazio -->
+    <div class="grid grid-cols-2 gap-4 min-h-[100px]">
+      <template v-if="restaurantes.length > 0">
+        <div v-for="restaurante in restaurantes" :key="restaurante.id" class="relative">
+          <img
+            :src="restaurante.image"
+            class="w-full h-32 object-cover rounded-md mb-2"
+          />
+          <div class="text-xs text-gray-500">{{ restaurante.cuisineType }}</div>
+          <div class="font-semibold text-sm">{{ restaurante.name }}</div>
 
-        <!-- Botões apagar e editar -->
-        <div class="absolute bottom-0 right-0 mb-1 mr-1 flex gap-2">
-          <button
-            @click="apagarRestaurante(restaurante.id)"
-            class="px-2 py-1 text-sm border border-red-400 text-red-600 rounded flex items-center gap-1 bg-white hover:bg-red-100"
-          >
-            <i class="fas fa-trash-alt text-xs"></i>
-          </button>
+          <!-- Botões apagar e editar -->
+          <div class="absolute bottom-0 right-0 mb-1 mr-1 flex gap-2">
+            <button
+              @click="apagarRestaurante(restaurante.id)"
+              class="px-2 py-1 text-sm border border-red-400 text-red-600 rounded flex items-center gap-1 bg-white hover:bg-red-100"
+            >
+              <i class="fas fa-trash-alt text-xs"></i>
+            </button>
 
-          <button
-            @click="abrirModal(restaurante)"
-            class="px-2 py-1 text-sm border border-gray-400 rounded flex items-center gap-1 bg-white hover:bg-gray-100"
-          >
-            <i class="fas fa-pen text-xs"></i> Editar
-          </button>
+            <button
+              @click="abrirModal(restaurante)"
+              class="px-2 py-1 text-sm border border-gray-400 rounded flex items-center gap-1 bg-white hover:bg-gray-100"
+            >
+              <i class="fas fa-pen text-xs"></i> Editar
+            </button>
+          </div>
         </div>
-      </div>
+      </template>
+
+      <template v-else>
+        <div class="col-span-2 text-center text-gray-600 py-6">
+          <i class="fas fa-utensils text-2xl mb-2 text-gray-400"></i>
+          <p>Ainda não tens nenhum restaurante criado.</p>
+          <p class="text-sm mt-1">Clica em <strong>"Adicionar"</strong> acima para começares!</p>
+        </div>
+      </template>
     </div>
 
     <EditRestaurantModal

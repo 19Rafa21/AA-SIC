@@ -9,17 +9,16 @@ import RestaurantService from '@/services/restaurant.service.js'
 const router = useRouter()
 const service = new RestaurantService()
 
-// Formulário
 const name = ref('')
 const location = ref('')
 const cuisineType = ref('')
-const schedule = ref('') // Horário do restaurante (string)
+const schedule = ref('')
 const imageFile = ref(null)
 const imagePreview = ref('')
 const errorMessage = ref('')
 const successMessage = ref('')
+const isLoading = ref(false)
 
-// Handler de imagem
 const handleImageUpload = (event) => {
   const file = event.target.files[0]
   if (file) {
@@ -35,18 +34,18 @@ const removeImage = () => {
   if (fileInput) fileInput.value = ''
 }
 
-// Criar restaurante
 const createRestaurant = async () => {
   if (!name.value || !location.value || !cuisineType.value || !schedule.value) {
     errorMessage.value = 'Preencha todos os campos obrigatórios.'
     return
   }
 
+  isLoading.value = true
   const dto = new RestaurantDetailedDTO({
     name: name.value,
     location: location.value,
     cuisineType: cuisineType.value,
-    rating: 0.0, // Avaliação fixa a zero
+    rating: 0.0,
     image: imageFile.value?.name || '',
     menuImages: [],
     foodImages: []
@@ -59,6 +58,8 @@ const createRestaurant = async () => {
     setTimeout(() => router.push('/'), 1500)
   } catch (error) {
     errorMessage.value = 'Erro ao criar restaurante. Verifica os dados e tenta novamente.'
+  } finally {
+    isLoading.value = false
   }
 }
 
@@ -76,7 +77,6 @@ const cancel = () => {
         <h2 class="form-title">Criar Novo Restaurante</h2>
 
         <form class="form">
-          <!-- Imagem preview -->
           <div class="image-preview-wrapper mb-4">
             <img
               :src="imagePreview || 'https://via.placeholder.com/500x200?text=Imagem+Restaurante'"
@@ -120,9 +120,16 @@ const cancel = () => {
           <div v-if="successMessage" class="success">{{ successMessage }}</div>
 
           <div class="btn-group">
-            <button type="button" class="btn cancel" @click="cancel">Cancelar</button>
-            <button type="button" class="btn confirm" @click.prevent="createRestaurant">
-              Criar Restaurante
+            <button type="button" class="search-button cancel-btn" @click="cancel">
+              CANCELAR
+            </button>
+            <button type="button" class="search-button" @click.prevent="createRestaurant" :disabled="isLoading">
+              <span v-if="isLoading">
+                <i class="fas fa-spinner fa-spin mr-2"></i> A criar...
+              </span>
+              <span v-else>
+                CRIAR RESTAURANTE
+              </span>
             </button>
           </div>
         </form>
@@ -147,7 +154,6 @@ const cancel = () => {
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #ffffff;
 }
 
 .form-card {
@@ -236,32 +242,37 @@ const cancel = () => {
   margin-top: 1.5rem;
 }
 
-.btn {
+/* Botões como no SearchBar */
+.search-button {
   flex: 1;
-  padding: 0.8rem 1rem;
-  font-size: 1rem;
-  border-radius: 9999px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: 0.2s;
   border: none;
+  border-radius: 0.75rem;
+  padding: 0.65rem 1.5rem;
+  font-weight: bold;
+  font-size: 0.9rem;
+  color: white;
+  background-color: #095243;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.3s ease;
 }
 
-.btn.cancel {
-  background: #e2e8f0;
+.search-button:hover {
+  background-color: #073b31;
+}
+
+.search-button:disabled {
+  background-color: #adb5bd;
+  cursor: not-allowed;
+}
+
+.cancel-btn {
+  background-color: #dee2e6;
   color: #1e293b;
 }
 
-.btn.cancel:hover {
-  background: #cbd5e1;
-}
-
-.btn.confirm {
-  background: #095243;
-  color: white;
-}
-
-.btn.confirm:hover {
-  background: #073b31;
+.cancel-btn:hover {
+  background-color: #cfd4da;
 }
 </style>
