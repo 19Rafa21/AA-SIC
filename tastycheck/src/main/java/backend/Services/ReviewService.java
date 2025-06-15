@@ -87,9 +87,6 @@ public class ReviewService {
 		try {
 			UserService userService = new UserService();
 			User user = userService.getUserById(dto.getUserId());
-			System.out.println(user);
-			System.out.println(user.getId());
-			System.out.println(user.getUsername());
 			if (user == null) throw new UserException("User com ID '" + dto.getUserId() + "' não existe.");
 
 			RestaurantService restaurantService = new RestaurantService();
@@ -148,6 +145,8 @@ public class ReviewService {
 			throw new IllegalArgumentException("Nenhum campo fornecido para atualizar.");
 		}
 
+		review.setImagesReview(new HashSet<>(updateDTO.getReviewImages()));
+
 		review.setData(new Date());
 
 		ReviewDAO.save(review);
@@ -155,6 +154,7 @@ public class ReviewService {
 		restaurantService.updateRating(review.getRestaurant());
 		return true;
 	}
+
 
 	public Review getReviewById(String id) throws PersistentException {
 		Review review = ReviewDAO.getReviewByORMID(id);

@@ -127,23 +127,54 @@ public class ReviewController extends HttpServlet {
 					.filter(p -> p.getName().equals("reviewImages"))
 					.toList();
 
-			List<String> uploadedReviewImages = new ArrayList<>();
-			for (Part part : reviewPart){
-				if (part.getSize() > 0 && part.getContentType().startsWith("image/")) {
-					String fileName = Paths.get(part.getSubmittedFileName()).getFileName().toString();
-					InputStream contentStream = part.getInputStream();
-					if (contentStream != null){
-						try {
-							String uploadedPath = imageService.uploadImage(fileName, contentStream);
-							uploadedReviewImages.add(uploadedPath);
-						} catch (IOException e) {
-							throw new UnauthorizedException("Error while adding restaurant menu image: " + e.getMessage());
+			if (!reviewPart.isEmpty()){
+				List<String> uploadedReviewImages = new ArrayList<>();
+				for (Part part : reviewPart){
+					if (part.getSize() > 0 && part.getContentType().startsWith("image/")) {
+						String fileName = Paths.get(part.getSubmittedFileName()).getFileName().toString();
+						InputStream contentStream = part.getInputStream();
+						if (contentStream != null){
+							try {
+								String uploadedPath = imageService.uploadImage(fileName, contentStream);
+								uploadedReviewImages.add(uploadedPath);
+							} catch (IOException e) {
+								throw new UnauthorizedException("Error while adding review image: " + e.getMessage());
+							}
 						}
 					}
 				}
+
+				reviewDTO.setImagesReview(uploadedReviewImages);
+				String restaurantId = reviewDTO.getRestaurantId();
+				//String userID = reviewDTO.getUserId();
+
+				if (restaurantService.isOwnerOfRestaurant(userId, restaurantId)) {
+					response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+					response.getWriter().write("Não pode fazer review do seu próprio restaurante.");
+					return;
+				}
+
+				boolean saved = reviewService.registerReview(reviewDTO);
+				if (saved) {
+					response.getWriter().println("{\"status\": \"review registado com sucesso\"}");
+				}
+			} else {
+				String restaurantId = reviewDTO.getRestaurantId();
+				//String userID = reviewDTO.getUserId();
+
+				if (restaurantService.isOwnerOfRestaurant(userId, restaurantId)) {
+					response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+					response.getWriter().write("Não pode fazer review do seu próprio restaurante.");
+					return;
+				}
+
+				boolean saved = reviewService.registerReview(reviewDTO);
+				if (saved) {
+					response.getWriter().println("{\"status\": \"review registado com sucesso\"}");
+				}
 			}
 
-			reviewDTO.setImagesReview(uploadedReviewImages);
+
 			String restaurantId = reviewDTO.getRestaurantId();
 			//String userID = reviewDTO.getUserId();
 
@@ -169,6 +200,9 @@ public class ReviewController extends HttpServlet {
 
 	@Override
 	protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		response.setCharacterEncoding("UTF-8");
+		response.setContentType("application/json; charset=UTF-8");
+
 		String pathInfo = request.getPathInfo();
 		if (pathInfo == null || pathInfo.equals("/")) {
 			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "ID da review é obrigatório na URL.");
@@ -178,20 +212,52 @@ public class ReviewController extends HttpServlet {
 		String id = pathInfo.substring(1);
 
 		try {
-			UpdateReviewDTO updateDTO = gson.fromJson(HttpRequestUtils.readBodyJson(request), UpdateReviewDTO.class);
+			String reviewJson = request.getParameter("review");
 
-			if ((updateDTO.getText() == null || updateDTO.getText().isEmpty()) && updateDTO.getRating() == null) {
-				response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Nenhum campo fornecido para atualizar.");
-				return;
+			UpdateReviewDTO reviewDTO = gson.fromJson(reviewJson, UpdateReviewDTO.class);
+
+			Collection<Part> reviewPart = request.getParts().stream()
+					.filter(p -> p.getName().equals("reviewImages"))
+					.toList();
+
+			if (!reviewPart.isEmpty()){
+				List<String> uploadedReviewImages = new ArrayList<>();
+				for (Part part : reviewPart){
+					if (part.getSize() > 0 && part.getContentType().startsWith("image/")){
+						String filename = Paths.get(part.getSubmittedFileName()).getFileName().toString();
+						InputStream contentStream = part.getInputStream();
+						if (contentStream != null){
+							try {
+								String uploadedPath = imageService.uploadImage(filename, contentStream);
+								uploadedReviewImages.add(uploadedPath);
+							} catch (IOException e){
+								throw new UnauthorizedException("Error while adding review image: " + e.getMessage());
+							}
+						}
+					}
+				}
+				reviewDTO.setReviewImages(uploadedReviewImages);
+			} else {
+
+				Review review = reviewService.getReviewById(id);
+				List<String> reviewsImages = new ArrayList<>(review.getImagesReview());
+				for (String i : reviewsImages){
+					imageService.deleteImage(i);
+				}
+
+				if ((reviewDTO.getText() == null || reviewDTO.getText().isEmpty()) && reviewDTO.getRating() == null) {
+					response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Nenhum campo fornecido para atualizar.");
+					return;
+				}
+
+				boolean updated = reviewService.updateReview(id, reviewDTO);
+				if (updated){
+					response.getWriter().println("{\"status\": \"Review atualizada com sucesso.\"}");
+				} else {
+					response.getWriter().println("{\"status\": \"Erro ao atualizar a Review.\"}");
+				}
 			}
-
-			reviewService.updateReview(id, updateDTO);
-
-			response.setCharacterEncoding("UTF-8");
-			response.setContentType("application/json; charset=UTF-8");
-			response.getWriter().println("{\"status\": \"Review atualizada com sucesso.\"}");
-
-		} catch (Exception e) {
+		} catch (IOException | PersistentException e){
 			e.printStackTrace();
 			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Erro interno: " + e.getMessage());
 		}
