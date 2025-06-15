@@ -74,7 +74,7 @@ public class ImageController extends HttpServlet {
 		String imageName = request.getParameter("imageName");
 
 		if (imageName == null || imageName.isEmpty()) {
-			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "objectName é obrigatório.");
+			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "imageName é obrigatório.");
 			return;
 		}
 
