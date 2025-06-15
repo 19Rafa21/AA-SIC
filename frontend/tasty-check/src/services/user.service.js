@@ -90,6 +90,21 @@ class UserService {
       throw error;
     }
   }
+
+  /**
+   * Get user by ID
+   * @param {string} userId - User ID
+   * @returns {Promise<Object>} User data
+   */
+  async getUserById(userId) {
+    try {
+      const response = await this.axiosInstance.get(`${this.endpoint}/${userId}`);
+      return response.data;
+    } catch (error) {
+      console.error(`Error fetching user with ID ${userId}:`, error);
+      throw error;
+    }
+  }
 }
 
 export default UserService;

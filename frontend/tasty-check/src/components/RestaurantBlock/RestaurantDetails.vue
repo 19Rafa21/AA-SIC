@@ -167,7 +167,12 @@
                 <div v-for="(c, idx) in reviews" :key="idx" class="bg-white rounded-[26px] shadow pl-4 pr-4 pb-4 pt-4">
                     <!-- Header: avatar + nome + total reviews -->
                     <div class="flex items-center mb-4">
-                        <img :src="c.userPhoto" :alt="c.userId" class="w-12 h-12 rounded-full mr-3"/>
+                        <div v-if="c.photoLoading" class="w-12 h-12 rounded-full mr-3 flex items-center justify-center bg-gray-100">
+                            <Spinner class="mx-auto" />
+                        </div>
+                        <img v-else :src="c.photoUrl || '/img/avatar.png'" :alt="c.username" 
+                             class="w-12 h-12 rounded-full mr-3 object-cover"
+                             @error="handleUserImageError(c)" />
                         <div class="flex flex-col items-start">
                             <span class="font-semibold text-gray-800">{{ c.username }}</span>
                             <span class="text-sm text-gray-500"> {{ c.date }}</span>
@@ -241,7 +246,7 @@ import RestaurantGoogleMap from '../Maps/RestaurantGoogleMap.vue';
 import TopNav from '../Layout/TopNav.vue';
 import Spinner from '../utils/Spinner.vue';
 import ReplyModal from './ReplyModal.vue';
-import { RestaurantService, ReviewService, DishService, UserService } from '@/services';
+import { RestaurantService, ReviewService, DishService, UserService, ImageService } from '@/services';
 import PhotosCarousel from '../utils/PhotosCarousel.vue';
 import { useAuthStore } from '@/stores/auth';
 
@@ -270,6 +275,7 @@ export default {
             ReviewService: new ReviewService(),
             DishService: new DishService(),
             UserService: new UserService(),
+            ImageService: new ImageService(),
             showModal: false,
             showReplyModal: false,
             restaurant: null,
@@ -313,6 +319,7 @@ export default {
             try {
                 const restaurantDTO = await this.RestaurantService.getRestaurantById(this.id);
                 this.restaurant = restaurantDTO;
+                // console.log("Restaurant details fetched:", this.restaurant.menuImages);
                 // Check if restaurant is in favorites after loading details
                 if (this.authStore.isAuthenticated) {
                     this.checkIfFavorite();
@@ -326,9 +333,42 @@ export default {
         async fetchReviews() {
             this.loadingReviews = true;
             try {
-                console.log("Fetching reviews for restaurant ID:", this.id);
                 const reviews = await this.RestaurantService.getReviewsByRestaurant(this.id);
-                this.reviews = reviews;
+                // Process each review to handle user photos
+                this.reviews = await Promise.all(reviews.map(async review => {
+                    // Add photoLoading flag
+                    review.photoLoading = true;
+                    review.photoUrl = null;
+
+                    try {
+                        // Fetch user details for the review author
+                        const userData = await this.UserService.getUserById(review.userId);
+                        
+                        // If user has an imageName, fetch the image
+                        if (userData && userData.imageName) {
+                            try {
+                                const imageBlob = await this.ImageService.getImage(userData.imageName);
+                                if (imageBlob) {
+                                    review.photoUrl = URL.createObjectURL(imageBlob);
+                                } else {
+                                    review.photoUrl = '/img/avatar.png';
+                                }
+                            } catch (error) {
+                                console.error('Error loading user image for review:', error);
+                                review.photoUrl = '/img/avatar.png';
+                            }
+                        } else {
+                            review.photoUrl = '/img/avatar.png';
+                        }
+                    } catch (error) {
+                        console.error('Error fetching user details for review:', error);
+                        review.photoUrl = '/img/avatar.png';
+                    } finally {
+                        review.photoLoading = false;
+                    }
+                    
+                    return review;
+                }));
             } catch (err) {
                 this.errorReviews = err.message;
             } finally {
@@ -433,7 +473,13 @@ export default {
             } finally {
                 this.isAddingToFavorites = false;
             }
-        }
+        },
+        handleUserImageError(review) {
+            if (review) {
+                review.photoUrl = '/img/avatar.png';
+                review.photoLoading = false;
+            }
+        },
     },
 };
 </script>

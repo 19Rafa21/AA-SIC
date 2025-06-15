@@ -11,6 +11,8 @@ export class RestaurantDTO {
         cuisineType = '',
         rating = 0.0,
         image = '',
+        menuImages = [],
+        foodImages = []
     } = {}) {
         this.id = id;
         this.name = name;
@@ -18,6 +20,8 @@ export class RestaurantDTO {
         this.cuisineType = cuisineType;
         this.rating = rating;
         this.image = image;
+        this.menuImages = menuImages || [];
+        this.foodImages = foodImages || [];
     }
 
     /**
@@ -33,6 +37,8 @@ export class RestaurantDTO {
             cuisineType: data.cuisineType,
             rating: data.rating,
             image: data.image,
+            menuImages: data.menuImages || [],
+            foodImages: data.foodImages || []
         });
     }
 
@@ -45,7 +51,10 @@ export class RestaurantDTO {
             name: this.name,
             location: this.location,
             cuisineType: this.cuisineType,
-            rating: this.rating
+            rating: this.rating,
+            image: this.image,
+            menuImages: this.menuImages,
+            foodImages: this.foodImages
         };
     }
 }
