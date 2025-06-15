@@ -12,6 +12,7 @@ import backend.Models.User;
 import org.orm.PersistentException;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -124,7 +125,7 @@ public class ReviewService {
 
 	}
 
-	public boolean updateReview(String reviewId, UpdateReviewDTO updateDTO) throws  PersistentException {
+	public boolean updateReview(String reviewId, UpdateReviewDTO updateDTO) throws PersistentException, IOException {
 		Review review = getReviewById(reviewId);
 		if (review == null) {
 			throw new IllegalArgumentException("Review com ID '" + reviewId + "' não existe.");

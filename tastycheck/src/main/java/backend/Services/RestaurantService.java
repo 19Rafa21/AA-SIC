@@ -3,11 +3,14 @@ import backend.Criteria.RestaurantCriteria;
 import backend.DAOs.*;
 import backend.DTOs.RestaurantDTO;
 import backend.DTOs.RestaurantDetailsDTO;
+import backend.Exceptions.UnauthorizedException;
 import backend.Models.Image;
 import backend.Models.Restaurant;
 import backend.Models.Review;
 import org.orm.PersistentException;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -207,7 +210,7 @@ public class RestaurantService {
     }
 
 
-    private RestaurantDetailsDTO toDetailsDTO(Restaurant r) {
+    private RestaurantDetailsDTO toDetailsDTO(Restaurant r) throws PersistentException {
         RestaurantDetailsDTO dto = new RestaurantDetailsDTO();
         dto.setId(r.getId());
         dto.setName(r.getName());
@@ -216,8 +219,10 @@ public class RestaurantService {
         dto.setCuisineType(r.getCuisineType());
         dto.setRating(r.getRating());
         dto.setImage(r.getCoverImage());
-        dto.setMenuImages(r.getMenuImages() != null ? r.getMenuImages() : new ArrayList<>());
-        dto.setFoodImages(r.getFoodImages() != null ? r.getFoodImages() : new ArrayList<>());
+        dto.setMenuImages(ImageDAO.getMenuImages(r.getId()) != null ? ImageDAO.getMenuImages(r.getId()) : new ArrayList<>());
+        dto.setFoodImages(ImageDAO.getFoodImages(r.getId()) != null ? ImageDAO.getFoodImages(r.getId()) : new ArrayList<>());
+        //dto.setMenuImages(r.getMenuImages() != null ? r.getMenuImages() : new ArrayList<>());
+        //dto.setFoodImages(r.getFoodImages() != null ? r.getFoodImages() : new ArrayList<>());
 
         return dto;
     }
@@ -239,6 +244,8 @@ public class RestaurantService {
             return false;
         }
     }
+
+
 
 
 
