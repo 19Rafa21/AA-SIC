@@ -14,6 +14,7 @@ import backend.Models.User;
 import org.orm.PersistentException;
 import org.mindrot.jbcrypt.BCrypt;
 
+import java.io.InputStream;
 import java.util.*;
 
 public class UserService {
@@ -56,11 +57,24 @@ public class UserService {
 		}
 	}
 
+	public boolean updateUserWithImage(EditUserDTO dto, String id){
+		try {
+			User u = getUserById(id);
+
+			u = toEditUserWithImage(dto, u);
+
+			UserDAO.save(u);
+
+			return true;
+		} catch (Exception e){
+			e.printStackTrace();
+			return false;
+		}
+	}
+
 
 	public User getUserById(String id) throws PersistentException, UserException {
 		User user = UserDAO.getUserByORMID(id);
-		System.out.println("ID: " + id);
-		System.out.println("User: " + user);
 		if (user == null) {
 			throw new UserException("User with ID: '" + id + "' does not exist");
 		}
@@ -212,6 +226,14 @@ public class UserService {
 		return user;
 	}
 
+	public static User toEditUserWithImage(EditUserDTO dto, User user){
+		user.setUsername(dto.getUsername());
+		user.setEmail(dto.getEmail());
+		user.setPassword(dto.getPassword());
+		user.setProfilePicture(dto.getUserImage());
+		return user;
+	}
+
 	public void addFavoriteRestaurant(String userId, String restaurantId) throws PersistentException {
 		User user = UserDAO.getUserByORMID(userId);
 		Restaurant restaurant = RestaurantDAO.getRestaurantByORMID(restaurantId);
@@ -242,15 +264,5 @@ public class UserService {
 
 		user.getRestaurantsFav().remove(restaurant);
 		UserDAO.save(user); // persiste a alteração na tabela user_favorites
-	}
-
-	public List<Restaurant> getFavoriteRestaurants(String userId) throws PersistentException {
-		User user = UserDAO.getUserByORMID(userId);
-
-		if (user == null) {
-			throw new IllegalArgumentException("User não encontrado.");
-		}
-
-		return new ArrayList<>(user.getRestaurantsFav()); // já devolve a lista de favoritos
 	}
 }

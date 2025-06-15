@@ -7,11 +7,13 @@ public class EditUserDTO {
     private String username;
     private String email;
     private String password;
+    private String userImage;
 
-    public EditUserDTO(String username, String email, String password) {
+    public EditUserDTO(String username, String email, String password, String userImage) {
         this.username = username;
         this.email = email;
         this.password = password;
+        this.userImage = userImage;
     }
 
     public EditUserDTO(User user) {
@@ -41,6 +43,14 @@ public class EditUserDTO {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getUserImage() {
+        return userImage;
+    }
+
+    public void setUserImage(String userImage) {
+        this.userImage = userImage;
     }
 }
 
