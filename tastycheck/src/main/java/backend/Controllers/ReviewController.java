@@ -6,32 +6,47 @@ import backend.DTOs.Review.RegisterReviewDTO;
 import backend.DTOs.Review.ReviewDTO;
 import backend.DTOs.Review.UpdateReviewDTO;
 import backend.DTOs.UserDTO;
+import backend.Exceptions.UnauthorizedException;
 import backend.Exceptions.UserException;
 import backend.Models.Review;
+import backend.Services.ImageService;
 import backend.Services.RestaurantService;
 import backend.Services.ReviewService;
 
 import javax.servlet.ServletException;
+import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.Part;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import backend.Utils.HttpRequestUtils;
 import com.google.gson.Gson;
 import org.orm.PersistentException;
 
+@MultipartConfig
 public class ReviewController extends HttpServlet {
 
 	private ReviewService reviewService;
 	private RestaurantService restaurantService;
+	private ImageService imageService;
 	private Gson gson;
 
 	@Override
 	public void init() throws ServletException {
-		reviewService = new ReviewService();
-		restaurantService = new RestaurantService();
+		try {
+			reviewService = new ReviewService();
+			restaurantService = new RestaurantService();
+			imageService = new ImageService();
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
 		this.gson = new Gson();
 	}
 
@@ -104,7 +119,31 @@ public class ReviewController extends HttpServlet {
 		response.setContentType("application/json; charset=UTF-8");
 
 		try {
-			RegisterReviewDTO reviewDTO = gson.fromJson(HttpRequestUtils.readBodyJson(request), RegisterReviewDTO.class);
+			String reviewJson = request.getParameter("review");
+
+			RegisterReviewDTO reviewDTO = gson.fromJson(reviewJson, RegisterReviewDTO.class);
+
+			Collection<Part> reviewPart = request.getParts().stream()
+					.filter(p -> p.getName().equals("reviewImages"))
+					.toList();
+
+			List<String> uploadedReviewImages = new ArrayList<>();
+			for (Part part : reviewPart){
+				if (part.getSize() > 0 && part.getContentType().startsWith("image/")) {
+					String fileName = Paths.get(part.getSubmittedFileName()).getFileName().toString();
+					InputStream contentStream = part.getInputStream();
+					if (contentStream != null){
+						try {
+							String uploadedPath = imageService.uploadImage(fileName, contentStream);
+							uploadedReviewImages.add(uploadedPath);
+						} catch (IOException e) {
+							throw new UnauthorizedException("Error while adding restaurant menu image: " + e.getMessage());
+						}
+					}
+				}
+			}
+
+			reviewDTO.setImagesReview(uploadedReviewImages);
 			String restaurantId = reviewDTO.getRestaurantId();
 			//String userID = reviewDTO.getUserId();
 

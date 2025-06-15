@@ -59,6 +59,8 @@ public class UserService {
 
 	public User getUserById(String id) throws PersistentException, UserException {
 		User user = UserDAO.getUserByORMID(id);
+		System.out.println("ID: " + id);
+		System.out.println("User: " + user);
 		if (user == null) {
 			throw new UserException("User with ID: '" + id + "' does not exist");
 		}
