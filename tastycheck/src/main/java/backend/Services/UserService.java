@@ -81,12 +81,12 @@ public class UserService {
 		return user;
 	}
 
-	public String getOwnerById(String id) throws PersistentException, UserException {
+	public Owner getOwnerById(String id) throws PersistentException, UserException {
 		Owner user = (Owner) UserDAO.getUserByORMID(id);
 		if (user == null) {
 			throw new UserException("User with ID: '" + id + "' does not exist");
 		}
-		return user.getId();
+		return user;
 	}
 
 
@@ -183,8 +183,8 @@ public class UserService {
 		return new ArrayList<>(user.getRestaurantsFav());
 	}
 
-	public List<Restaurant> getRestaurantsByOwner(String username) throws PersistentException, UserException {
-		Owner owner = getOwnerByUsername(username);
+	public List<Restaurant> getRestaurantsByOwner(String id) throws PersistentException, UserException {
+		Owner owner = getOwnerById(id);
 		return new ArrayList<>(owner.getRestaurants());
 	}
 

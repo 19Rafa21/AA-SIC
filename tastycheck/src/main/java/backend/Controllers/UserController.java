@@ -248,8 +248,13 @@ public class UserController extends HttpServlet {
                                     .map(FavRestaurantsDTO::new)
                                     .toList();
                             response.getWriter().println(gson.toJson(dtos));
-
-
+                        } else if ("ownerRestaurants".equals(subResource)) {
+                            // /users/{id}/ownerRestaurantes → restaurantes criados pelo user
+                            List<Restaurant> ownedRestaurants = userService.getRestaurantsByOwner(userId);
+                            List<FavRestaurantsDTO> dtos = ownedRestaurants.stream()
+                                    .map(FavRestaurantsDTO::new)
+                                    .toList();
+                            response.getWriter().println(gson.toJson(dtos));
                         } else {
                             response.sendError(HttpServletResponse.SC_NOT_FOUND, "Sub-recurso não encontrado.");
                         }

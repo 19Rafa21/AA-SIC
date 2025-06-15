@@ -18,6 +18,7 @@ public class FavRestaurantsDTO {
 		this.cuisineType = restaurant.getCuisineType();
 	}
 
+
 	public String getId() {
 		return id;
 	}
