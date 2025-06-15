@@ -7,6 +7,7 @@ import backend.DTOs.UserDTO;
 import backend.Models.Restaurant;
 import backend.Models.Review;
 import backend.Models.User;
+import backend.Services.ImageService;
 import backend.Services.RestaurantService;
 import backend.Services.UserService;
 import backend.Exceptions.UserException;
@@ -15,17 +16,28 @@ import com.google.gson.JsonObject;
 import org.orm.PersistentException;
 
 import javax.servlet.ServletException;
+import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.*;
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Paths;
 import java.util.List;
 
 @WebServlet("/users")
+@MultipartConfig
 public class UserController extends HttpServlet {
 
     private final UserService userService = new UserService();
     private final RestaurantService restaurantService = new RestaurantService();
+
+    private final ImageService imageService = new ImageService();
+
+    Gson gson = new Gson();
+
+	public UserController() throws IOException {
+	}
 
 	@Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -87,6 +99,9 @@ public class UserController extends HttpServlet {
 
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        resp.setCharacterEncoding("UTF-8");
+        resp.setContentType("application/json; charset=UTF-8");
+
         EditUserDTO dto;
         try {
             String pathInfo = req.getPathInfo();
@@ -96,11 +111,39 @@ public class UserController extends HttpServlet {
             }
             String id = pathInfo.substring(1);
 
-            dto = parseEditUserDTO(req);
-            userService.updateUser(dto, id);
-            resp.setContentType("application/json");
-            resp.setStatus(HttpServletResponse.SC_OK);
-            resp.getWriter().write("{\"message\": \"Utilizador atualizado com sucesso\"}");
+            String userJson = req.getParameter("user");
+            Part file = req.getPart("file");
+
+            boolean imageExist = file != null && file.getSize() > 0;
+
+            if (imageExist){
+                String originalFileName = Paths.get(file.getSubmittedFileName()).getFileName().toString();
+                InputStream fileContent = file.getInputStream();
+                String contentType = file.getContentType();
+                if (!contentType.startsWith("image/")){
+                    resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                    resp.getWriter().write("{\"message\": Ficheiro não é uma imagem \"}");
+                }
+
+                if (fileContent != null){
+                    User user = userService.getUserById(id);
+                    String oldFileName = user.getProfilePicture();
+                    String uploadedImage = imageService.replaceImage(originalFileName, fileContent, oldFileName);
+
+                    EditUserDTO userdto = gson.fromJson(userJson, EditUserDTO.class);
+                    userdto.setUserImage(uploadedImage);
+
+                    userService.updateUserWithImage(userdto, id);
+                    resp.setStatus(HttpServletResponse.SC_OK);
+                    resp.getWriter().write("{\"message\": \"Utilizador atualizado com sucesso\"}");
+
+                }
+            } else {
+                dto = gson.fromJson(userJson, EditUserDTO.class);
+                userService.updateUser(dto, id);
+                resp.setStatus(HttpServletResponse.SC_OK);
+                resp.getWriter().write("{\"message\": \"Utilizador atualizado com sucesso\"}");
+            }
         } catch (Exception e) {
             resp.sendError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
         }

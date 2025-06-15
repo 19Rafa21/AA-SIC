@@ -1,5 +1,6 @@
 package backend.Services;
 
+import backend.Exceptions.UnauthorizedException;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.storage.*;
 
@@ -70,6 +71,16 @@ public class ImageService {
 		}
 	}
 
+	public String replaceImage(String fileName, InputStream fileContent, String oldFileName){
+		try {
+			String newFileName = uploadImage(fileName, fileContent);
+			deleteImage(oldFileName);
+			return newFileName;
+		} catch (IOException e) {
+			throw new RuntimeException("Erro ao substituir imagem: " + fileName, e);
+		}
+	}
+
 	public byte[] downloadImage(String objectName) throws IOException {
 		Blob blob = storage.get(BlobId.of(bucketName, objectName));
 		if (blob == null) {
@@ -79,8 +90,16 @@ public class ImageService {
 	}
 
 	// Eliminar imagem
-	public boolean deleteImage(String objectName) {
-		return storage.delete(BlobId.of(bucketName, objectName));
+	public void deleteImage(String objectName) {
+		BlobId blobId = BlobId.of(bucketName, objectName);
+		try {
+			boolean deleted = storage.delete(blobId);
+			if (!deleted){
+				throw new FileNotFoundException("Image not found in Storage.");
+			}
+		} catch (StorageException | FileNotFoundException e){
+			throw new RuntimeException("Error deleting image: " + e.getMessage());
+		}
 	}
 
 
