@@ -9,6 +9,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 public class ImageService {
@@ -54,7 +55,7 @@ public class ImageService {
 
 		String extension = fileName.substring(fileName.lastIndexOf('.') + 1);
 		String baseName = fileName.substring(0, fileName.lastIndexOf('.'));
-		String uniqueFileName = baseName + "_" + System.currentTimeMillis() + "." + extension;
+		String uniqueFileName = baseName + "_" + UUID.randomUUID() + "." + extension;
 
 		BlobId blobId = BlobId.of(bucketName, uniqueFileName);
 		BlobInfo blobInfo = BlobInfo.newBuilder(blobId)

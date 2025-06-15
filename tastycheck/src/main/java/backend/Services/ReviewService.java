@@ -83,7 +83,7 @@ public class ReviewService {
 		}
 	}
 
-	public boolean registerReview(RegisterReviewDTO dto) throws PersistentException, UserException {
+	public boolean registerReview(RegisterReviewDTO dto) throws PersistentException, UserException, IOException {
 		try {
 			UserService userService = new UserService();
 			User user = userService.getUserById(dto.getUserId());
