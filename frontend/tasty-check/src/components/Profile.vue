@@ -11,16 +11,30 @@ import TopNav from './Layout/TopNav.vue'
 const showModal = ref(false)
 const user = ref(null)
 
-onMounted(() => {
+import UserService from '@/services/user.service.js'
+import UserDTO from '@/dto/user.dto.js'
+
+onMounted(async () => {
   const local = localStorage.getItem('user')
   if (local) {
-    user.value = JSON.parse(local)
+    user.value = JSON.parse(local) // carregar rapidamente
+  }
+
+  try {
+    const data = await UserService.getCurrentUser()
+    user.value = UserDTO.fromAPI(data) // atualiza com dados do backend
+  } catch (err) {
+    console.warn("Falha ao atualizar perfil do backend. A usar localStorage.")
   }
 })
 
+
 const openModal = () => (showModal.value = true)
 const closeModal = () => (showModal.value = false)
+
 </script>
+
+
 
 <template>
   <div class="profile-wrapper">
@@ -30,12 +44,15 @@ const closeModal = () => (showModal.value = false)
       <ProfileHeader @edit="openModal" />
       <ProfileInfo />
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <FavoriteRestaurants v-if="user.role === 'cliente' || user.role === 'proprietario'" />
-        <OwnedRestaurants v-if="user.role === 'proprietario'" />
+        <FavoriteRestaurants
+          v-if="user && (user.discriminator === 'User' || user.discriminator === 'Owner')"
+          :userId="user.id"
+        />
+        <OwnedRestaurants v-if="user.discriminator === 'Owner'" />
       </div>
     </div>
 
-    <Footer class="fixed bottom-0 left-0 right-0" />
+    <Footer class="bottom-0 left-0 right-0" />
     <EditProfileModal v-if="showModal" @close="closeModal" />
   </div>
 </template>
