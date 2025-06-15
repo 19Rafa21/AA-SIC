@@ -2,7 +2,9 @@ package backend.DTOs.Review;
 
 import backend.Models.Review;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class ReviewDTO {
 	private String id;
@@ -13,6 +15,8 @@ public class ReviewDTO {
 	private String restaurantId;
 	private Date date;
 
+	private List<String> reviewImages;
+
 	public ReviewDTO(Review review) {
 		this.id = review.getId();
 		this.text = review.getText();
@@ -21,6 +25,7 @@ public class ReviewDTO {
 		this.username = review.getAuthor() != null ? review.getAuthor().getUsername() : null;
 		this.restaurantId = review.getRestaurant() != null ? review.getRestaurant().getId() : null;
 		this.date = review.getData();
+		this.reviewImages = new ArrayList<>(review.getImagesReview());
 	}
 
 	public String getId() {
@@ -77,5 +82,13 @@ public class ReviewDTO {
 
 	public void setUsername(String username) {
 		this.username = username;
+	}
+
+	public List<String> getReviewImages() {
+		return reviewImages;
+	}
+
+	public void setReviewImages(List<String> reviewImages) {
+		this.reviewImages = reviewImages;
 	}
 }

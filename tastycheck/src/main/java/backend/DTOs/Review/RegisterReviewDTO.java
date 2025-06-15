@@ -3,17 +3,21 @@ package backend.DTOs.Review;
 import backend.Models.Review;
 import backend.Services.UserService;
 
+import java.util.List;
+
 public class RegisterReviewDTO {
 	private String text;
 	private Double rating;
 	private String userId;
 	private String restaurantId;
+	private List<String> imagesReview;
 
-	public RegisterReviewDTO(String text, Double rating, String userId, String restaurantId){
+	public RegisterReviewDTO(String text, Double rating, String userId, String restaurantId, List<String> imagesReview){
 		this.text = text;
 		this.rating = rating;
 		this.userId = userId;
 		this.restaurantId = restaurantId;
+		this.imagesReview = imagesReview;
 	}
 
 	public String getText() {
@@ -46,5 +50,13 @@ public class RegisterReviewDTO {
 
 	public void setRestaurantId(String restaurantId) {
 		this.restaurantId = restaurantId;
+	}
+
+	public List<String> getImagesReview() {
+		return imagesReview;
+	}
+
+	public void setImagesReview(List<String> imagesReview) {
+		this.imagesReview = imagesReview;
 	}
 }

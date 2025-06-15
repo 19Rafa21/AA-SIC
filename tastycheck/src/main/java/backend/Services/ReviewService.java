@@ -13,10 +13,7 @@ import org.orm.PersistentException;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 public class ReviewService {
 
@@ -90,6 +87,9 @@ public class ReviewService {
 		try {
 			UserService userService = new UserService();
 			User user = userService.getUserById(dto.getUserId());
+			System.out.println(user);
+			System.out.println(user.getId());
+			System.out.println(user.getUsername());
 			if (user == null) throw new UserException("User com ID '" + dto.getUserId() + "' não existe.");
 
 			RestaurantService restaurantService = new RestaurantService();
@@ -110,6 +110,7 @@ public class ReviewService {
 			review.setRating(dto.getRating());
 			review.setAuthor(user);
 			review.setRestaurant(restaurant);
+			review.setImagesReview(new HashSet<>(dto.getImagesReview()));
 
 			restaurant.getReviews().add(review);
 
