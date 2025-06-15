@@ -1,117 +1,78 @@
 <template>
-  <!-- Dropdown do utilizador (quando logado) -->
-  <div
-    v-if="isLoggedIn"
-    class="fixed top-2 right-4 z-[9999]"
-    @mouseenter="handleMouseEnter"
-    @mouseleave="handleMouseLeave"
-  >
-   <div class="user-dropdown-container">
-    <!-- Avatar redondo com hover -->
-    <div class="user-avatar-wrapper">
-      <img
-        src="/img/avatar.jpg"
-        alt="Avatar"
-        class="user-avatar"
-      />
-      <div class="avatar-status-indicator"></div>
-    </div>
+  <div class="avatar-container">
+    <!-- Dropdown do utilizador (quando logado) -->
+    <div
+      v-if="isLoggedIn"
+      class="user-dropdown-container"
+      @mouseenter="handleMouseEnter"
+      @mouseleave="handleMouseLeave"
+    >
+      <!-- Avatar redondo com hover -->
+      <div class="user-avatar-wrapper">
+        <img
+          src="/img/avatar.jpg"
+          alt="Avatar"
+          class="user-avatar"
+        />
+        <div class="avatar-status-indicator"></div>
+      </div>
 
-    <!-- Dropdown moderno com animação -->
-    <transition name="dropdown-fade">
-      <div
-        v-show="showDropdown"
-        class="dropdown-menu-modern"
-      >
-        <!-- Seta melhorada -->
-        <div class="dropdown-arrow-modern"></div>
-
-        <div class="dropdown-content">
-          <!-- Header do dropdown -->
-          <div class="dropdown-header">
-            <div class="user-info">
-              <div class="user-name">{{ user.name }}</div>
-              <div class="user-email">{{ user.email }}</div>
+      <!-- Dropdown moderno com animação -->
+      <transition name="dropdown-fade">
+        <div
+          v-show="showDropdown"
+          class="dropdown-menu-modern"
+        >
+          <div class="dropdown-arrow-modern"></div>
+          <div class="dropdown-content">
+            <div class="dropdown-header">
+              <div class="user-info">
+                <div class="user-name">{{ user.name }}</div>
+                <div class="user-email">{{ user.email }}</div>
+              </div>
+            </div>
+            <div class="dropdown-divider-modern"></div>
+            <ul class="dropdown-menu-list">
+              <li>
+                <router-link to="/profile" class="dropdown-item-modern" @click="closeDropdown">
+                  <svg class="dropdown-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                  </svg>
+                  Ver Perfil
+                </router-link>
+              </li>
+              <li>
+                <router-link to="/" class="dropdown-item-modern" @click="closeDropdown">
+                  <svg class="dropdown-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-4 0h4"></path>
+                  </svg>
+                  Ir para Home
+                </router-link>
+              </li>
+            </ul>
+            <div class="dropdown-divider-modern"></div>
+            <div class="dropdown-footer">
+              <button class="dropdown-item-modern logout-item" @click="logout">
+                <svg class="dropdown-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1..." />
+                </svg>
+                Terminar Sessão
+              </button>
             </div>
           </div>
-
-          <!-- Divisor -->
-          <div class="dropdown-divider-modern"></div>
-
-          <!-- Menu items -->
-          <ul class="dropdown-menu-list">
-            <li>
-              <router-link
-                to="/profile"
-                class="dropdown-item-modern"
-                @click="closeDropdown"
-              >
-                <svg class="dropdown-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
-                </svg>
-                Ver Perfil
-              </router-link>
-            </li>
-            <li>
-              <router-link
-                to="/settings"
-                class="dropdown-item-modern"
-                @click="closeDropdown"
-              >
-                <svg class="dropdown-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                </svg>
-                Definições
-              </router-link>
-            </li>
-            <li>
-              <router-link
-                to="/help"
-                class="dropdown-item-modern"
-                @click="closeDropdown"
-              >
-                <svg class="dropdown-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                </svg>
-                Ajuda
-              </router-link>
-            </li>
-          </ul>
-
-          <!-- Divisor -->
-          <div class="dropdown-divider-modern"></div>
-
-          <!-- Logout -->
-          <div class="dropdown-footer">
-            <button
-              class="dropdown-item-modern logout-item"
-              @click="logout"
-            >
-              <svg class="dropdown-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
-              </svg>
-              Terminar Sessão
-            </button>
-          </div>
         </div>
-      </div>
-    </transition>
-  </div>
-  </div>
+      </transition>
+    </div>
 
-  <!-- Botão de login (quando não logado) -->
-  <router-link
-    v-else
-    to="/login"
-    class="login-button"
-  >
-    Iniciar Sessão
-  </router-link>
+    <!-- Botão de login (quando não logado) -->
+    <router-link v-else to="/login" class="login-button">
+      Iniciar Sessão
+    </router-link>
+  </div>
 </template>
 
 <script setup>
-import { ref, onMounted, onBeforeUnmount } from 'vue'
+import { ref, onMounted, onBeforeUnmount, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { AuthService } from '@/services'
 
@@ -121,25 +82,19 @@ const router = useRouter()
 let hoverTimeout = null
 
 const handleMouseEnter = () => {
-  if (hoverTimeout) {
-    clearTimeout(hoverTimeout)
-    hoverTimeout = null
-  }
+  clearTimeout(hoverTimeout)
   showDropdown.value = true
 }
 
 const handleMouseLeave = () => {
   hoverTimeout = setTimeout(() => {
     showDropdown.value = false
-  }, 150) // Pequeno delay para permitir movimento do rato
+  }, 150)
 }
 
 const closeDropdown = () => {
   showDropdown.value = false
-  if (hoverTimeout) {
-    clearTimeout(hoverTimeout)
-    hoverTimeout = null
-  }
+  clearTimeout(hoverTimeout)
 }
 
 const logout = async () => {
@@ -151,7 +106,6 @@ const logout = async () => {
     setTimeout(() => location.reload(), 100)
   } catch (error) {
     console.error('Erro ao terminar sessão:', error)
-    // Fallback in case the API call fails
     localStorage.removeItem('isLoggedIn')
     localStorage.removeItem('user')
     closeDropdown()
@@ -160,7 +114,6 @@ const logout = async () => {
   }
 }
 
-// Fecha dropdown se clicar fora (backup para dispositivos touch)
 const handleClickOutside = (event) => {
   const dropdown = document.querySelector('.user-dropdown-container')
   if (dropdown && !dropdown.contains(event.target)) {
@@ -175,17 +128,12 @@ onMounted(() => {
 
 onBeforeUnmount(() => {
   document.removeEventListener('click', handleClickOutside)
-  if (hoverTimeout) {
-    clearTimeout(hoverTimeout)
-  }
+  clearTimeout(hoverTimeout)
 })
 
 const originalUser = JSON.parse(localStorage.getItem('user') || '{}')
 const user = ref({ ...originalUser })
 
-import { watch } from 'vue'
-
-// Recebe prop "editable"
 const props = defineProps({
   editable: Boolean
 })
@@ -195,10 +143,18 @@ watch(() => props.editable, (isEditing) => {
     user.value = { ...JSON.parse(localStorage.getItem('user') || '{}') }
   }
 })
-
 </script>
 
+
 <style scoped>
+.avatar-container {
+  position: absolute;
+  right: 2rem;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 9999;
+}
+
 /* Botão de login - removido position fixed */
 .login-button {
   background-color: #095243;

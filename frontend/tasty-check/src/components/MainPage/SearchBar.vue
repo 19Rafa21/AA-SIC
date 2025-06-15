@@ -20,8 +20,13 @@
         />
       </div>
 
-      <button type="submit" class="search-button">
-        PROCURAR
+      <button type="submit" class="search-button" :disabled="isLoading">
+        <span v-if="isLoading">
+          <i class="fas fa-spinner fa-spin mr-2"></i> A procurar...
+        </span>
+        <span v-else>
+          PROCURAR
+        </span>
       </button>
     </form>
 
@@ -83,7 +88,16 @@
 
     <div v-if="showResults" class="mt-4 bg-white/80 backdrop-blur-lg rounded-lg p-4 relative">
       <button class="absolute top-2 right-2 text-red-500 text-xl" @click="showResults = false">×</button>
-      <RestaurantCarousel :title="'Resultados da Pesquisa'" :restaurants="searchResults" :visibleCount="3" ref="carousel" />
+      <div v-if="isLoading" class="text-center py-6">
+        <i class="fas fa-spinner fa-spin text-emerald-500 text-2xl"></i>
+        <p class="text-gray-700 mt-2">A Carregar Restaurantes...</p>
+      </div>
+      <div v-else-if="searchResults.length === 0" class="text-center text-gray-600 py-6">
+        Nenhum restaurante encontrado com os critérios selecionados.
+      </div>
+      <div v-else>
+        <RestaurantCarousel :title="'Resultados da Pesquisa'" :restaurants="searchResults" :visibleCount="3" ref="carousel" :key="carouselKey" />
+      </div>
     </div>
   </div>
 </template>
@@ -99,7 +113,8 @@ const dropdownRoot = ref(null)
 const showResults = ref(false)
 const searchQuery = ref('')
 const searchResults = ref([])
-const carousel = ref(null)
+const carouselKey = ref(0)
+const isLoading = ref(false)
 
 const cuisineOptions = ['Italiana', 'Japonesa', 'Portuguesa']
 const locationOptions = ['Braga', 'Porto', 'Lisboa']
@@ -155,15 +170,19 @@ const searchRestaurants = async () => {
   const cuisine = cuisineMap[selectedFilters.value.cuisine[0]] || ''
   const rating = getMinRating()
 
+  isLoading.value = true
+  showResults.value = true
+  carouselKey.value++ // Reinicia o carousel para a página 1
+  closeDropdown() // Fecha o dropdown ao filtrar
+
   try {
     const data = await service.getRestaurantsWithFilter(name, location, cuisine, rating)
     searchResults.value = data
-    showResults.value = true
-    if (carousel.value) {
-      carousel.value.currentStart = 0
-    }
   } catch (error) {
     console.error('Erro ao carregar restaurantes:', error)
+    searchResults.value = []
+  } finally {
+    isLoading.value = false
   }
 }
 
@@ -183,6 +202,31 @@ onBeforeUnmount(() => {
 </script>
 
 <style scoped>
+.search-button {
+  background-color: #095243;
+  border: none;
+  height: 80%;
+  padding: 0.5rem 1.5rem;
+  font-weight: bold;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 0.5rem;
+  border-radius: 0.5rem;
+  color: white;
+  transition: background-color 0.3s ease;
+}
+
+.search-button:disabled {
+  background-color: #adb5bd;
+  cursor: not-allowed;
+}
+
+.search-button:hover:enabled {
+  background-color: #073b31;
+}
+
 .search-button {
   background-color: #095243;
   border: none;

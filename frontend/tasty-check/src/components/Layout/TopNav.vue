@@ -1,18 +1,18 @@
 <template>
   <nav class="top-nav">
     <div class="nav-content">
-      
+
       <!-- Esquerda: logo -->
       <router-link to="/" class="flex items-center gap-2">
         <img src="/img/logo.png" alt="Logo" class="logo-img" />
         <span class="text-white text-xl font-bold">
-            <span>Tasty</span><span class="text-[#1A2D29] ml-1">Check</span>
+          <span>Tasty</span><span class="text-[#1A2D29] ml-1">Check</span>
         </span>
       </router-link>
 
-      <!-- Centro: barra de pesquisa -->
+      <!-- Centro: barra de pesquisa (versão compacta) -->
       <div class="flex-1 flex justify-center">
-        <SearchBar />
+        <SearchBarCompact />
       </div>
 
       <!-- Direita: avatar -->
@@ -25,8 +25,8 @@
 </template>
 
 <script setup>
-import SearchBar from './SearchBar.vue'
-import Avatar from '../MainPage/Avatar.vue';  
+import SearchBarCompact from './SearchBarCompact.vue'
+import Avatar from '../MainPage/Avatar.vue'
 </script>
 
 <style scoped>
@@ -49,7 +49,6 @@ import Avatar from '../MainPage/Avatar.vue';
   width: 100%;
 }
 
-
 .logo-img {
   width: 60px;
   height: 60px;
@@ -63,6 +62,4 @@ import Avatar from '../MainPage/Avatar.vue';
   border: 2px solid white;
   object-fit: cover;
 }
-
-
 </style>

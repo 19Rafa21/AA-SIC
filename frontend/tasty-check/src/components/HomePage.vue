@@ -130,8 +130,10 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div class="fixed top-3 right-4 z-50">
-    <Avatar />
+  <div class="absolute top-3 right-3 z-50">
+    <div class="w-[90px] h-[50px]">
+      <Avatar />
+    </div>
   </div>
   <HeaderComponent>
     <div class="page-header min-vh-100"
