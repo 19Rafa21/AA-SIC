@@ -1,228 +1,267 @@
-<template>
-  <TopNav />
-  <div class="max-w-4xl mx-auto mt-24 bg-white border rounded-xl p-8 shadow">
-    <h1 class="text-2xl font-bold mb-6 text-center mt-[-60px]">Criar Restaurante</h1>
-
-    <form @submit.prevent="submitForm" class="grid grid-cols-1 md:grid-cols-2 gap-6">
-      <!-- Nome -->
-      <div class="md:col-span-2">
-        <label class="block font-semibold mb-1">Nome do Restaurante</label>
-        <input v-model="name" required class="input-style" />
-      </div>
-
-      <!-- Localização -->
-      <div class="md:col-span-2">
-        <label class="block font-semibold mb-1">Localização</label>
-        <input v-model="location" required class="input-style" placeholder="Av. Exemplo 123, Porto" />
-      </div>
-
-      <!-- Tipo de Cozinha -->
-      <div>
-        <label class="block font-semibold mb-1">Tipo de Cozinha</label>
-        <input v-model="cuisineType" required class="input-style" />
-      </div>
-
-      <!-- Horário -->
-      <div>
-        <label class="block font-semibold mb-1">Horário de Funcionamento</label>
-        <input v-model="schedule" required class="input-style" />
-      </div>
-
-      <!-- Imagem de Capa -->
-      <div class="md:col-span-2">
-        <label class="block font-semibold mb-2">Imagem de Capa</label>
-        <input type="file" accept="image/*" @change="onCoverImage" required />
-        <div v-if="coverPreview" class="mt-2">
-          <img :src="coverPreview" class="w-full max-h-64 object-cover rounded" />
-        </div>
-      </div>
-
-      <!-- Fotos do Menu -->
-      <div class="md:col-span-2">
-        <label class="block font-semibold mb-2">Fotos do Menu</label>
-        <input type="file" accept="image/*" multiple @change="onMenuImages" />
-        <div class="flex flex-wrap gap-2 mt-2">
-          <img v-for="(src, i) in menuImagePreviews" :key="i" :src="src" class="w-24 h-24 object-cover rounded" />
-        </div>
-      </div>
-
-      <!-- Fotos da Comida -->
-      <div class="md:col-span-2">
-        <label class="block font-semibold mb-2">Fotos da Comida</label>
-        <input type="file" accept="image/*" multiple @change="onFoodImages" />
-        <div class="flex flex-wrap gap-2 mt-2">
-          <img v-for="(src, i) in foodImagePreviews" :key="i" :src="src" class="w-24 h-24 object-cover rounded" />
-        </div>
-      </div>
-
-      <!-- Botão -->
-      <div class="md:col-span-2 flex justify-center mt-4">
-        <button
-          type="submit"
-          class="bg-[#095243] text-white px-6 py-2 rounded hover:bg-[#073b31]"
-        >
-          Criar Restaurante
-        </button>
-      </div>
-
-      <div class="md:col-span-2 text-center mt-4">
-        <button
-          type="button"
-          @click="guardarNoLocalStorageTeste"
-          class="bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400"
-        >
-          Guardar para Testes
-        </button>
-      </div>
-    </form>
-  </div>
-  <Footer />
-</template>
-
 <script setup>
-import { useRouter } from 'vue-router'
-const router = useRouter()
 import { ref } from 'vue'
+import { useRouter } from 'vue-router'
 import TopNav from '../Layout/TopNav.vue'
 import Footer from '../Footer.vue'
+import { RestaurantDetailedDTO } from '@/dto/restaurant.dto.js'
+import RestaurantService from '@/services/restaurant.service.js'
 
+const router = useRouter()
+const service = new RestaurantService()
+
+// Formulário
 const name = ref('')
 const location = ref('')
 const cuisineType = ref('')
-const schedule = ref('')
-const coverImage = ref(null)
-const coverPreview = ref(null)
-const menuImages = ref([])
-const menuImagePreviews = ref([])
-const foodImages = ref([])
-const foodImagePreviews = ref([])
+const schedule = ref('') // Horário do restaurante (string)
+const imageFile = ref(null)
+const imagePreview = ref('')
+const errorMessage = ref('')
+const successMessage = ref('')
 
-const onCoverImage = (e) => {
-  const file = e.target.files[0]
+// Handler de imagem
+const handleImageUpload = (event) => {
+  const file = event.target.files[0]
   if (file) {
-    coverImage.value = file
-    coverPreview.value = URL.createObjectURL(file)
+    imageFile.value = file
+    imagePreview.value = URL.createObjectURL(file)
   }
 }
 
-const onMenuImages = (e) => {
-  const files = Array.from(e.target.files)
-  files.forEach(file => {
-    if (!menuImages.value.includes(file)) {
-      menuImages.value.push(file)
-      menuImagePreviews.value.push(URL.createObjectURL(file))
-    }
-  })
+const removeImage = () => {
+  imageFile.value = null
+  imagePreview.value = ''
+  const fileInput = document.getElementById('restaurant-image')
+  if (fileInput) fileInput.value = ''
 }
 
-const onFoodImages = (e) => {
-  const files = Array.from(e.target.files)
-  files.forEach(file => {
-    if (!foodImages.value.includes(file)) {
-      foodImages.value.push(file)
-      foodImagePreviews.value.push(URL.createObjectURL(file))
-    }
-  })
-}
-
-import RestaurantService from '../../services/restaurant.service';
-import { RestaurantDetailedDTO } from '../../dto/restaurant.dto.js'
-
-
-const service = new RestaurantService();
-
-const submitForm = async () => {
-  if (!coverImage.value) {
-    alert('Imagem de capa é obrigatória!');
-    return;
+// Criar restaurante
+const createRestaurant = async () => {
+  if (!name.value || !location.value || !cuisineType.value || !schedule.value) {
+    errorMessage.value = 'Preencha todos os campos obrigatórios.'
+    return
   }
 
-  const user = JSON.parse(localStorage.getItem('user') || '{}');
-
-  // Converter a imagem de capa para base64
-  const coverBase64 = await fileToBase64(coverImage.value);
-
-  // Converter todas as imagens do menu para base64
-  const menuBase64 = await Promise.all(
-    menuImages.value.map(file => fileToBase64(file))
-  );
-
-  // Converter todas as imagens da comida para base64
-  const foodBase64 = await Promise.all(
-    foodImages.value.map(file => fileToBase64(file))
-  );
-
-const restaurantDTO = new RestaurantDetailedDTO({
-  name: name.value,
-  location: location.value,
-  cuisineType: cuisineType.value,
-  schedule: schedule.value,
-  rating: 0,
-  image: coverBase64,
-  menuImages: menuBase64,
-  foodImages: foodBase64,
-  owner: user.id || 'anon'
-})
-
+  const dto = new RestaurantDetailedDTO({
+    name: name.value,
+    location: location.value,
+    cuisineType: cuisineType.value,
+    rating: 0.0, // Avaliação fixa a zero
+    image: imageFile.value?.name || '',
+    menuImages: [],
+    foodImages: []
+  })
 
   try {
-    console.log('📦 Enviando para o backend:', restaurantDTO.toAPIRequest())
-    await service.createRestaurant(restaurantDTO);
-    alert('✅ Restaurante criado com sucesso!');
-    router.push('/profile');
+    await service.createRestaurant(dto)
+    successMessage.value = 'Restaurante criado com sucesso!'
+    alert('🎉 Restaurante adicionado com sucesso!')
+    setTimeout(() => router.push('/'), 1500)
   } catch (error) {
-    console.error('❌ Erro ao criar restaurante:', error.response?.data || error.message);
-    alert('Erro ao criar restaurante: ' + (error.response?.data?.message || 'ver consola'));
-  }
-
-};
-
-function fileToBase64(file) {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = () => resolve(reader.result); // base64
-    reader.onerror = reject;
-    reader.readAsDataURL(file);
-  });
-}
-
-const guardarNoLocalStorageTeste = () => {
-  const reader = new FileReader()
-  reader.onload = () => {
-    const restaurants = {
-      id: `rest-${Date.now()}`,
-      name: name.value,
-      location: location.value,
-      cuisineType: cuisineType.value,
-      schedule: schedule.value,
-      image: reader.result, // imagem de capa em base64
-      rating: 0,
-      reviews: []
-    }
-
-    const guardados = JSON.parse(localStorage.getItem('restaurants')) || []
-    guardados.push(restaurants)
-    localStorage.setItem('restaurants', JSON.stringify(guardados))
-
-    alert('Guardado no localStorage para testes.')
-  }
-
-  if (coverImage.value) {
-    reader.readAsDataURL(coverImage.value)
-  } else {
-    alert('Seleciona uma imagem de capa para testes.')
+    errorMessage.value = 'Erro ao criar restaurante. Verifica os dados e tenta novamente.'
   }
 }
 
-
+const cancel = () => {
+  router.push('/')
+}
 </script>
 
+<template>
+  <div class="page-container">
+    <TopNav />
+
+    <main class="create-restaurant-container">
+      <div class="form-card">
+        <h2 class="form-title">Criar Novo Restaurante</h2>
+
+        <form class="form">
+          <!-- Imagem preview -->
+          <div class="image-preview-wrapper mb-4">
+            <img
+              :src="imagePreview || 'https://via.placeholder.com/500x200?text=Imagem+Restaurante'"
+              alt="Imagem do Restaurante"
+              class="image-preview"
+            />
+          </div>
+
+          <div class="form-group">
+            <label class="label">Imagem de Destaque</label>
+            <input
+              type="file"
+              id="restaurant-image"
+              class="input-file"
+              @change="handleImageUpload"
+              accept="image/*"
+            />
+          </div>
+
+          <div class="form-group">
+            <label class="label">Nome do Restaurante</label>
+            <input type="text" class="input" v-model="name" />
+          </div>
+
+          <div class="form-group">
+            <label class="label">Localização</label>
+            <input type="text" class="input" v-model="location" />
+          </div>
+
+          <div class="form-group">
+            <label class="label">Tipo de Cozinha</label>
+            <input type="text" class="input" v-model="cuisineType" />
+          </div>
+
+          <div class="form-group">
+            <label class="label">Horário</label>
+            <input type="text" class="input" v-model="schedule" placeholder="Ex: 10h - 22h" />
+          </div>
+
+          <div v-if="errorMessage" class="error">{{ errorMessage }}</div>
+          <div v-if="successMessage" class="success">{{ successMessage }}</div>
+
+          <div class="btn-group">
+            <button type="button" class="btn cancel" @click="cancel">Cancelar</button>
+            <button type="button" class="btn confirm" @click.prevent="createRestaurant">
+              Criar Restaurante
+            </button>
+          </div>
+        </form>
+      </div>
+    </main>
+
+    <Footer />
+  </div>
+</template>
+
 <style scoped>
-.input-style {
-  border: 1px solid #ccc;
-  padding: 8px 12px;
-  border-radius: 6px;
+.page-container {
+  background-color: #ffffff;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.create-restaurant-container {
+  flex: 1;
+  padding: 3rem 1rem 2rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #ffffff;
+}
+
+.form-card {
+  background: #f8f9fa;
+  padding: 2rem;
+  border-radius: 1rem;
+  max-width: 500px;
   width: 100%;
-  font-size: 0.875rem;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+}
+
+.form-title {
+  font-size: 1.8rem;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 1.5rem;
+  color: #1a2d29;
+}
+
+.image-preview-wrapper {
+  width: 100%;
+  height: 200px;
+  overflow: hidden;
+  border-radius: 1rem;
+  background-color: #e2e8f0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.image-preview {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 1rem;
+}
+
+.form-group {
+  margin-bottom: 1.2rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.label {
+  font-size: 0.95rem;
+  color: #4b5563;
+  margin-bottom: 0.4rem;
+  font-weight: 500;
+}
+
+.input,
+.input-file {
+  padding: 0.6rem 0.8rem;
+  border-radius: 0.75rem;
+  border: 1px solid #cbd5e1;
+  font-size: 0.95rem;
+}
+
+.input:focus {
+  border-color: #095243;
+  outline: none;
+}
+
+.error {
+  background: #f8d7da;
+  color: #842029;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.success {
+  background: #d1e7dd;
+  color: #0f5132;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.btn-group {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.btn {
+  flex: 1;
+  padding: 0.8rem 1rem;
+  font-size: 1rem;
+  border-radius: 9999px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s;
+  border: none;
+}
+
+.btn.cancel {
+  background: #e2e8f0;
+  color: #1e293b;
+}
+
+.btn.cancel:hover {
+  background: #cbd5e1;
+}
+
+.btn.confirm {
+  background: #095243;
+  color: white;
+}
+
+.btn.confirm:hover {
+  background: #073b31;
 }
 </style>
