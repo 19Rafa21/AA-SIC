@@ -20,9 +20,20 @@
             <!-- Título  e like -->
             <div class="flex justify-between items-center">
                 <h1 class="text-3xl font-bold text-black">{{ restaurant.name }}</h1>
-                <button class="text-2xl text-gray-400 hover:text-red-500">
-                    <i class="far fa-heart"></i>
-                </button>
+                <div class="flex flex-col items-end">
+                    <div class="flex items-center">
+                        <Spinner v-if="isAddingToFavorites" class="mr-2 text-lg" />
+                        <button class="text-2xl hover:text-red-500" 
+                                :class="{ 'text-red-500': isFavorite, 'text-gray-400': !isFavorite }" 
+                                @click="toggleFavorite"
+                                :disabled="isAddingToFavorites">
+                            <i :class="isFavorite ? 'fas fa-heart' : 'far fa-heart'"></i>
+                        </button>
+                    </div>
+                    <p v-if="showLoginWarning" class="text-red-500 text-sm mt-1">
+                        É necessário fazer login para adicionar aos favoritos
+                    </p>
+                </div>
             </div>
 
             <!-- Rating -->
@@ -85,17 +96,19 @@
                 <!-- Menu  -->
                 <div class="bg-white rounded-[26px] shadow mt-6 min-h-[400px]">
                     <span class="ml-4 text-lg text-emerald-800 font-semibold">Menu</span>
-                    <ul class="space-y-3 pt-4 !pl-0">
-                        <!-- <div class="flex flex-col items-center justify-between"> -->
-                            <li v-for="(item, i) in dishes" :key="i" class="flex justify-between items-center text-gray-700">
-                                <img :src="item.image" class="w-28 h-24 object-cover rounded ml-4" alt="Foto do prato" />
-                                <div class="ml-10 flex flex-col flex-1">
-                                    <span class="text-base text-emerald-800 font-semibold">{{ item.name }}</span>
-                                    <span class="text-sm text-emerald-800">{{ item.ingredients }}</span>
-                                </div>
-                                <span class="text-base text-emerald-800 font-semibold mr-4">{{ formatPrice(item.price) }}</span>
-                            </li>
-                        <!-- </div> -->
+                    <div v-if="!dishes || dishes.length === 0" class="flex flex-col items-center justify-center p-8 text-gray-500">
+                        <i class="fa-solid fa-utensils text-5xl mb-4"></i>
+                        <span class="text-lg">Sem pratos adicionados</span>
+                    </div>
+                    <ul v-else class="space-y-3 pt-4 !pl-0">
+                        <li v-for="(item, i) in dishes" :key="i" class="flex justify-between items-center text-gray-700">
+                            <img :src="item.image" class="w-28 h-24 object-cover rounded ml-4" alt="Foto do prato" />
+                            <div class="ml-10 flex flex-col flex-1">
+                                <span class="text-base text-emerald-800 font-semibold">{{ item.name }}</span>
+                                <span class="text-sm text-emerald-800">{{ item.ingredients }}</span>
+                            </div>
+                            <span class="text-base text-emerald-800 font-semibold mr-4">{{ formatPrice(item.price) }}</span>
+                        </li>
                     </ul>
                 </div>
 
@@ -169,7 +182,7 @@
 
                     <!-- Comentar -->
                     <div class="flex justify-end gap-2 mt-4">
-                        <button @click="openReplyModal(c.id)" class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700">
+                        <button @click="openReplyModal(c.id)" class="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-700">
                             <span class="mr-2">Comentários</span>
                             <i class="fa-solid fa-comment"></i>
                         </button>
@@ -228,8 +241,9 @@ import RestaurantGoogleMap from '../Maps/RestaurantGoogleMap.vue';
 import TopNav from '../Layout/TopNav.vue';
 import Spinner from '../utils/Spinner.vue';
 import ReplyModal from './ReplyModal.vue';
-import { RestaurantService, ReviewService, DishService } from '@/services';
+import { RestaurantService, ReviewService, DishService, UserService } from '@/services';
 import PhotosCarousel from '../utils/PhotosCarousel.vue';
+import { useAuthStore } from '@/stores/auth';
 
 export default {
     name: 'RestaurantDetails',
@@ -255,6 +269,7 @@ export default {
             RestaurantService: new RestaurantService(),
             ReviewService: new ReviewService(),
             DishService: new DishService(),
+            UserService: new UserService(),
             showModal: false,
             showReplyModal: false,
             restaurant: null,
@@ -268,9 +283,14 @@ export default {
             error: null,
             restaurant: null,
             currentReviewId: null,
+            isFavorite: false,
+            authStore: useAuthStore(),
+            showLoginWarning: false,
+            isAddingToFavorites: false,
         };
     },
     created() {
+        this.getUserInfo();
         this.fetchRestaurantDetails();
         this.fetchReviews();
         this.fetchDishes();
@@ -292,7 +312,11 @@ export default {
             this.loading = true;
             try {
                 const restaurantDTO = await this.RestaurantService.getRestaurantById(this.id);
-                this.restaurant = restaurantDTO;    
+                this.restaurant = restaurantDTO;
+                // Check if restaurant is in favorites after loading details
+                if (this.authStore.isAuthenticated) {
+                    this.checkIfFavorite();
+                }
             } catch (err) {
                 this.error = err.message;
             } finally {
@@ -354,6 +378,61 @@ export default {
         },
         handleReplySubmitted(reply) {
             alert("Comentário enviado com sucesso!");
+        },
+        getUserInfo() {
+            // Check if user is authenticated using Pinia store
+            if (this.authStore.isAuthenticated && this.authStore.currentUser) {
+                this.checkIfFavorite();
+            }
+        },
+        async checkIfFavorite() {
+            // Make sure user is authenticated
+            if (!this.authStore.isAuthenticated || !this.authStore.currentUser) return;
+            
+            try {
+                const userId = this.authStore.currentUser.id;
+                const favorites = await this.UserService.getFavorites(userId);
+                if (favorites && Array.isArray(favorites)) {
+                    this.isFavorite = favorites.some(fav => fav.id === parseInt(this.id));
+                }
+            } catch (error) {
+                console.error('Erro ao verificar favoritos:', error);
+            }
+        },
+        async toggleFavorite() {
+            // Check if user is authenticated
+            if (!this.authStore.isAuthenticated) {
+                // Show the warning message instead of alert
+                this.showLoginWarning = true;
+                
+                // Hide the warning after 3 seconds
+                setTimeout(() => {
+                    this.showLoginWarning = false;
+                }, 3000);
+                return;
+            }
+
+            try {
+                this.isAddingToFavorites = true;
+                const userId = this.authStore.currentUser.id;
+                
+                if (this.isFavorite) {
+                    // If already a favorite, remove from favorites
+                    await this.UserService.removeFromFavorites(userId, this.id);
+                    this.isFavorite = false;
+                    alert("Restaurante removido dos favoritos!");
+                } else {
+                    // If not a favorite, add to favorites
+                    await this.UserService.addToFavorites(userId, this.id);
+                    this.isFavorite = true;
+                    alert("Restaurante adicionado aos favoritos!");
+                }
+            } catch (error) {
+                console.error('Erro ao atualizar favoritos:', error);
+                alert("Ocorreu um erro ao atualizar favoritos.");
+            } finally {
+                this.isAddingToFavorites = false;
+            }
         }
     },
 };

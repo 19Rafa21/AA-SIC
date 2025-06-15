@@ -1,6 +1,8 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import UserService from '@/services/user.service'
+import Spinner from '../utils/Spinner.vue'
+const userService = new UserService()
 
 const favoritos = ref([])
 const loading = ref(true)
@@ -18,7 +20,7 @@ const carregarFavoritos = async () => {
   }
 
   try {
-    const data = await UserService.getFavorites(userId)
+    const data = await userService.getFavorites(userId)
     favoritos.value = data || []
   } catch (e) {
     console.error('Erro ao carregar favoritos:', e)
@@ -37,8 +39,9 @@ onMounted(carregarFavoritos)
   <div class="mt-5 bg-gray-100 p-4 rounded-xl">
     <h2 class="text-2xl font-bold mb-4">Restaurantes Favoritos</h2>
 
-    <div v-if="loading" class="text-center py-4 text-sm text-gray-500">
-      A carregar favoritos...
+    <div v-if="loading" class=" py-4">
+      <Spinner class="mx-auto mt-4 mb-1 text-lg"/>
+      <span class="text-sm text-emerald-500">A carregar favoritos...</span>
     </div>
 
     <div v-else-if="erro" class="text-center py-4 text-sm text-red-500">
