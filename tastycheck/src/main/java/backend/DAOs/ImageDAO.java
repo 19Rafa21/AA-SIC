@@ -34,5 +34,30 @@ public class ImageDAO {
                                 .list();
         return images;
     }
+
+    public static List<String> getImagesByRestaurantAndType(String restaurantId, String type) throws PersistentException {
+        try {
+            PersistentSession session = AASICPersistentManager.instance().getSession();
+            String hql = "SELECT i.url FROM backend.Models.Image i WHERE i.restaurantId = :restaurantId AND i.type = :type";
+
+            List<String> images = session.createQuery(hql)
+                .setParameter("restaurantId", restaurantId)
+                .setParameter("type", type)
+                .list();
+
+            return images;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new PersistentException(e);
+        }
+    }
+
+    public static List<String> getMenuImages(String restaurantId) throws PersistentException {
+        return getImagesByRestaurantAndType(restaurantId, "menu");
+    }
+
+    public static List<String> getFoodImages(String restaurantId) throws PersistentException {
+        return getImagesByRestaurantAndType(restaurantId, "food");
+    }
 }
 

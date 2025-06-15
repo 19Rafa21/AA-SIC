@@ -83,7 +83,7 @@ public class AuthenticationController extends HttpServlet {
 
 							String contentType = file.getContentType();
 							if (!contentType.startsWith("image/")){
-								resp.setStatus(HttpServletResponse.SC_OK);
+								resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 								resp.getWriter().write("{\"message\": Ficheiro não é uma imagem \"}");
 							}
 

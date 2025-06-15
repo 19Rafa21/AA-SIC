@@ -3,9 +3,11 @@ package backend.Controllers;
 import backend.DTOs.RestaurantDTO;
 import backend.DTOs.RestaurantDetailsDTO;
 import backend.DTOs.Review.ReviewDTO;
+import backend.Exceptions.UnauthorizedException;
 import backend.Exceptions.UserException;
 import backend.Models.Restaurant;
 import backend.Models.Review;
+import backend.Services.ImageService;
 import backend.Services.RestaurantService;
 import backend.Services.UserService;
 import backend.Utils.HttpRequestUtils;
@@ -15,20 +17,33 @@ import com.google.gson.JsonObject;
 import org.orm.PersistentException;
 
 import javax.servlet.ServletException;
+import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.*;
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
+@MultipartConfig
 public class RestaurantController extends HttpServlet {
 
     private RestaurantService restaurantService;
+    private ImageService imageService;
     private Gson gson;
 
     @Override
     public void init() throws ServletException {
-        restaurantService = new RestaurantService();
+        try {
+            restaurantService = new RestaurantService();
+            imageService = new ImageService();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         this.gson = new Gson();
     }
 
@@ -42,9 +57,81 @@ public class RestaurantController extends HttpServlet {
 
         try {
             if (pathInfo == null || pathInfo.equals("/")) {
-                RestaurantDetailsDTO dto = null;
-                dto = parseRestaurantDetailsDTO(req);
-                restaurantService.createRestaurant(dto);
+
+                String restaurantJson = req.getParameter("restaurant");
+                System.out.println("JSON recebido: " + restaurantJson);
+                RestaurantDetailsDTO restaurantDTO = new ObjectMapper().readValue(restaurantJson, RestaurantDetailsDTO.class);
+
+                Part coverRestaurantImage = req.getPart("coverImage");
+                if (coverRestaurantImage != null && coverRestaurantImage.getSize() > 0){
+                    String originalFileName = Paths.get(coverRestaurantImage.getSubmittedFileName()).getFileName().toString();
+                    InputStream coverContent = coverRestaurantImage.getInputStream();
+
+                    String coverContentType = coverRestaurantImage.getContentType();
+                    if (!coverContentType.startsWith("image/")){
+                        resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                        resp.getWriter().write("{\"message\": Ficheiro de capa não é uma imagem \"}");
+                    }
+
+                    if (coverContent != null){
+                        try {
+                            String uploadedImage = imageService.uploadImage(originalFileName, coverContent);
+                            restaurantDTO.setImage(uploadedImage);
+                        } catch (IOException e){
+                            throw new UnauthorizedException("Error while adding restaurant cover image: " + e.getMessage());
+                        }
+                    }
+
+                    //restaurantService.addCoverImage(restaurantDTO, originalFileName, coverContent);
+                }
+
+                Collection<Part> menuPart = req.getParts().stream()
+                        .filter(p -> p.getName().equals("menuImages"))
+                        .toList();
+
+                List<String> uploadedMenuImages = new ArrayList<>();
+                for (Part part : menuPart) {
+                    if (part.getSize() > 0 && part.getContentType().startsWith("image/")) {
+                        String fileName = Paths.get(part.getSubmittedFileName()).getFileName().toString();
+                        InputStream contentStream = part.getInputStream();
+                        if (contentStream != null){
+                            try {
+                                String uploadedPath = imageService.uploadImage(fileName, contentStream);
+                                uploadedMenuImages.add(uploadedPath);
+                            } catch (IOException e) {
+                                throw new UnauthorizedException("Error while adding restaurant menu image: " + e.getMessage());
+                            }
+                        }
+                    }
+                }
+
+                restaurantDTO.setMenuImages(uploadedMenuImages);
+
+                Collection<Part> foodPart = req.getParts().stream()
+                        .filter(p -> p.getName().equals("foodImages"))
+                        .toList();
+
+                List<String> uploadedFoodImages = new ArrayList<>();
+                for (Part part : foodPart){
+                    if (part.getSize() > 0 && part.getContentType().startsWith("image/")) {
+                        String fileName = Paths.get(part.getSubmittedFileName()).getFileName().toString();
+                        InputStream contentStream = part.getInputStream();
+                        if (contentStream != null){
+                            try {
+                                String uploadedPath = imageService.uploadImage(fileName, contentStream);
+                                uploadedFoodImages.add(uploadedPath);
+                            } catch (IOException e) {
+                                throw new UnauthorizedException("Error while adding restaurant menu image: " + e.getMessage());
+                            }
+                        }
+                    }
+                }
+
+                restaurantDTO.setFoodImages(uploadedFoodImages);
+
+                //RestaurantDetailsDTO dto = null;
+                //dto = parseRestaurantDetailsDTO(req);
+                restaurantService.createRestaurant(restaurantDTO);
                 resp.setContentType("application/json; charset=UTF-8");
                 resp.setStatus(HttpServletResponse.SC_OK);
                 resp.getWriter().write("{\"message\": \"Restaurante criado com sucesso\"}");
