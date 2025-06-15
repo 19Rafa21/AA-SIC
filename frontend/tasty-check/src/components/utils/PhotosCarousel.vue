@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div v-if="props.images.length === 0" class="flex flex-col items-center justify-center p-8 text-gray-500">
+    <div v-if="safeImages.length === 0" class="flex flex-col items-center justify-center p-8 text-gray-500">
       <i class="fa-regular fa-image text-5xl mb-4"></i>
       <span class="text-lg">Sem imagens adicionadas</span>
     </div>
@@ -17,7 +17,7 @@
         <i class="fa-solid fa-chevron-right"></i>
       </button>
     </div>
-    <div v-if="showModal" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center">
+    <div v-if="showModal" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-[1000]">
       <button @click="closeModal" class="absolute top-4 right-4 text-white text-2xl">
         <i class="fa-regular fa-circle-xmark"></i>
       </button>
@@ -39,9 +39,9 @@ const safeImages = computed(() =>
 )
 
 const start = ref(0)
-const visibleImages = computed(() => props.safeImages.slice(start.value, start.value + 4))
+const visibleImages = computed(() => safeImages.value.slice(start.value, start.value + 4))
 const canPrev = computed(() => start.value > 0)
-const canNext = computed(() => start.value + 4 < props.images.length)
+const canNext = computed(() => start.value + 4 < safeImages.value.length)
 function prev() {
   if (canPrev.value) start.value -= 4
 }

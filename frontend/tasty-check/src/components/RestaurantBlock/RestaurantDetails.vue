@@ -313,6 +313,7 @@ export default {
             try {
                 const restaurantDTO = await this.RestaurantService.getRestaurantById(this.id);
                 this.restaurant = restaurantDTO;
+                console.log("Restaurant details fetched:", this.restaurant.menuImages);
                 // Check if restaurant is in favorites after loading details
                 if (this.authStore.isAuthenticated) {
                     this.checkIfFavorite();
@@ -326,7 +327,7 @@ export default {
         async fetchReviews() {
             this.loadingReviews = true;
             try {
-                console.log("Fetching reviews for restaurant ID:", this.id);
+                // console.log("Fetching reviews for restaurant ID:", this.id);
                 const reviews = await this.RestaurantService.getReviewsByRestaurant(this.id);
                 this.reviews = reviews;
             } catch (err) {
