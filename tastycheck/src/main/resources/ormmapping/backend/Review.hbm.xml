@@ -19,5 +19,9 @@ License Type: Academic
 			<key column="Review"/>
 			<one-to-many class="backend.Models.Reply"/>
 		</set>
+		<set name="imagesReview" table="review_images" lazy="true">
+			<key column="review_id" />
+			<element column="image_url" type="string" />
+		</set>
 	</class>
 </hibernate-mapping>

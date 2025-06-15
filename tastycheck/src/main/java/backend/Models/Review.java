@@ -51,6 +51,8 @@ public class Review {
 
 	private Date data;
 
+	private Set<String> imagesReview;
+
 	private Set<Reply> replies;
 
 	public void setId(String value) {
@@ -113,11 +115,15 @@ public class Review {
 		this.replies = replies;
 	}
 
-	public String toString() {
-		return String.format("Review[id=%s, rating=%.2f, text=%s, date=%s]", id, rating, text, data);
+	public Set<String> getImagesReview() {
+		return imagesReview;
 	}
 
-	public void setComment(String s) {
-		this.text = s;
+	public void setImagesReview(Set<String> imagesReview) {
+		this.imagesReview = imagesReview;
+	}
+
+	public String toString() {
+		return String.format("Review[id=%s, rating=%.2f, text=%s, date=%s]", id, rating, text, data);
 	}
 }
