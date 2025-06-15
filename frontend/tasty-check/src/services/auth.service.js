@@ -29,43 +29,42 @@ class AuthenticationService {
      * @param {File} [imageFile] - Optional profile image file
      * @returns {Promise<Object>} Registration response
      */
-    async register(email, password, username, discriminator = 'User', imageFile = null) {
-        try {
-            const userData = UserDTO.forRegistration(email, username, password, discriminator);
-            
-            // If image is provided, send as multipart/form-data
-            if (imageFile) {
-                const formData = new FormData();
-                formData.append('user', JSON.stringify(userData));
-                formData.append('file', imageFile);
-                
-                // Create a new axios instance for this request with multipart/form-data
-                const multipartAxios = axios.create({
-                    baseURL: this.baseUrl,
-                    headers: {
-                        'Content-Type': 'multipart/form-data'
-                    },
-                    withCredentials: true
-                });
-                
-                const response = await multipartAxios.post(
-                    `${this.endpoint}/register`, 
-                    formData
-                );
-                return response.data;
-            } else {
-                // Regular JSON request without image
-                const response = await this.axiosInstance.post(
-                    `${this.endpoint}/register`, 
-                    userData
-                );
-                return response.data;
-            }
-        } catch (error) {
-            console.error('Error registering user:', error);
-            throw error;
-        }
+ async register(email, password, username, discriminator = 'User', imageFile = null) {
+  try {
+    const userData = UserDTO.forRegistration(email, username, password, discriminator);
+
+    // Criar SEMPRE formData
+    const formData = new FormData();
+    formData.append('user', JSON.stringify(userData));
+
+    // Se houver imagem, envia; senão, envia um Blob vazio para manter a chave
+    if (imageFile) {
+      formData.append('file', imageFile);
+    } else {
+      formData.append('file', new Blob()); // <-- truque para evitar erro no backend
     }
+
+    // Enviar sempre como multipart
+    const multipartAxios = axios.create({
+      baseURL: this.baseUrl,
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      },
+      withCredentials: true
+    });
+
+    const response = await multipartAxios.post(
+      `${this.endpoint}/register`,
+      formData
+    );
+
+    return response.data;
+  } catch (error) {
+    console.error('Error registering user:', error);
+    throw error;
+  }
+}
+
 
     /**
      * Login user
