@@ -119,74 +119,47 @@ public class ReviewController extends HttpServlet {
 		response.setContentType("application/json; charset=UTF-8");
 
 		try {
+			// 1. Lê o campo JSON
 			String reviewJson = request.getParameter("review");
-
 			RegisterReviewDTO reviewDTO = gson.fromJson(reviewJson, RegisterReviewDTO.class);
 
-			Collection<Part> reviewPart = request.getParts().stream()
-					.filter(p -> p.getName().equals("reviewImages"))
-					.toList();
-
-			if (!reviewPart.isEmpty()){
-				List<String> uploadedReviewImages = new ArrayList<>();
-				for (Part part : reviewPart){
-					if (part.getSize() > 0 && part.getContentType().startsWith("image/")) {
-						String fileName = Paths.get(part.getSubmittedFileName()).getFileName().toString();
-						InputStream contentStream = part.getInputStream();
-						if (contentStream != null){
-							try {
-								String uploadedPath = imageService.uploadImage(fileName, contentStream);
-								uploadedReviewImages.add(uploadedPath);
-							} catch (IOException e) {
-								throw new UnauthorizedException("Error while adding review image: " + e.getMessage());
-							}
-						}
-					}
-				}
-
-				reviewDTO.setImagesReview(uploadedReviewImages);
-				String restaurantId = reviewDTO.getRestaurantId();
-				//String userID = reviewDTO.getUserId();
-
-				if (restaurantService.isOwnerOfRestaurant(userId, restaurantId)) {
-					response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-					response.getWriter().write("Não pode fazer review do seu próprio restaurante.");
-					return;
-				}
-
-				boolean saved = reviewService.registerReview(reviewDTO);
-				if (saved) {
-					response.getWriter().println("{\"status\": \"review registado com sucesso\"}");
-				}
-			} else {
-				String restaurantId = reviewDTO.getRestaurantId();
-				//String userID = reviewDTO.getUserId();
-
-				if (restaurantService.isOwnerOfRestaurant(userId, restaurantId)) {
-					response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-					response.getWriter().write("Não pode fazer review do seu próprio restaurante.");
-					return;
-				}
-
-				boolean saved = reviewService.registerReview(reviewDTO);
-				if (saved) {
-					response.getWriter().println("{\"status\": \"review registado com sucesso\"}");
-				}
-			}
-
-
+			// 2. Verifica se o utilizador é o dono do restaurante
 			String restaurantId = reviewDTO.getRestaurantId();
-			//String userID = reviewDTO.getUserId();
-
 			if (restaurantService.isOwnerOfRestaurant(userId, restaurantId)) {
 				response.setStatus(HttpServletResponse.SC_FORBIDDEN);
 				response.getWriter().write("Não pode fazer review do seu próprio restaurante.");
 				return;
 			}
 
+			// 3. Processa imagens se existirem
+			List<String> uploadedReviewImages = new ArrayList<>();
+			for (Part part : request.getParts()) {
+				if (part.getName().equals("reviewImages") &&
+						part.getSize() > 0 &&
+						part.getContentType().startsWith("image/")) {
+
+					String fileName = Paths.get(part.getSubmittedFileName()).getFileName().toString();
+					try (InputStream contentStream = part.getInputStream()) {
+						if (contentStream != null) {
+							String uploadedPath = imageService.uploadImage(fileName, contentStream);
+							uploadedReviewImages.add(uploadedPath);
+						}
+					} catch (IOException e) {
+						throw new UnauthorizedException("Erro ao fazer upload da imagem: " + e.getMessage());
+					}
+				}
+			}
+
+			// 4. Anexa as imagens à review (se houver)
+			reviewDTO.setImagesReview(uploadedReviewImages);
+
+			// 5. Regista a review
 			boolean saved = reviewService.registerReview(reviewDTO);
 			if (saved) {
+				response.setStatus(HttpServletResponse.SC_OK);
 				response.getWriter().println("{\"status\": \"review registado com sucesso\"}");
+			} else {
+				response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Erro ao guardar a review.");
 			}
 
 		} catch (PersistentException | UserException e) {
@@ -195,7 +168,6 @@ public class ReviewController extends HttpServlet {
 			e.printStackTrace();
 			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Erro interno: " + e.getMessage());
 		}
-
 	}
 
 	@Override
