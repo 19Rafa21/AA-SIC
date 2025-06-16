@@ -1,28 +1,50 @@
-version: '3.8'
+version: '3.9'
 
 services:
   database:
-    build: ./data
-    container_name: postgres_container
+    build:
+      context: ./BD
+      dockerfile: Dockerfile
     ports:
-      - "5433:5432"
+      - "5432:5432"
     environment:
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: admin
-      POSTGRES_DB: tasty
+      POSTGRES_DB: tastycheck
+    volumes:
+      - ./BD/custom-config/postgresql.conf:/etc/postgresql/postgresql.conf
+      - ./BD/custom-config/pg_hba.conf:/etc/postgresql/pg_hba.conf
+      - ./BD/data/tastycheck.dump:/docker-entrypoint-initdb.d/tastycheck.dump
+      - ./BD/data/init.sh:/docker-entrypoint-initdb.d/init.sh
     networks:
-      - tasty_net
+      - tastycheck-net
 
-  # frontend:
-  #   build: ./frontend/vue-material-kit-master
-  #   container_name: frontend_container
-  #   ports:
-  #     - "5173:5173"
-  #   networks:
-  #     - tasty_net
-  #   command: npm run preview -- --host
+  backend:
+    build:
+      context: ./tastycheck
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    depends_on:
+      - database
+    networks:
+      - tastycheck-net
+
+  nginx:
+    build:
+      context: ./frontend/tasty-check
+      dockerfile: Dockerfile
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+    networks:
+      - tastycheck-net
+
 
 networks:
-  tasty_net:
-    name: tasty_net
+  tastycheck-net:
+    name: tastycheck-net
     driver: bridge
