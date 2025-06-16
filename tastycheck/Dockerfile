@@ -18,8 +18,13 @@ COPY modules/orm /opt/jboss/wildfly/modules/com/orm
 # Copia o teu WAR para deployments
 COPY --from=build /app/target/tastycheck.war /opt/jboss/wildfly/standalone/deployments/
 
+# Copia o script de entrypoint
+COPY init.sh /opt/jboss/entrypoint.sh
+#RUN chmod +x /opt/jboss/entrypoint.sh
+#RUN ls -la /opt/jboss/
+
 # Expõe a porta HTTP
 EXPOSE 8080
 
-# Comando de entrada
-CMD ["/opt/jboss/wildfly/bin/standalone.sh", "-b", "0.0.0.0"]
+# Define o novo entrypoint com warm-up
+CMD ["/opt/jboss/entrypoint.sh"]
