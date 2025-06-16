@@ -114,6 +114,8 @@ public class UserController extends HttpServlet {
             String userJson = req.getParameter("user");
             Part file = req.getPart("file");
 
+            EditUserDTO userdto = gson.fromJson(userJson, EditUserDTO.class);
+
             boolean imageExist = file != null && file.getSize() > 0;
 
             if (imageExist){
@@ -127,11 +129,14 @@ public class UserController extends HttpServlet {
 
                 if (fileContent != null){
                     User user = userService.getUserById(id);
-                    String oldFileName = user.getProfilePicture();
-                    String uploadedImage = imageService.replaceImage(originalFileName, fileContent, oldFileName);
-
-                    EditUserDTO userdto = gson.fromJson(userJson, EditUserDTO.class);
-                    userdto.setUserImage(uploadedImage);
+                    if (user.getProfilePicture() != null){
+                        String oldFileName = user.getProfilePicture();
+                        String uploadedImage = imageService.replaceImage(originalFileName, fileContent, oldFileName);
+                        userdto.setUserImage(uploadedImage);
+                    } else {
+                        String uploadImage = imageService.uploadImage(originalFileName, fileContent);
+                        userdto.setUserImage(uploadImage);
+                    }
 
                     userService.updateUserWithImage(userdto, id);
                     resp.setStatus(HttpServletResponse.SC_OK);
