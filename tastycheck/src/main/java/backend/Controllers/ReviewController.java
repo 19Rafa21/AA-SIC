@@ -244,19 +244,20 @@ public class ReviewController extends HttpServlet {
 				for (String i : reviewsImages){
 					imageService.deleteImage(i);
 				}
-
-				if ((reviewDTO.getText() == null || reviewDTO.getText().isEmpty()) && reviewDTO.getRating() == null) {
-					response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Nenhum campo fornecido para atualizar.");
-					return;
-				}
-
-				boolean updated = reviewService.updateReview(id, reviewDTO);
-				if (updated){
-					response.getWriter().println("{\"status\": \"Review atualizada com sucesso.\"}");
-				} else {
-					response.getWriter().println("{\"status\": \"Erro ao atualizar a Review.\"}");
-				}
 			}
+
+			if ((reviewDTO.getText() == null || reviewDTO.getText().isEmpty()) && reviewDTO.getRating() == null) {
+				response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Nenhum campo fornecido para atualizar.");
+				return;
+			}
+
+			boolean updated = reviewService.updateReview(id, reviewDTO);
+			if (updated){
+				response.getWriter().println("{\"status\": \"Review atualizada com sucesso.\"}");
+			} else {
+				response.getWriter().println("{\"status\": \"Erro ao atualizar a Review.\"}");
+			}
+
 		} catch (IOException | PersistentException e){
 			e.printStackTrace();
 			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Erro interno: " + e.getMessage());
