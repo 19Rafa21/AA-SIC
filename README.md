@@ -5,8 +5,6 @@ Boa chamada, Pica das Galáxias — a parte **do frontend está no README**, mas
 Para tornar tudo mais claro e bem integrado, aqui vai a versão do `README.md` com **destaques melhores, secções bem separadas** e **ligação entre backend e frontend**, para ninguém se perder no processo:
 
 ---
-
-````markdown
 # 🍽️ TastyCheck
 
 TastyCheck é uma aplicação web interativa que permite aos utilizadores consultar, avaliar e partilhar experiências sobre restaurantes. Inclui funcionalidades como pesquisa por localização, avaliações com imagens, gestão de favoritos e resposta por parte dos proprietários.
