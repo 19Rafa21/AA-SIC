@@ -49,9 +49,14 @@
           </div>
 
           <div class="mt-4 flex items-end gap-3 justify-end">
-            <button @click="submeter" class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700">
+            <button
+              @click="submeter"
+              :disabled="loading"
+              class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
               Submeter
             </button>
+
           </div>
 
           <div v-if="errorMessage" class="alert alert-danger py-2 text-sm text-center text-white mt-4 bg-red-500 rounded">
@@ -114,6 +119,8 @@ function getObjectURL(file) {
 }
 
 async function submeter() {
+  if (loading.value) return;
+  console.log("Submeter review...");
   ratingError.value = ''
   textError.value = ''
   errorMessage.value = null

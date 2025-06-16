@@ -43,7 +43,7 @@ export class ReviewDTO {
             restaurantId: data.restaurantId,
             date: data.date,
             replies: data.replies || [],
-            reviewImages: data.reviewImages || [] // <---- ADICIONAR ISTO
+            reviewImages: data.reviewImages || [] 
         });
     }
 
@@ -68,10 +68,11 @@ export class ReviewDTO {
 toUpdateRequest() {
   return {
     text: this.text,
-    rating: this.rating
-    // reviewImages só se for para PUT JSON, mas estamos a usar multipart/form-data
+    rating: this.rating,
+    reviewImages: this.reviewImages // ✅ inclui imagens existentes!
   }
 }
+
 
 }
 

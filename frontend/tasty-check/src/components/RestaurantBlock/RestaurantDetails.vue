@@ -460,7 +460,12 @@ export default {
             return (total / this.dishes.length).toFixed(2);
         },
         openModal() {
-            this.showModal = true;
+        if (this.showModal) {
+            console.warn("Modal já está aberto!");
+            return;
+        }
+        console.log("Abrir modal pela primeira vez");
+        this.showModal = true;
         },
         closeModal() {
             this.showModal = false;

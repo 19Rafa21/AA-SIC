@@ -86,21 +86,30 @@ const errorMessage = ref(null)
 const ratingError = ref('')
 const textError = ref('')
 
+const imagensOriginais = ref([])
+
 onMounted(async () => {
   rating.value = props.review.rating || 0
   text.value = props.review.text || ''
 
+  const imagens = props.review.reviewImages || []
+  imagensOriginais.value = [...imagens]
+
   imageFiles.value = await Promise.all(
-    (props.review.images || []).map(async (img) => {
+    imagens.map(async (imgName) => {
       try {
-        const blob = await imageService.getImage(img)
-        return Object.assign(blob, { originalName: img })
+        const blob = await imageService.getImage(imgName)
+        console.log('IMAGEM FETCHADA:', imgName, blob)
+        const file = new File([blob], imgName, { type: blob.type || 'image/jpeg' })
+        return Object.assign(file, { originalName: imgName })
       } catch (e) {
+        console.warn('Erro a carregar imagem da review:', imgName, e)
         return null
       }
     })
   ).then(imgs => imgs.filter(Boolean))
 })
+
 
 function setRating(value) {
   rating.value = rating.value === value ? value - 1 : value
@@ -150,15 +159,27 @@ async function guardar() {
     })
 
     const formData = new FormData()
-    formData.append('review', JSON.stringify(dto))
+    formData.append('review', JSON.stringify(dto.toUpdateRequest()))
 
-    const novasImagens = imageFiles.value.filter(img => typeof img !== 'string')
+    // 1. Enviar novas imagens
+    const novasImagens = imageFiles.value.filter(img => !img.originalName)
     if (novasImagens.length > 0) {
       novasImagens.forEach(img => formData.append('reviewImages', img))
     } else {
-      formData.append('reviewImages', new Blob([]))
+      formData.append('reviewImages', new Blob([])) // array vazio
     }
 
+    // 2. Detetar imagens antigas removidas
+    const imagensMantidas = imageFiles.value
+      .filter(img => img.originalName)
+      .map(img => img.originalName)
+
+    const imagensRemovidas = imagensOriginais.value.filter(orig => !imagensMantidas.includes(orig))
+    if (imagensRemovidas.length > 0) {
+      formData.append('deletedImages', JSON.stringify(imagensRemovidas))
+    }
+
+    // 3. Enviar para o serviço
     const updated = await reviewService.updateReview(dto.id, formData)
     emit('review-updated', updated)
     emit('close')
@@ -167,6 +188,7 @@ async function guardar() {
     errorMessage.value = 'Erro ao guardar alterações. Tenta novamente.'
   }
 }
+
 </script>
 
 <style scoped>
