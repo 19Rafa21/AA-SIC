@@ -101,15 +101,29 @@ async createReview(payload) {
      * @param {ReviewDTO} reviewDTO - Updated review data
      * @returns {Promise<ReviewDTO>} Updated ReviewDTO
      */
-    async updateReview(id, reviewDTO) {
-        try {
-            const response = await this.axiosInstance.put(`${this.endpoint}/${id}`, reviewDTO.toUpdateRequest());
-            return ReviewDTO.fromAPI(response.data);
-        } catch (error) {
-            console.error(`Error updating review with id ${id}:`, error);
-            throw error;
+async updateReview(id, payload) {
+  try {
+    let response
+    if (payload instanceof FormData) {
+      response = await axios.put(`${this.baseUrl}/${this.endpoint}/${id}`, payload, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
         }
+      })
+    } else {
+      response = await this.axiosInstance.put(`${this.endpoint}/${id}`, {
+        text: payload.text,
+        rating: payload.rating
+      })
     }
+
+    return ReviewDTO.fromAPI(response.data)
+  } catch (error) {
+    console.error(`Error updating review with id ${id}:`, error)
+    throw error
+  }
+}
+
 
     /**
      * Delete a review by ID

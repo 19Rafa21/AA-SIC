@@ -31,21 +31,41 @@ class UserService {
     }
   }
 
-  async updateUser(data) {
-    try {
-      const authStore = useAuthStore();
-      if (!authStore.isAuthenticated || !authStore.user) {
-        throw new Error('Utilizador não autenticado');
-      }
-
-      const userId = authStore.user.id;
-      const response = await this.axiosInstance.put(`${this.endpoint}/${userId}`, data);
-      return response.data;
-    } catch (error) {
-      console.error('Erro ao atualizar perfil:', error);
-      throw error;
+  async updateUser(formData) {
+  try {
+    const authStore = useAuthStore();
+    if (!authStore.isAuthenticated || !authStore.user) {
+      throw new Error('Utilizador não autenticado');
     }
+
+    const userId = authStore.user.id;
+
+    const response = await this.axiosInstance.put(
+      `${this.endpoint}/${userId}`,
+      formData
+      // ❌ NÃO incluas headers aqui!
+    );
+
+    return response.data;
+  } catch (error) {
+    console.error('Erro ao atualizar perfil:', error);
+    throw error;
   }
+}
+
+
+
+
+  async getOwnedRestaurants(userId) {
+  try {
+    const response = await this.axiosInstance.get(`${this.endpoint}/${userId}/ownedRestaurants`);
+    return response.data;
+  } catch (error) {
+    console.error('Erro ao obter restaurantes do utilizador:', error);
+    throw error;
+  }
+}
+
 
   async getFavorites(userId) {
     try {

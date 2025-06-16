@@ -2,13 +2,13 @@
 import { ref, onMounted } from 'vue'
 import Spinner from '../utils/Spinner.vue'
 import { useAuthStore } from '@/stores/auth'
-import { UserService, ImageService } from '@/services'
-import UserDTO from '@/dto/user.dto.js'
+import authService from '@/services/auth.service' // usamos o authService diretamente
+import { ImageService } from '@/services'
 
 const emit = defineEmits(['close', 'profileUpdated'])
 const isSaving = ref(false)
+const erro = ref(null)
 const authStore = useAuthStore()
-const userService = new UserService()
 const imageService = new ImageService()
 
 const user = ref(authStore.user ? { ...authStore.user } : {})
@@ -16,7 +16,7 @@ const selectedFile = ref(null)
 const previewImage = ref(null)
 
 onMounted(async () => {
-  // Carregar a imagem atual do usuário, se existir
+  // Carregar imagem de perfil se existir
   try {
     if (user.value.imageName) {
       const imageBlob = await imageService.getImage(user.value.imageName)
@@ -28,52 +28,26 @@ onMounted(async () => {
 })
 
 const guardar = async () => {
+  erro.value = null
   isSaving.value = true
+
   try {
-    // Se temos um arquivo de imagem selecionado, primeiro enviamos a imagem
-    if (selectedFile.value) {
-      try {
-        // Criar objeto userData para enviar com a imagem
-        const userData = {
-          username: user.value.username,
-          email: user.value.email,
-          password: "", // Se necessário, pode ser adicionado
-          discriminator: user.value.discriminator
-        }
-        
-        // Enviar a imagem
-        const imageResponse = await imageService.uploadImage(selectedFile.value, userData)
-        
-        // Se o upload for bem-sucedido, atualizamos o imageName no objeto do usuário
-        if (imageResponse && imageResponse.imageName) {
-          user.value.imageName = imageResponse.imageName
-        }
-      } catch (imageError) {
-        console.error('Erro ao fazer upload da imagem:', imageError)
-        alert('Erro ao enviar a imagem. O perfil será atualizado sem a nova imagem.')
-      }
+    const userId = user.value.id // ou _id, dependendo do nome da propriedade no authStore
+
+    const updatedUserData = {
+      username: user.value.username,
+      email: user.value.email,
+      discriminator: user.value.discriminator
     }
-    
-    // Agora atualizamos o perfil do usuário
-    const updatedUser = await userService.updateUser(UserDTO.toAPI(user.value))
-    
-    // Atualiza o estado da aplicação
-    if (updatedUser) {
-      // Atualizar o usuário na store
-      authStore.user = { ...user.value }
-      
-      // Notificar que o perfil foi atualizado
-      emit('profileUpdated', user.value)
-      
-      // Fechar o modal
-      emit('close')
-      
-      // Opcional: recarregar a página para refletir todas as alterações
-      location.reload()
-    }
+
+    // Chamar a função do auth.service.js
+    await authService.updateUser(userId, updatedUserData, selectedFile.value)
+
+    emit('profileUpdated') // notificar componente pai
+    window.location.reload()
   } catch (err) {
-    console.error('Erro ao guardar alterações:', err)
-    alert('Erro ao atualizar perfil. Tente novamente.')
+    console.error('Erro ao atualizar perfil:', err)
+    erro.value = 'Erro ao guardar alterações. Tenta novamente.'
   } finally {
     isSaving.value = false
   }
@@ -86,13 +60,12 @@ const cancelar = () => {
 const handleImageUpload = (event) => {
   const file = event.target.files[0]
   if (!file) return
-  
+
   selectedFile.value = file
-  
-  // Cria uma prévia da imagem
   previewImage.value = URL.createObjectURL(file)
 }
 </script>
+
 
 <template>
   <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
@@ -105,7 +78,7 @@ const handleImageUpload = (event) => {
       </div>
       <div class="flex flex-col items-center mb-6">
         <img
-          :src="previewImage || '/img/avatar.jpg'"
+          :src="previewImage || '/img/avatar.png'"
           alt="Avatar"
           class="w-28 h-28 rounded-xl object-cover mb-2"
         />
@@ -134,6 +107,7 @@ const handleImageUpload = (event) => {
       <div class="mt-6 flex justify-end gap-3 items-center">
         <Spinner v-if="isSaving" class="mx-auto mt-4 mb-1" />
         <span v-if="isSaving" class="text-emerald-500 mr-2">A guardar...</span>
+        <p v-if="erro" class="text-red-500 text-sm mt-4">{{ erro }}</p>
         <button @click="cancelar" class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400" :disabled="isSaving">Cancelar</button>
         <button @click="guardar" class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700" :disabled="isSaving">Guardar</button>
       </div>

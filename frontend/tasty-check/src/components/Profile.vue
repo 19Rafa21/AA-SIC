@@ -20,27 +20,20 @@ const authStore = useAuthStore()
 const userService = new UserService()
 const imageService = new ImageService()
 const profileImage = ref(null)
+const refreshOwned = ref(0)
 
-onMounted(async () => {
+const loadProfile = async () => {
   isLoading.value = true
-  
-  // Use Pinia store instead of localStorage
-  if (authStore.isAuthenticated && authStore.user) {
-    user.value = authStore.user
-  }
-
   try {
     const data = await userService.getCurrentUser()
-    user.value = UserDTO.fromAPI(data) // atualiza com dados do backend
-    
-    // Se o usuário tem uma imagem, vamos carregá-la
+    user.value = UserDTO.fromAPI(data)
+
     if (user.value.imageName) {
       try {
         const imageBlob = await imageService.getImage(user.value.imageName)
         profileImage.value = URL.createObjectURL(imageBlob)
       } catch (imageError) {
         console.error("Erro ao carregar imagem do perfil:", imageError)
-        // Não definimos um erro global, apenas falha silenciosamente a imagem
       }
     }
   } catch (err) {
@@ -49,7 +42,15 @@ onMounted(async () => {
   } finally {
     isLoading.value = false
   }
-})
+}
+
+onMounted(loadProfile)
+
+const handleRefreshOwned = () => {
+  loadProfile()
+}
+
+
 
 const openModal = () => (showModal.value = true)
 const closeModal = () => (showModal.value = false)
@@ -75,17 +76,31 @@ const closeModal = () => (showModal.value = false)
 
     <div class="container mx-auto max-w-6xl px-6 mt-6" v-else-if="user">
       <ProfileHeader @edit="openModal" />
+      <EditProfileModal
+        v-if="showModal"
+        @close="closeModal"
+        @profileUpdated="loadProfile"
+      />
+
       <ProfileInfo :profileImage="profileImage" :user="user" />
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <FavoriteRestaurants
           v-if="user && (user.discriminator === 'User' || user.discriminator === 'Owner')"
           :userId="user.id"
         />
-        <OwnedRestaurants v-if="user.discriminator === 'Owner'" />
+        <OwnedRestaurants
+          v-if="user.discriminator === 'Owner'"
+          :refresh="refreshOwned"
+        />
       </div>
     </div>
 
     <Footer class="bottom-0 left-0 right-0" />
-    <EditProfileModal v-if="showModal" @close="closeModal" />
+    <EditRestaurantModal
+      v-if="showModal"
+      @close="closeModal"
+      :key="refreshOwned"
+    />
+
   </div>
 </template>

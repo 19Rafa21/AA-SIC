@@ -137,6 +137,45 @@ class AuthenticationService {
         const user = this.getCurrentUser();
         return user && user.discriminator === 'Owner';
     }
+
+    /**
+     * Update user data (including optional profile image)
+     * @param {string} userId - ID do utilizador a atualizar
+     * @param {Object} userData - Dados atualizados do utilizador (username, email, discriminator)
+     * @param {File|null} imageFile - Nova imagem de perfil (opcional)
+     * @returns {Promise<Object>} Resposta da API
+     */
+    async updateUser(userId, userData, imageFile = null) {
+    try {
+        const formData = new FormData();
+        formData.append('user', JSON.stringify(userData));
+
+        if (imageFile) {
+        formData.append('file', imageFile);
+        } else {
+        formData.append('file', new Blob([], { type: 'application/octet-stream' }), 'empty.jpg');
+        }
+
+        const multipartAxios = axios.create({
+        baseURL: this.baseUrl,
+        headers: {
+            'Content-Type': 'multipart/form-data'
+        },
+        withCredentials: true
+        });
+
+        const response = await multipartAxios.put(
+        `/user/${userId}`,
+        formData
+        );
+
+        return response.data;
+    } catch (error) {
+        console.error('Erro ao atualizar utilizador:', error);
+        throw error;
+    }
+    }
+
 }
 
 export default new AuthenticationService();

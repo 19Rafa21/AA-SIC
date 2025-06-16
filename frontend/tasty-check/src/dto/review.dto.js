@@ -65,12 +65,14 @@ export class ReviewDTO {
      * Converts the DTO to a format suitable for API update requests
      * @returns {Object} Object formatted for API update requests
      */
-    toUpdateRequest() {
-        return {
-            text: this.text,
-            rating: this.rating
-        };
-    }
+toUpdateRequest() {
+  return {
+    text: this.text,
+    rating: this.rating
+    // reviewImages só se for para PUT JSON, mas estamos a usar multipart/form-data
+  }
+}
+
 }
 
 export default ReviewDTO;

@@ -1,44 +1,87 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import EditRestaurantModal from './EditRestaurantModal.vue'
+import UserService from '@/services/user.service'
+import { useAuthStore } from '@/stores/auth' 
+import RestaurantService from '@/services/restaurant.service'
+
+const restaurantService = new RestaurantService()
+
 
 const restaurantes = ref([])
+const restauranteSelecionado = ref(null)
 
-onMounted(() => {
-  const stored = localStorage.getItem('restaurants')
-  if (stored) {
-    try {
-      restaurantes.value = JSON.parse(stored)
-    } catch (e) {
-      console.error('Erro ao ler do localStorage:', e)
-    }
+const userService = new UserService()
+
+import ImageService from '@/services/image.service'
+
+const imageService = new ImageService()
+
+onMounted(async () => {
+  try {
+    const authStore = useAuthStore()
+    const userId = authStore.currentUser?.id
+
+    if (!userId) throw new Error('Utilizador não autenticado')
+
+    const resposta = await userService.getOwnedRestaurants(userId)
+
+    const comImagens = await Promise.all(
+      (resposta || []).map(async (rest) => {
+        try {
+          const blob = await imageService.getImage(rest.image)
+          rest.imageUrl = URL.createObjectURL(blob)
+        } catch (e) {
+          rest.imageUrl = '/img/placeholder-restaurant.png'
+        }
+        return rest
+      })
+    )
+
+    restaurantes.value = comImagens
+  } catch (e) {
+    console.error('Erro ao carregar restaurantes do utilizador:', e)
   }
 })
 
-const restauranteSelecionado = ref(null)
-
-const abrirModal = (restaurante) => {
-  restauranteSelecionado.value = { ...restaurante }
+const abrirModal = async (restaurante) => {
+  try {
+    const restaurantService = new RestaurantService()
+    const detalhado = await restaurantService.getRestaurantById(restaurante.id)
+    restauranteSelecionado.value = detalhado
+  } catch (e) {
+    console.error('Erro ao obter dados detalhados:', e)
+  }
 }
 
 const guardarEdicao = (restauranteEditado) => {
   const i = restaurantes.value.findIndex(r => r.id === restauranteEditado.id)
   if (i !== -1) {
-    restaurantes.value[i] = restauranteEditado
+    restaurantes.value[i] = restauranteEditado // substitui o restaurante antigo pelo novo
   } else {
-    restaurantes.value.push(restauranteEditado)
+    restaurantes.value.push(restauranteEditado) // fallback no caso de não encontrar
   }
-  localStorage.setItem('restaurants', JSON.stringify(restaurantes.value))
 }
 
-const apagarRestaurante = (id) => {
+const apagarRestaurante = async (id) => {
   const confirmar = confirm('Tens a certeza que queres apagar este restaurante?')
   if (!confirmar) return
 
-  restaurantes.value = restaurantes.value.filter(r => r.id !== id)
-  localStorage.setItem('restaurants', JSON.stringify(restaurantes.value))
+  try {
+    await restaurantService.deleteRestaurant(id)
+    restaurantes.value = restaurantes.value.filter(r => r.id !== id)
+  } catch (error) {
+    console.error('Erro ao apagar restaurante no backend:', error)
+    alert('Erro ao apagar restaurante. Tenta novamente.')
+  }
 }
+
+const handleRefreshOwned = () => {
+  loadProfile() // recarrega o perfil completo
+}
+
 </script>
+
 
 <template>
   <div class="mt-5 bg-gray-100 p-4 rounded-xl">
@@ -55,25 +98,36 @@ const apagarRestaurante = (id) => {
     <!-- Grid ou mensagem quando vazio -->
     <div class="grid grid-cols-2 gap-4 min-h-[100px]">
       <template v-if="restaurantes.length > 0">
-        <div v-for="restaurante in restaurantes" :key="restaurante.id" class="relative">
-          <img
-            :src="restaurante.image"
-            class="w-full h-32 object-cover rounded-md mb-2"
-          />
-          <div class="text-xs text-gray-500">{{ restaurante.cuisineType }}</div>
-          <div class="font-semibold text-sm">{{ restaurante.name }}</div>
+        <div
+          v-for="restaurante in restaurantes"
+          :key="restaurante.id"
+          class="relative group"
+        >
+          <!-- Link ao restaurante -->
+          <router-link
+            :to="`/restaurant/${restaurante.id}`"
+            class="block"
+          >
+            <img
+              :src="restaurante.imageUrl"
+              alt="Imagem restaurante"
+              class="w-full h-32 object-cover rounded-md mb-2"
+            />
+            <div class="text-xs text-gray-500">{{ restaurante.cuisineType }}</div>
+            <div class="font-semibold text-sm">{{ restaurante.name }}</div>
+          </router-link>
 
-          <!-- Botões apagar e editar -->
+          <!-- Botões fora do router-link, mas posicionados por cima -->
           <div class="absolute bottom-0 right-0 mb-1 mr-1 flex gap-2">
             <button
-              @click="apagarRestaurante(restaurante.id)"
+              @click.stop="apagarRestaurante(restaurante.id)"
               class="px-2 py-1 text-sm border border-red-400 text-red-600 rounded flex items-center gap-1 bg-white hover:bg-red-100"
             >
               <i class="fas fa-trash-alt text-xs"></i>
             </button>
 
             <button
-              @click="abrirModal(restaurante)"
+              @click.stop="abrirModal(restaurante)"
               class="px-2 py-1 text-sm border border-gray-400 rounded flex items-center gap-1 bg-white hover:bg-gray-100"
             >
               <i class="fas fa-pen text-xs"></i> Editar
@@ -81,6 +135,7 @@ const apagarRestaurante = (id) => {
           </div>
         </div>
       </template>
+
 
       <template v-else>
         <div class="col-span-2 text-center text-gray-600 py-6">

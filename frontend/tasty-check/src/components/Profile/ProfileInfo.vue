@@ -1,31 +1,58 @@
 <script setup>
-import { ref, watch, computed } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import { useAuthStore } from '@/stores/auth'
+import { ImageService } from '@/services'
 
 const authStore = useAuthStore()
+const imageService = new ImageService()
 
-// Recebe props "editable", "profileImage" e "user"
+// Props opcionais
 const props = defineProps({
   editable: Boolean,
   profileImage: String,
   user: Object
 })
 
-// Fallback to store if no user is provided via props
+// Preferência: user vindo por prop > authStore
 const userData = computed(() => {
   return props.user || authStore.user || {}
 })
 
-const defaultAvatar = '/img/avatar.jpg'
+// Avatar por defeito
+const defaultAvatar = '../public/img/avatar.png'
+const profileImageSrc = ref(defaultAvatar)
+
+onMounted(async () => {
+  // Se for passada uma imagem por prop, usá-la
+  if (props.profileImage && props.profileImage.trim() !== '') {
+    profileImageSrc.value = props.profileImage
+    return
+  }
+
+  // Caso contrário, tenta buscar pelo nome da imagem do utilizador
+  const imageName = userData.value?.imageName
+  if (!imageName) return
+
+  try {
+    const blob = await imageService.getImage(imageName)
+    if (blob) {
+      profileImageSrc.value = URL.createObjectURL(blob)
+    }
+  } catch (err) {
+    console.error('Erro ao carregar imagem de perfil:', err)
+    profileImageSrc.value = defaultAvatar
+  }
+})
 </script>
+
 
 <template>
   <div class="bg-gray-100 rounded-xl p-6 flex gap-8">
-    <img 
-      :src="profileImage && profileImage.trim() !== '' ? profileImage : defaultAvatar"
-      alt="Avatar" 
-      class="w-20 rounded-xl object-cover" 
-    />
+      <img 
+        :src="profileImageSrc"
+        alt="Avatar" 
+        class="w-20 rounded-xl object-cover" 
+      />
 
     <div class="grid grid-cols-2 gap-y-3 text-sm flex-1">
       <div><strong>Nome de Usuário</strong><div>{{ userData.username }}</div></div>
