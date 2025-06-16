@@ -145,7 +145,7 @@ public class ReviewService {
 			throw new IllegalArgumentException("Nenhum campo fornecido para atualizar.");
 		}
 
-		review.setImagesReview(new HashSet<>(updateDTO.getReviewImages()));
+		review.setImagesReview(new HashSet<>(Optional.ofNullable(updateDTO.getReviewImages()).orElse(Collections.emptyList())));
 
 		review.setData(new Date());
 
