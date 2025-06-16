@@ -1,8 +1,7 @@
 <template>
   <teleport to="body">
-    <div class="fixed inset-0 bg-black bg-opacity-50 flex flex-col items-center justify-center z-50">
-      <div class="bg-white rounded-lg p-6 min-w-[700px] shadow-lg">
-
+    <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 overflow-auto">
+      <div class="bg-white rounded-lg p-6 w-full max-w-2xl shadow-lg max-h-[90vh] overflow-y-auto">
         <div class="flex items-center justify-between mb-4">
           <span class="text-2xl font-semibold text-emerald-800">Editar Avaliação</span>
           <button @click="cancelar" class="text-2xl text-red-500 hover:text-red-800">
@@ -10,61 +9,55 @@
           </button>
         </div>
 
-        <!-- Rating -->
-        <div class="flex flex-col items-start">
-          <span class="text-md text-emerald-800 mb-3">Atualiza a tua classificação</span>
-
-          <div class="flex items-center space-x-1">
-            <button v-for="star in 5" :key="star" @click="setRating(star)"
-                    :class="[ 'text-2xl', star <= rating ? 'text-emerald-800 hover:text-emerald-600' : 'text-emerald-800 hover:text-yellow-400']">
-              <i :class="star <= rating ? 'fas fa-star' : 'far fa-star'"></i>
-            </button>
+        <div class="space-y-4">
+          <!-- Rating -->
+          <div>
+            <label class="block text-md font-medium text-emerald-800 mb-2">Classificação</label>
+            <div class="flex items-center space-x-1">
+              <button
+                v-for="star in 5"
+                :key="star"
+                @click="setRating(star)"
+                :class="['text-2xl', star <= rating ? 'text-emerald-800 hover:text-emerald-600' : 'text-gray-400 hover:text-yellow-400']"
+              >
+                <i :class="star <= rating ? 'fas fa-star' : 'far fa-star'"></i>
+              </button>
+            </div>
+            <span v-if="ratingError" class="text-sm text-red-600 mt-1">{{ ratingError }}</span>
           </div>
 
-          <span v-if="ratingError" class="text-sm text-red-600 mt-1">{{ ratingError }}</span>
-
           <!-- Texto -->
-          <div class="mt-4 mb-4 w-full">
-            <label for="reviewText" class="block text-md text-emerald-800 mb-2">Texto</label>
+          <div>
+            <label class="block text-md font-medium text-emerald-800 mb-2">Comentário</label>
             <textarea
-              id="reviewText"
               v-model="text"
               class="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-emerald-500"
               rows="4"
-              placeholder="Atualiza o teu comentário...">
+              placeholder="Partilhe a sua experiência...">
             </textarea>
-          </div>
-          <span v-if="textError" class="text-sm text-red-600 mt-1">{{ textError }}</span>
-          <!-- Imagens existentes -->
-          <div class="image-list mt-2">
-            <div v-for="(img, i) in initialImages" :key="'existing-' + i" class="image-thumb">
-              <img :src="img" class="thumb" />
-              <button type="button" class="remove-btn" @click="removeInitialImage(i)">×</button>
-            </div>
+            <span v-if="textError" class="text-sm text-red-600 mt-1">{{ textError }}</span>
           </div>
 
-          <!-- Novas imagens -->
-          <div class="form-group mt-4 w-full">
-            <label class="block text-md text-emerald-800 mb-2">Adicionar Imagens</label>
+          <!-- Imagens -->
+          <div>
+            <label class="block text-md font-medium text-emerald-800 mb-2">Imagens</label>
             <input type="file" multiple accept="image/*" @change="handleImageUpload" />
             <div class="image-list mt-2">
-              <div v-for="(img, i) in imageFiles" :key="'new-' + i" class="image-thumb">
+              <div v-for="(img, i) in imageFiles" :key="i" class="image-thumb">
                 <img :src="getObjectURL(img)" class="thumb" />
                 <button type="button" class="remove-btn" @click="removeImage(i)">×</button>
               </div>
             </div>
           </div>
 
-          <div class="mt-4 flex items-end gap-3 justify-end">
-            <button @click="submeter" class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700">
-              Guardar alterações
-            </button>
+          <div class="mt-6 flex justify-end gap-3">
+            <button @click="cancelar" class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400">Cancelar</button>
+            <button @click="guardar" class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700">Guardar</button>
           </div>
 
           <div v-if="errorMessage" class="alert alert-danger py-2 text-sm text-center text-white mt-4 bg-red-500 rounded">
             {{ errorMessage }}
           </div>
-
         </div>
       </div>
     </div>
@@ -73,34 +66,41 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import { ReviewService } from '@/services'
 import { useAuthStore } from '@/stores/auth'
+import { ReviewService, ImageService } from '@/services'
 import { ReviewDTO } from '@/dto/review.dto'
 
-
 const props = defineProps({
-  review: { type: Object, required: true }
+  review: Object, // review existente
 })
 const emit = defineEmits(['close', 'review-updated'])
 
 const authStore = useAuthStore()
-const ReviewServiceInstance = new ReviewService()
+const reviewService = new ReviewService()
+const imageService = new ImageService()
 
 const rating = ref(0)
 const text = ref('')
-const initialImages = ref([])
-const imageFiles = ref([]) // novas
-
+const imageFiles = ref([]) // blobs ou novos uploads
 const errorMessage = ref(null)
 const ratingError = ref('')
 const textError = ref('')
 
-onMounted(() => {
-  rating.value = props.review.rating
-  text.value = props.review.text
-  initialImages.value = [...props.review.reviewImages] // imagens existentes
-})
+onMounted(async () => {
+  rating.value = props.review.rating || 0
+  text.value = props.review.text || ''
 
+  imageFiles.value = await Promise.all(
+    (props.review.images || []).map(async (img) => {
+      try {
+        const blob = await imageService.getImage(img)
+        return Object.assign(blob, { originalName: img })
+      } catch (e) {
+        return null
+      }
+    })
+  ).then(imgs => imgs.filter(Boolean))
+})
 
 function setRating(value) {
   rating.value = rating.value === value ? value - 1 : value
@@ -109,10 +109,6 @@ function setRating(value) {
 
 function cancelar() {
   emit('close')
-}
-
-function removeInitialImage(index) {
-  initialImages.value.splice(index, 1)
 }
 
 function handleImageUpload(event) {
@@ -125,52 +121,52 @@ function removeImage(index) {
 }
 
 function getObjectURL(file) {
-  return file ? URL.createObjectURL(file) : ''
+  return typeof file === 'string' ? file : URL.createObjectURL(file)
 }
 
-
-async function submeter() {
+async function guardar() {
+  errorMessage.value = ''
   ratingError.value = ''
   textError.value = ''
-  errorMessage.value = null
 
+  let hasError = false
   if (rating.value === 0) {
     ratingError.value = 'Por favor, selecione uma classificação.'
-    return
+    hasError = true
   }
   if (!text.value.trim()) {
     textError.value = 'O comentário não pode estar vazio.'
-    return
+    hasError = true
   }
+  if (hasError) return
 
   try {
     const dto = new ReviewDTO({
-      ...props.review,
+      id: props.review.id,
+      restaurantId: props.review.restaurantId,
+      userId: authStore.currentUser.id,
       rating: rating.value,
-      text: text.value,
-      reviewImages: initialImages.value
+      text: text.value
     })
 
-    let response
-    if (imageFiles.value.length > 0) {
-      const formData = new FormData()
-      formData.append('review', JSON.stringify(dto.toUpdateRequest()))
-      imageFiles.value.forEach(file => formData.append('reviewImages', file))
+    const formData = new FormData()
+    formData.append('review', JSON.stringify(dto))
 
-      response = await ReviewServiceInstance.updateReview(dto.id, formData)
+    const novasImagens = imageFiles.value.filter(img => typeof img !== 'string')
+    if (novasImagens.length > 0) {
+      novasImagens.forEach(img => formData.append('reviewImages', img))
     } else {
-      response = await ReviewServiceInstance.updateReview(dto.id, dto)
+      formData.append('reviewImages', new Blob([]))
     }
 
-    emit('review-updated', response)
+    const updated = await reviewService.updateReview(dto.id, formData)
+    emit('review-updated', updated)
     emit('close')
   } catch (err) {
     console.error('Erro ao atualizar review:', err)
-    errorMessage.value = err.response?.data?.message || err.message || 'Erro ao atualizar a avaliação.'
+    errorMessage.value = 'Erro ao guardar alterações. Tenta novamente.'
   }
 }
-
-
 </script>
 
 <style scoped>
@@ -210,5 +206,4 @@ async function submeter() {
   justify-content: center;
   cursor: pointer;
 }
-
 </style>

@@ -230,6 +230,11 @@ public class RestaurantController extends HttpServlet {
                 // GET /restaurants/rest_001
                 String[] parts = pathInfo.split("/");
 
+                if (parts.length == 4 && "user".equals(parts[1]) && "ownedRestaurants".equals(parts[3])) {
+                    // código que devolve os restaurantes do utilizador
+                    return;
+                }
+
                 if (parts.length >= 2) {
                     String id = parts[1];
 

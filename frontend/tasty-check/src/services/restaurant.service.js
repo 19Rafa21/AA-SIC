@@ -95,21 +95,25 @@ async createRestaurant(restaurantDetailedDTO, coverImageFile, menuImageFiles = [
      * @param {RestaurantDetailedDTO} restaurantDetailedDTO - Updated detailed restaurant data
      * @returns {Promise<RestaurantDTO>} Updated RestaurantDTO
      */
-    async updateRestaurant(id, restaurantDetailedDTO) {
-        try {
-            // Make sure the ID is set in the DTO
-            restaurantDetailedDTO.id = id;
-            
-            const response = await this.axiosInstance.put(
-                `${this.endpoint}/${id}`, 
-                restaurantDetailedDTO.toAPIRequest(true) // Include ID for updates
-            );
-            return RestaurantDTO.fromAPI(response.data);
-        } catch (error) {
-            console.error(`Error updating restaurant with id ${id}:`, error);
-            throw error;
+async updateRestaurant(id, formData) {
+  try {
+    const response = await axios.put(
+      `${this.baseUrl}/${this.endpoint}/${id}`,
+      formData,
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data'
         }
-    }
+      }
+    );
+    return RestaurantDTO.fromAPI(response.data);
+  } catch (error) {
+    console.error(`Erro ao atualizar restaurante com ID ${id}:`, error);
+    throw error;
+  }
+}
+
+
 
     /**
      * Delete a restaurant by ID
