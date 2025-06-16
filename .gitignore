@@ -19,5 +19,3 @@ Thumbs.db
 # === Docker ===
 *.pid
 *.sock
-
-aa-sic-storage-access.json
