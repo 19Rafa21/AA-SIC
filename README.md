@@ -1,9 +1,4 @@
 # AA-SIC
-
-Boa chamada, Pica das Galáxias — a parte **do frontend está no README**, mas percebo o teu comentário: como o backend vem primeiro, e o frontend fica “lá mais em baixo”, pode passar despercebido.
-
-Para tornar tudo mais claro e bem integrado, aqui vai a versão do `README.md` com **destaques melhores, secções bem separadas** e **ligação entre backend e frontend**, para ninguém se perder no processo:
-
 ---
 # 🍽️ TastyCheck
 
